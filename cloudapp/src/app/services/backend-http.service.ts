@@ -15,7 +15,7 @@ import { finalize, map, shareReplay, switchMap, take, tap } from 'rxjs/operators
 	providedIn: 'root',
 })
 export class BackendHttpService {
-	private static readonly PROD_URL = 'https://staff.swisscovery.network';
+	private static readonly PROD_URL = ''; // TODO: set when production backend is ready
 	private static readonly SANDBOX_URL = 'https://staff.swisscovery.network'; // TODO: change when test backend is ready
 	private static readonly LOCAL_URL = 'http://localhost:8080';
 
