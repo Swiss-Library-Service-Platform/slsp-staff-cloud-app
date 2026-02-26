@@ -13,10 +13,11 @@
    "license": "https://github.com/Swiss-Library-Service-Platform/slsp-staff-cloud-app/blob/main/LICENCE",
    "contentSecurity": {
       "connectSrc": [
-         "https://staff.swisscovery.network/"
+         "https://staff-test.swisscovery.network/"
       ]
    },
    "relevantForInst": [
+      "41SLSP_NETWORK",
       "41SLSP_HPH"
    ]
 }
