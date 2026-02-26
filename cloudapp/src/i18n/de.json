@@ -1,8 +1,10 @@
 {
 	"Auth": {
 		"Loading": "Berechtigung wird geprüft...",
-		"UnauthorizedTitle": "Zugriff verweigert",
-		"UnauthorizedMessage": "Diese App erfordert die Rolle User Manager.\nBei Bedarf kontaktieren Sie den SLSP Support.",
+		"InvalidTokenTitle": "Authentifizierung fehlgeschlagen",
+		"InvalidTokenMessage": "Ihre Identität konnte nicht überprüft werden.\nVersuchen Sie, die Seite neu zu laden oder sich erneut anzumelden.",
+		"ForbiddenTitle": "Zugriff verweigert",
+		"ForbiddenMessage": "Stellen Sie sicher, dass Ihre Institution für diese App freigeschaltet ist und Ihr Konto die Rolle User Manager hat.\nBei Bedarf kontaktieren Sie den SLSP Support.",
 		"ErrorTitle": "Dienst nicht verfügbar",
 		"ErrorMessage": "Der Dienst ist derzeit nicht verfügbar.\nBitte versuchen Sie es später erneut."
 	},

@@ -1,8 +1,10 @@
 {
 	"Auth": {
 		"Loading": "Vérification de l'autorisation...",
-		"UnauthorizedTitle": "Accès refusé",
-		"UnauthorizedMessage": "Cette application nécessite le rôle User Manager.\nPour y accéder, contactez le support SLSP.",
+		"InvalidTokenTitle": "Échec de l'authentification",
+		"InvalidTokenMessage": "Impossible de vérifier votre identité.\nEssayez de recharger la page ou de vous reconnecter.",
+		"ForbiddenTitle": "Accès refusé",
+		"ForbiddenMessage": "Vérifiez que votre institution est activée pour cette application et que votre compte dispose du rôle User Manager.\nPour y accéder, contactez le support SLSP.",
 		"ErrorTitle": "Service indisponible",
 		"ErrorMessage": "Le service est actuellement indisponible.\nVeuillez réessayer plus tard."
 	},

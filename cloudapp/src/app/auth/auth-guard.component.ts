@@ -22,11 +22,18 @@ import { AuthResult, AuthService } from '../services/auth.service';
 					<p>{{ 'Auth.Loading' | translate }}</p>
 				</div>
 			}
-			@case ('unauthorized') {
+			@case ('invalid_token') {
+				<div class="auth-container error">
+					<mat-icon class="error-icon">error_outline</mat-icon>
+					<h2>{{ 'Auth.InvalidTokenTitle' | translate }}</h2>
+					<p>{{ 'Auth.InvalidTokenMessage' | translate }}</p>
+				</div>
+			}
+			@case ('forbidden') {
 				<div class="auth-container error">
 					<mat-icon class="error-icon">block</mat-icon>
-					<h2>{{ 'Auth.UnauthorizedTitle' | translate }}</h2>
-					<p>{{ 'Auth.UnauthorizedMessage' | translate }}</p>
+					<h2>{{ 'Auth.ForbiddenTitle' | translate }}</h2>
+					<p>{{ 'Auth.ForbiddenMessage' | translate }}</p>
 				</div>
 			}
 			@case ('error') {
@@ -79,7 +86,8 @@ import { AuthResult, AuthService } from '../services/auth.service';
 	`,
 })
 export class AuthGuardComponent implements OnInit {
-	public state: 'loading' | 'authorized' | 'unauthorized' | 'error' = 'loading';
+	public state: 'loading' | 'authorized' | 'invalid_token' | 'forbidden' | 'error' =
+		'loading';
 
 	private authService = inject(AuthService);
 
@@ -88,7 +96,7 @@ export class AuthGuardComponent implements OnInit {
 			if (result.status === 'authorized') {
 				this.state = 'authorized';
 			} else if (result.status === 'unauthorized') {
-				this.state = 'unauthorized';
+				this.state = result.reason;
 			} else {
 				this.state = 'error';
 			}

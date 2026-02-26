@@ -1,8 +1,10 @@
 {
 	"Auth": {
 		"Loading": "Checking authorization...",
-		"UnauthorizedTitle": "Access Denied",
-		"UnauthorizedMessage": "This app requires the User Manager role.\nIf you need access, contact SLSP Support.",
+		"InvalidTokenTitle": "Authentication Failed",
+		"InvalidTokenMessage": "Could not verify your identity.\nTry reloading the page or signing in again.",
+		"ForbiddenTitle": "Access Denied",
+		"ForbiddenMessage": "Make sure your institution is enabled for this app and that your account has the User Manager role.\nIf you need access, contact SLSP Support.",
 		"ErrorTitle": "Service Unavailable",
 		"ErrorMessage": "The service is currently unavailable.\nPlease try again later."
 	},
