@@ -44,7 +44,7 @@ Select the staff account to place it in the lower slot. With both accounts selec
 
 ![Link tab — ready to link](preview/03-link-tab-ready.png)
 
-After linking, a badge shows the active link count for each user.
+After linking, a badge shows the active link count for each user. The linked edu-ID account can now be used to log into Alma — authenticating with the edu-ID will grant access as the linked staff user.
 
 ![Link tab — accounts linked](preview/04-link-tab-linked.png)
 
