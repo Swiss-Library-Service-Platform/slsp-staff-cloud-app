@@ -1,0 +1,272 @@
+<div class="list-users-container">
+	<ng-container *ngIf="vm$ | async as vm">
+		<!-- Search & Filter Bar -->
+		<div class="search-filter-bar">
+			<div class="search-row">
+				<mat-form-field appearance="outline" class="search-field">
+					<mat-icon matPrefix>search</mat-icon>
+					<input
+						matInput
+						[formControl]="searchControl"
+						[placeholder]="
+							'listUsers.searchPlaceholder' | translate
+						"
+					/>
+					<button
+						mat-icon-button
+						matSuffix
+						*ngIf="searchControl.value"
+						(click)="clearSearch()"
+						aria-label="Clear search"
+					>
+						<mat-icon>clear</mat-icon>
+					</button>
+				</mat-form-field>
+
+				<mat-form-field appearance="outline" class="library-select">
+					<mat-select
+						[formControl]="libraryCodeControl"
+						multiple
+						[placeholder]="'listUsers.allLibraries' | translate"
+						panelClass="library-code-panel"
+					>
+						<mat-select-trigger>
+							{{ getLibraryFilterLabel() }}
+						</mat-select-trigger>
+
+						<div class="library-search-header">
+							<input
+								[formControl]="libraryCodeSearch"
+								[placeholder]="
+									'listUsers.searchLibraryCodes'
+										| translate
+								"
+								class="library-search-input"
+								(keydown)="$event.stopPropagation()"
+							/>
+							<button
+								mat-icon-button
+								*ngIf="libraryCodeSearch.value"
+								(click)="libraryCodeSearch.setValue('')"
+								class="library-search-clear"
+							>
+								<mat-icon>clear</mat-icon>
+							</button>
+						</div>
+
+						<div
+							*ngIf="libraryCodesLoading"
+							class="library-codes-loading"
+						>
+							<mat-spinner diameter="20"></mat-spinner>
+						</div>
+
+						<ng-container
+							*ngIf="
+								filteredLibraryCodes$ | async as filteredCodes
+							"
+						>
+							<mat-option
+								*ngFor="
+									let code of filteredCodes;
+									trackBy: trackByIndex
+								"
+								[value]="code"
+							>
+								{{ code }}
+							</mat-option>
+
+							<div
+								*ngIf="
+									filteredCodes.length === 0 &&
+									!libraryCodesLoading
+								"
+								class="library-codes-empty"
+							>
+								{{
+									'listUsers.noLibraryCodesFound'
+										| translate
+								}}
+							</div>
+						</ng-container>
+					</mat-select>
+				</mat-form-field>
+
+				<button
+					mat-icon-button
+					*ngIf="(libraryCodeControl.value?.length || 0) > 0"
+					(click)="clearLibraryCodes()"
+					class="clear-library-filter"
+					[matTooltip]="'listUsers.clearFilter' | translate"
+				>
+					<mat-icon>filter_list_off</mat-icon>
+				</button>
+			</div>
+		</div>
+
+		<!-- Summary bar -->
+		<div
+			class="list-summary"
+			*ngIf="!vm.loading && !vm.error && vm.total"
+		>
+			<ng-container *ngIf="isFiltered() && vm.filtered; else unfiltered">
+				{{ 'listUsers.summaryFiltered' | translate: {
+					filteredEduIds: vm.filtered.eduIdAccounts,
+					totalEduIds: vm.total.eduIdAccounts,
+					filteredLinks: vm.filtered.staffLinks,
+					totalLinks: vm.total.staffLinks
+				} }}
+			</ng-container>
+			<ng-template #unfiltered>
+				{{ 'listUsers.summary' | translate: {
+					eduIds: vm.total.eduIdAccounts,
+					links: vm.total.staffLinks
+				} }}
+			</ng-template>
+		</div>
+
+		<!-- Content area -->
+		<div class="groups-container">
+			<!-- Loading state -->
+			<div *ngIf="vm.loading" class="state-message">
+				<mat-spinner diameter="24"></mat-spinner>
+				<span>{{ 'listUsers.loadingLinks' | translate }}</span>
+			</div>
+
+			<!-- Error state -->
+			<div *ngIf="vm.error" class="state-message error">
+				<mat-icon>error_outline</mat-icon>
+				<span>{{ 'listUsers.loadError' | translate }}</span>
+				<button mat-stroked-button (click)="onRetry()">
+					{{ 'listUsers.retry' | translate }}
+				</button>
+			</div>
+
+			<!-- Groups list -->
+			<ng-container *ngIf="!vm.loading && !vm.error">
+				<div
+					*ngIf="vm.groups.length > 0; else emptyState"
+					class="groups-list"
+				>
+					<div
+						*ngFor="
+							let group of vm.groups;
+							trackBy: trackByEduId
+						"
+						class="eduid-group"
+					>
+						<!-- edu-ID header row -->
+						<div
+							class="eduid-header"
+							tabindex="0"
+							role="button"
+							(click)="toggleGroup(group.eduIdPersonalId)"
+							(keydown.enter)="toggleGroup(group.eduIdPersonalId)"
+							(keydown.space)="toggleGroup(group.eduIdPersonalId); $event.preventDefault()"
+						>
+							<app-user-type-chip
+								[userType]="'eduid'"
+							></app-user-type-chip>
+							<span class="eduid-id">{{
+								group.eduIdPersonalId
+							}}</span>
+							<span class="staff-count">{{ group.staffLinks.length }}</span>
+							<mat-icon class="expand-icon" [class.collapsed]="isGroupCollapsed(group.eduIdPersonalId)">
+								expand_more
+							</mat-icon>
+						</div>
+
+						<!-- Staff rows nested under edu-ID -->
+						<ng-container *ngIf="!isGroupCollapsed(group.eduIdPersonalId)">
+						<div
+							*ngFor="
+								let link of group.staffLinks;
+								trackBy: trackByLinkId
+							"
+							class="staff-row"
+							[class.disabled-link]="!isEffectivelyEnabled(link)"
+						>
+							<mat-slide-toggle
+								[checked]="isEffectivelyEnabled(link)"
+								[disabled]="isToggling(link.id) || isUnlinking(link.id)"
+								(change)="
+									onToggleChange(link, $event.checked)
+								"
+								color="primary"
+							></mat-slide-toggle>
+
+							<div class="staff-info">
+								<span class="staff-id">{{
+									link.almaPrimaryId
+								}}</span>
+								<span class="staff-name"
+									>{{ link.givenName }}
+									{{ link.surname }}</span
+								>
+							</div>
+
+							<div
+								class="library-codes"
+								*ngIf="link.libraryCodes.length"
+								[matTooltip]="link.libraryCodes.join('\n')"
+								matTooltipClass="library-codes-tooltip"
+							>
+								<mat-icon class="library-icon"
+									>apartment</mat-icon
+								>
+								<ng-container
+									*ngIf="
+										link.libraryCodes.length <=
+											INLINE_CODE_THRESHOLD;
+										else codesBadge
+									"
+								>
+									<span class="codes">{{
+										link.libraryCodes.join(', ')
+									}}</span>
+								</ng-container>
+								<ng-template #codesBadge>
+									<span class="codes-count">
+										{{ link.libraryCodes.length }}
+									</span>
+								</ng-template>
+							</div>
+
+							<button
+								mat-icon-button
+								class="unlink-button"
+								[disabled]="isUnlinking(link.id) || isToggling(link.id)"
+								(click)="onUnlink(link)"
+								[matTooltip]="'listUsers.unlink' | translate"
+							>
+								<mat-icon *ngIf="!isUnlinking(link.id)">link_off</mat-icon>
+								<mat-spinner
+									*ngIf="isUnlinking(link.id)"
+									diameter="16"
+									class="button-spinner"
+								></mat-spinner>
+							</button>
+						</div>
+						</ng-container>
+					</div>
+				</div>
+
+				<!-- Empty state -->
+				<ng-template #emptyState>
+					<div class="state-message empty">
+						<mat-icon>{{
+							searchControl.value
+								? 'search_off'
+								: 'info_outline'
+						}}</mat-icon>
+						<span>{{
+							searchControl.value
+								? ('listUsers.noLinksFound' | translate)
+								: ('listUsers.noLinksYet' | translate)
+						}}</span>
+					</div>
+				</ng-template>
+			</ng-container>
+		</div>
+	</ng-container>
+</div>

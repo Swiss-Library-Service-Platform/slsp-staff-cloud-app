@@ -1,0 +1,10 @@
+<span
+	class="chip"
+	[ngClass]="userType === 'staff' ? 'chip-staff' : 'chip-eduid'"
+>
+	{{
+		userType === 'staff'
+			? ('link.chipStaff' | translate)
+			: ('link.chipEduId' | translate)
+	}}
+</span>

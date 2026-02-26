@@ -1,0 +1,98 @@
+{
+	"Auth": {
+		"Loading": "Checking authorization...",
+		"UnauthorizedTitle": "Access Denied",
+		"UnauthorizedMessage": "This app requires the User Manager role.\nIf you need access, contact SLSP Support.",
+		"ErrorTitle": "Service Unavailable",
+		"ErrorMessage": "The service is currently unavailable.\nPlease try again later."
+	},
+	"tabs": {
+		"linkAccounts": "Link",
+		"listUsers": "Users",
+		"groups": "Groups"
+	},
+	"general": {
+		"comingSoon": "Coming soon"
+	},
+	"error": {
+		"restApiError": "REST API error: {{0}}"
+	},
+	"link": {
+		"panelStaffLabel": "Alma Staff Account",
+		"panelEduIdLabel": "Switch edu-ID Account",
+		"selectStaffPlaceholder": "Select a staff user...",
+		"selectEduIdPlaceholder": "Select an edu-ID user...",
+		"linkAccountsButton": "Link accounts",
+		"searchPlaceholder": "Search users across Alma",
+		"filterAll": "All",
+		"filterStaff": "Staff",
+		"filterEduId": "edu-ID",
+		"noUsersFound": "No users found",
+		"noEntities": "No users selected in Alma",
+		"chipStaff": "Staff",
+		"chipEduId": "edu-ID",
+		"loadMore": "Load more",
+		"loadingUsers": "Loading users...",
+		"searchError": "Search failed",
+		"retry": "Retry",
+		"success": "Accounts linked successfully",
+		"selectStaffShort": "Select staff...",
+		"selectEduIdShort": "Select edu-ID...",
+		"linkedToStaff": "Linked to Staff",
+		"linkedToEduId": "Linked to edu-ID"
+	},
+	"errors": {
+		"LINK_NOT_FOUND": "The link was not found",
+		"PRIMARY_ID_DOMAIN_NOT_ALLOWED": "The domain \"{{domain}}\" is not allowed for this institution",
+		"INSTITUTIONAL_ID_FORMAT_INVALID": "Invalid institutional ID format (expected: {{expectedFormat}})",
+		"STAFF_USER_NOT_IN_IZ": "User \"{{almaPrimaryId}}\" was not found in this institution",
+		"STAFF_USER_NOT_STAFF": "User \"{{almaPrimaryId}}\" is not a staff user",
+		"PERSONAL_ACCOUNT_DUPLICATE": "This staff user is already linked to an edu-ID",
+		"EDUID_ALREADY_LINKED_PERSONAL": "This edu-ID is already linked to another personal account",
+		"ALMA_USER_NOT_FOUND": "User \"{{userId}}\" was not found in Alma",
+		"ALMA_API_ERROR": "An error occurred while communicating with Alma",
+		"ALMA_CONNECTION_ERROR": "Could not connect to Alma. Please try again later",
+		"EDUID_ACCOUNT_NOT_FOUND": "Switch edu-ID account not found. Please verify the personal ID",
+		"EDUID_API_ERROR": "Switch edu-ID service returned an error. Please try again later",
+		"EDUID_CONNECTION_ERROR": "Cannot reach Switch edu-ID service. Please try again later",
+		"EDUID_SYNC_FAILED": "Switch edu-ID sync failed. Please try again later",
+		"VALIDATION_FAILED": "Invalid input: {{fields}}",
+		"RATE_LIMIT_EXCEEDED": "Too many requests. Please wait and try again",
+		"INTERNAL_ERROR": "An internal error occurred (Reference: {{errorId}})",
+		"UNAUTHORIZED": "You are not authorized to perform this action",
+		"UNKNOWN": "An unexpected error occurred",
+		"fields": {
+			"almaPrimaryId": "Staff user ID",
+			"eduIdPersonalId": "edu-ID",
+			"givenName": "Given name",
+			"surname": "Surname"
+		}
+	},
+	"dialog": {
+		"confirm": "Confirm",
+		"cancel": "Cancel"
+	},
+	"listUsers": {
+		"searchPlaceholder": "Search",
+		"allLibraries": "All Libraries",
+		"loadingLinks": "Loading users...",
+		"loadError": "Failed to load links",
+		"retry": "Retry",
+		"noLinksFound": "No links found",
+		"noLinksYet": "No linked accounts yet",
+		"unlink": "Unlink",
+		"toggleConfirmTitle": "Change Link Status",
+		"toggleEnableMessage": "Enable the link for {{almaPrimaryId}}?",
+		"toggleDisableMessage": "Disable the link for {{almaPrimaryId}}? The user will not be able to authenticate via edu-ID while disabled.",
+		"toggleSuccess": "Link status updated",
+		"unlinkConfirmTitle": "Remove Link",
+		"unlinkConfirmMessage": "Permanently remove the link for {{almaPrimaryId}}? This action cannot be undone.",
+		"unlinkSuccess": "Link removed successfully",
+		"searchLibraryCodes": "Search...",
+		"librariesSelected": "{{count}} selected",
+		"noLibraryCodesFound": "No library codes found",
+		"clearFilter": "Clear filter",
+		"summary": "{{eduIds}} edu-IDs · {{links}} links",
+		"summaryFiltered": "{{filteredEduIds}} of {{totalEduIds}} edu-IDs · {{filteredLinks}} of {{totalLinks}} links"
+	}
+}

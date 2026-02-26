@@ -1,0 +1,257 @@
+// Search & Filter Bar (base styles in main.scss)
+.search-filter-bar {
+	.search-row {
+		display: flex;
+		gap: 8px;
+		align-items: flex-start;
+	}
+
+	.search-field {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.library-select {
+		width: 160px;
+		flex-shrink: 0;
+	}
+
+	.clear-library-filter {
+		flex-shrink: 0;
+		width: 28px;
+		height: 28px;
+		line-height: 28px;
+
+		mat-icon {
+			font-size: 18px;
+			width: 18px;
+			height: 18px;
+			color: rgba(0, 0, 0, 0.5);
+		}
+	}
+}
+
+// Summary bar
+.list-summary {
+	font-size: 11px;
+	color: rgba(0, 0, 0, 0.45);
+	padding: 6px 16px;
+	border-bottom: 1px solid var(--border-color-light);
+}
+
+// Groups
+.groups-container {
+	padding: 0;
+}
+
+.groups-list {
+	padding: 0;
+}
+
+.eduid-group {
+	margin-bottom: 8px;
+
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+// edu-ID header row
+.eduid-header {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 12px;
+	background-color: transparent;
+	border-left: 3px solid var(--color-eduid);
+	border-bottom: 1px solid var(--border-color-light);
+	cursor: pointer;
+	user-select: none;
+
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.02);
+	}
+
+	.eduid-id {
+		font-size: 12px;
+		font-weight: 400;
+		color: rgba(0, 0, 0, 0.55);
+		flex: 1;
+		min-width: 0;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.staff-count {
+		font-size: 11px;
+		font-weight: 500;
+		color: rgba(0, 0, 0, 0.45);
+		background-color: rgba(0, 0, 0, 0.06);
+		border-radius: 8px;
+		padding: 1px 6px;
+		flex-shrink: 0;
+		line-height: 1.4;
+	}
+
+	.expand-icon {
+		font-size: 18px;
+		width: 18px;
+		height: 18px;
+		color: rgba(0, 0, 0, 0.4);
+		transition: transform 0.15s ease;
+		flex-shrink: 0;
+		margin-left: auto;
+
+		&.collapsed {
+			transform: rotate(-90deg);
+		}
+	}
+}
+
+// Staff row
+.staff-row {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 7px 8px 7px 15px;
+	border-bottom: 1px solid var(--border-color-light);
+	background-color: white;
+	transition: opacity 0.15s ease;
+
+	&:hover {
+		background-color: rgba(0, 0, 0, 0.02);
+	}
+
+	&.disabled-link {
+		opacity: 0.55;
+
+		&:hover {
+			opacity: 0.7;
+		}
+	}
+
+	.staff-info {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+
+		.staff-id {
+			font-size: 13px;
+			font-weight: 500;
+			line-height: 1.3;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.staff-name {
+			font-size: 11px;
+			font-style: italic;
+			color: rgba(0, 0, 0, 0.5);
+			line-height: 1.2;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	}
+
+	.library-codes {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		flex-shrink: 1;
+		min-width: 0;
+		cursor: help;
+
+		.library-icon {
+			font-size: 16px;
+			width: 16px;
+			height: 16px;
+			color: rgba(0, 0, 0, 0.4);
+			flex-shrink: 0;
+		}
+
+		.codes {
+			font-size: 11px;
+			color: rgba(0, 0, 0, 0.5);
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+
+		.codes-count {
+			font-size: 11px;
+			color: rgba(0, 0, 0, 0.5);
+			white-space: nowrap;
+			border-bottom: 1px dotted rgba(0, 0, 0, 0.3);
+		}
+	}
+
+	.unlink-button {
+		flex-shrink: 0;
+		--mdc-icon-button-state-layer-size: 32px;
+		--mdc-icon-button-icon-size: 18px;
+		color: rgba(0, 0, 0, 0.3);
+		transition: color 0.15s ease;
+
+		&:hover:not(:disabled) {
+			color: var(--color-warn);
+		}
+
+		mat-icon {
+			font-size: 18px;
+			width: 18px;
+			height: 18px;
+		}
+
+		.button-spinner {
+			width: 16px;
+			height: 16px;
+
+			::ng-deep circle {
+				stroke: rgba(0, 0, 0, 0.4);
+			}
+		}
+	}
+
+	::ng-deep .mat-mdc-slide-toggle {
+		flex-shrink: 0;
+
+		// M3-style: colored track + white handle
+		--mdc-switch-selected-track-color: var(--color-staff);
+		--mdc-switch-selected-handle-color: #fff;
+		--mdc-switch-selected-icon-color: var(--color-staff);
+		--mdc-switch-selected-hover-track-color: var(--color-staff-dark);
+		--mdc-switch-selected-hover-handle-color: #fff;
+		--mdc-switch-selected-focus-track-color: var(--color-staff);
+		--mdc-switch-selected-focus-handle-color: #fff;
+		--mdc-switch-selected-pressed-track-color: var(--color-staff-dark);
+		--mdc-switch-selected-pressed-handle-color: #fff;
+	}
+}
+
+// State messages (loading, error, empty)
+.state-message {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding: 32px 16px;
+	gap: 12px;
+	color: rgba(0, 0, 0, 0.6);
+
+	mat-icon {
+		font-size: 48px;
+		width: 48px;
+		height: 48px;
+		color: rgba(0, 0, 0, 0.3);
+	}
+
+	&.error {
+		mat-icon {
+			color: var(--color-warn);
+		}
+	}
+}

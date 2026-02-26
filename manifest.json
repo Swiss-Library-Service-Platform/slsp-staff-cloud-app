@@ -1,0 +1,22 @@
+{
+   "id": "slsp-staff",
+   "title": "SLSP Staff",
+   "subtitle": "Managing Staff across SLSP Institutions",
+   "author": "SLSP",
+   "description": "Link Alma staff accounts with Switch edu-ID for MFA-compliant authentication. View and manage staff users and their edu-ID link status across your institution.",
+   "entities": [
+      "USER"
+   ],
+   "pages": {
+      "help": "https://github.com/Swiss-Library-Service-Platform/slsp-staff-cloud-app"
+   },
+   "license": "https://github.com/Swiss-Library-Service-Platform/slsp-staff-cloud-app/blob/main/LICENCE",
+   "contentSecurity": {
+      "connectSrc": [
+         "https://staff.swisscovery.network/"
+      ]
+   },
+   "relevantForInst": [
+      "41SLSP_HPH"
+   ]
+}

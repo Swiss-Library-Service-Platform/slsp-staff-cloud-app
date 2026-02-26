@@ -1,0 +1,195 @@
+<div class="link-accounts-container">
+	<!-- Single async pipe subscription for entire template -->
+	<ng-container *ngIf="vm$ | async as vm">
+		<!-- Link Selection Panel (sticky top) -->
+		<div class="link-selection-panel">
+			<div class="selection-row">
+				<!-- edu-ID slot -->
+				<div
+					class="selection-box eduid"
+					[class.filled]="vm.selection.eduid"
+				>
+					@if (vm.selection.eduid; as user) {
+						<app-user-type-chip
+							[userType]="'eduid'"
+						></app-user-type-chip>
+						<div class="selection-info">
+							<span class="selection-name">{{ user.fullName }}</span>
+							<span class="selection-id" [title]="user.primaryId">{{ user.primaryId }}</span>
+						</div>
+						<button
+							mat-icon-button
+							class="remove-btn"
+							(click)="clearSelection('eduid')"
+							aria-label="Remove"
+						>
+							<mat-icon>close</mat-icon>
+						</button>
+					} @else {
+						<span class="placeholder">{{
+							'link.selectEduIdShort' | translate
+						}}</span>
+					}
+				</div>
+
+				<!-- Connector -->
+				<div class="selection-connector">
+					<mat-icon>link</mat-icon>
+				</div>
+
+				<!-- Staff slot -->
+				<div
+					class="selection-box staff"
+					[class.filled]="vm.selection.staff"
+				>
+					@if (vm.selection.staff; as user) {
+						<app-user-type-chip
+							[userType]="'staff'"
+						></app-user-type-chip>
+						<div class="selection-info">
+							<span class="selection-name">{{ user.fullName }}</span>
+							<span class="selection-id" [title]="user.primaryId">{{ user.primaryId }}</span>
+						</div>
+						<button
+							mat-icon-button
+							class="remove-btn"
+							(click)="clearSelection('staff')"
+							aria-label="Remove"
+						>
+							<mat-icon>close</mat-icon>
+						</button>
+					} @else {
+						<span class="placeholder">{{
+							'link.selectStaffShort' | translate
+						}}</span>
+					}
+				</div>
+			</div>
+
+			<button
+				mat-flat-button
+				color="primary"
+				[disabled]="!vm.canLink || isLinking"
+				(click)="onLinkAccounts()"
+				class="link-button"
+			>
+				@if (isLinking) {
+					<mat-spinner diameter="16"></mat-spinner>
+				} @else {
+					<mat-icon>link</mat-icon>
+				}
+				{{ 'link.linkAccountsButton' | translate }}
+			</button>
+		</div>
+
+		<!-- Search & Filter Bar (sticky) -->
+		<div class="search-filter-bar">
+			<mat-form-field appearance="outline" class="search-field">
+				<mat-icon matPrefix>search</mat-icon>
+				<input
+					matInput
+					[formControl]="searchControl"
+					[placeholder]="'link.searchPlaceholder' | translate"
+				/>
+				<button
+					mat-icon-button
+					matSuffix
+					*ngIf="searchControl.value"
+					(click)="clearSearch()"
+					aria-label="Clear search"
+				>
+					<mat-icon>clear</mat-icon>
+				</button>
+			</mat-form-field>
+
+			<mat-chip-listbox
+				[value]="vm.filterType"
+				(change)="onFilterChange($event)"
+				aria-label="Filter by user type"
+				class="filter-chips"
+			>
+				<mat-chip-option value="all">{{
+					'link.filterAll' | translate
+				}}</mat-chip-option>
+				<mat-chip-option value="staff">{{
+					'link.filterStaff' | translate
+				}}</mat-chip-option>
+				<mat-chip-option value="eduid">{{
+					'link.filterEduId' | translate
+				}}</mat-chip-option>
+			</mat-chip-listbox>
+		</div>
+
+		<!-- User List (scrollable) -->
+		<div class="user-list-container">
+			<!-- Loading state -->
+			<div *ngIf="vm.loading" class="state-message">
+				<mat-spinner diameter="24"></mat-spinner>
+				<span>{{ 'link.loadingUsers' | translate }}</span>
+			</div>
+
+			<!-- Error state -->
+			<div *ngIf="vm.error" class="state-message error">
+				<mat-icon>error_outline</mat-icon>
+				<span>{{ 'link.searchError' | translate }}</span>
+				<button mat-stroked-button (click)="onRetry()">
+					{{ 'link.retry' | translate }}
+				</button>
+			</div>
+
+			<!-- User list (only when not loading and no error) -->
+			<ng-container *ngIf="!vm.loading && !vm.error">
+				<mat-list *ngIf="vm.users.length > 0; else emptyState">
+					<mat-list-item
+						*ngFor="let user of vm.users; trackBy: trackByPrimaryId"
+						(click)="onUserClick(user)"
+						[class.selected]="isSelected(user)"
+						[class.linked]="!canSelectUser(user)"
+						[class.user-type-staff]="user.userType === 'staff'"
+						[class.user-type-eduid]="user.userType === 'eduid'"
+						class="user-list-item"
+					>
+						<div class="user-list-item-content">
+							<app-user-type-chip
+								[userType]="user.userType"
+							></app-user-type-chip>
+							<div class="user-info">
+								<span class="name">{{ user.fullName }}</span>
+								<span class="id" [title]="user.primaryId">{{ user.primaryId }}</span>
+							</div>
+							@if (user.isLinked) {
+								<app-link-status-tooltip [user]="user">
+									<span
+										class="link-status-badge"
+										[class.has-disabled]="user.hasDisabledLinks"
+										(click)="onViewLinks(user, $event)"
+									>
+										<mat-icon>join_inner</mat-icon>
+										<span class="link-count">{{ user.linkCount }}</span>
+									</span>
+								</app-link-status-tooltip>
+							}
+							<mat-icon *ngIf="isSelected(user)" class="selected-icon">
+								check_circle
+							</mat-icon>
+						</div>
+					</mat-list-item>
+				</mat-list>
+
+				<!-- Empty state -->
+				<ng-template #emptyState>
+					<div class="state-message empty">
+						<mat-icon>{{
+							searchControl.value ? 'search_off' : 'info_outline'
+						}}</mat-icon>
+						<span>{{
+							searchControl.value
+								? ('link.noUsersFound' | translate)
+								: ('link.noEntities' | translate)
+						}}</span>
+					</div>
+				</ng-template>
+			</ng-container>
+		</div>
+	</ng-container>
+</div>

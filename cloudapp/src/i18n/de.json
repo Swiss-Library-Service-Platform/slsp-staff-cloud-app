@@ -1,0 +1,98 @@
+{
+	"Auth": {
+		"Loading": "Berechtigung wird geprüft...",
+		"UnauthorizedTitle": "Zugriff verweigert",
+		"UnauthorizedMessage": "Diese App erfordert die Rolle User Manager.\nBei Bedarf kontaktieren Sie den SLSP Support.",
+		"ErrorTitle": "Dienst nicht verfügbar",
+		"ErrorMessage": "Der Dienst ist derzeit nicht verfügbar.\nBitte versuchen Sie es später erneut."
+	},
+	"tabs": {
+		"linkAccounts": "Verknüpfen",
+		"listUsers": "Benutzer",
+		"groups": "Gruppen"
+	},
+	"general": {
+		"comingSoon": "Demnächst verfügbar"
+	},
+	"error": {
+		"restApiError": "Fehler bei der REST-API: {{0}}"
+	},
+	"link": {
+		"panelStaffLabel": "Alma-Mitarbeiterkonto",
+		"panelEduIdLabel": "Switch edu-ID-Konto",
+		"selectStaffPlaceholder": "Mitarbeiter auswählen...",
+		"selectEduIdPlaceholder": "edu-ID-Benutzer auswählen...",
+		"linkAccountsButton": "Konten verknüpfen",
+		"searchPlaceholder": "Benutzer in Alma durchsuchen",
+		"filterAll": "Alle",
+		"filterStaff": "Mitarbeiter",
+		"filterEduId": "edu-ID",
+		"noUsersFound": "Keine Benutzer gefunden",
+		"noEntities": "Keine Benutzer in Alma ausgewählt",
+		"chipStaff": "Mitarbeiter",
+		"chipEduId": "edu-ID",
+		"loadMore": "Mehr laden",
+		"loadingUsers": "Benutzer werden geladen...",
+		"searchError": "Suche fehlgeschlagen",
+		"retry": "Erneut versuchen",
+		"success": "Konten erfolgreich verknüpft",
+		"selectStaffShort": "Mitarbeiter...",
+		"selectEduIdShort": "edu-ID...",
+		"linkedToStaff": "Verknüpft mit Mitarbeiter",
+		"linkedToEduId": "Verknüpft mit edu-ID"
+	},
+	"errors": {
+		"LINK_NOT_FOUND": "Die Verknüpfung wurde nicht gefunden",
+		"PRIMARY_ID_DOMAIN_NOT_ALLOWED": "Die Domain \"{{domain}}\" ist für diese Institution nicht erlaubt",
+		"INSTITUTIONAL_ID_FORMAT_INVALID": "Ungültiges Format der institutionellen ID (erwartet: {{expectedFormat}})",
+		"STAFF_USER_NOT_IN_IZ": "Benutzer \"{{almaPrimaryId}}\" wurde in dieser Institution nicht gefunden",
+		"STAFF_USER_NOT_STAFF": "Benutzer \"{{almaPrimaryId}}\" ist kein Mitarbeiter",
+		"PERSONAL_ACCOUNT_DUPLICATE": "Dieser Mitarbeiter ist bereits mit einer edu-ID verknüpft",
+		"EDUID_ALREADY_LINKED_PERSONAL": "Diese edu-ID ist bereits mit einem anderen persönlichen Konto verknüpft",
+		"ALMA_USER_NOT_FOUND": "Benutzer \"{{userId}}\" wurde in Alma nicht gefunden",
+		"ALMA_API_ERROR": "Bei der Kommunikation mit Alma ist ein Fehler aufgetreten",
+		"ALMA_CONNECTION_ERROR": "Verbindung zu Alma konnte nicht hergestellt werden. Bitte versuchen Sie es später erneut",
+		"EDUID_ACCOUNT_NOT_FOUND": "Switch edu-ID-Konto nicht gefunden. Bitte überprüfen Sie die persönliche ID",
+		"EDUID_API_ERROR": "Der Switch edu-ID-Dienst hat einen Fehler zurückgegeben. Bitte versuchen Sie es später erneut",
+		"EDUID_CONNECTION_ERROR": "Der Switch edu-ID-Dienst ist nicht erreichbar. Bitte versuchen Sie es später erneut",
+		"EDUID_SYNC_FAILED": "Switch edu-ID-Synchronisation fehlgeschlagen. Bitte versuchen Sie es später erneut",
+		"VALIDATION_FAILED": "Ungültige Eingabe: {{fields}}",
+		"RATE_LIMIT_EXCEEDED": "Zu viele Anfragen. Bitte warten Sie und versuchen Sie es erneut",
+		"INTERNAL_ERROR": "Ein interner Fehler ist aufgetreten (Referenz: {{errorId}})",
+		"UNAUTHORIZED": "Sie sind nicht berechtigt, diese Aktion auszuführen",
+		"UNKNOWN": "Ein unerwarteter Fehler ist aufgetreten",
+		"fields": {
+			"almaPrimaryId": "Mitarbeiter-ID",
+			"eduIdPersonalId": "edu-ID",
+			"givenName": "Vorname",
+			"surname": "Nachname"
+		}
+	},
+	"dialog": {
+		"confirm": "Bestätigen",
+		"cancel": "Abbrechen"
+	},
+	"listUsers": {
+		"searchPlaceholder": "Suchen",
+		"allLibraries": "Alle Bibliotheken",
+		"loadingLinks": "Benutzer werden geladen...",
+		"loadError": "Verknüpfungen konnten nicht geladen werden",
+		"retry": "Erneut versuchen",
+		"noLinksFound": "Keine Verknüpfungen gefunden",
+		"noLinksYet": "Noch keine verknüpften Konten",
+		"unlink": "Trennen",
+		"toggleConfirmTitle": "Verknüpfungsstatus ändern",
+		"toggleEnableMessage": "Verknüpfung für {{almaPrimaryId}} aktivieren?",
+		"toggleDisableMessage": "Verknüpfung für {{almaPrimaryId}} deaktivieren? Der Benutzer kann sich nicht mehr über edu-ID authentifizieren, solange sie deaktiviert ist.",
+		"toggleSuccess": "Verknüpfungsstatus aktualisiert",
+		"unlinkConfirmTitle": "Verknüpfung entfernen",
+		"unlinkConfirmMessage": "Verknüpfung für {{almaPrimaryId}} dauerhaft entfernen? Diese Aktion kann nicht rückgängig gemacht werden.",
+		"unlinkSuccess": "Verknüpfung erfolgreich entfernt",
+		"searchLibraryCodes": "Suchen...",
+		"librariesSelected": "{{count}} ausgewählt",
+		"noLibraryCodesFound": "Keine Bibliothekscodes gefunden",
+		"clearFilter": "Filter zurücksetzen",
+		"summary": "{{eduIds}} edu-IDs · {{links}} Verknüpfungen",
+		"summaryFiltered": "{{filteredEduIds}} von {{totalEduIds}} edu-IDs · {{filteredLinks}} von {{totalLinks}} Verknüpfungen"
+	}
+}

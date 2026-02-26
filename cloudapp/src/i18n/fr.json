@@ -1,0 +1,98 @@
+{
+	"Auth": {
+		"Loading": "Vérification de l'autorisation...",
+		"UnauthorizedTitle": "Accès refusé",
+		"UnauthorizedMessage": "Cette application nécessite le rôle User Manager.\nPour y accéder, contactez le support SLSP.",
+		"ErrorTitle": "Service indisponible",
+		"ErrorMessage": "Le service est actuellement indisponible.\nVeuillez réessayer plus tard."
+	},
+	"tabs": {
+		"linkAccounts": "Lier",
+		"listUsers": "Utilisateurs",
+		"groups": "Groupes"
+	},
+	"general": {
+		"comingSoon": "Bientôt disponible"
+	},
+	"error": {
+		"restApiError": "Erreur API REST : {{0}}"
+	},
+	"link": {
+		"panelStaffLabel": "Compte Alma du personnel",
+		"panelEduIdLabel": "Compte Switch edu-ID",
+		"selectStaffPlaceholder": "Sélectionner un membre du personnel...",
+		"selectEduIdPlaceholder": "Sélectionner un utilisateur edu-ID...",
+		"linkAccountsButton": "Lier les comptes",
+		"searchPlaceholder": "Rechercher parmi les utilisateurs Alma",
+		"filterAll": "Tous",
+		"filterStaff": "Personnel",
+		"filterEduId": "edu-ID",
+		"noUsersFound": "Aucun utilisateur trouvé",
+		"noEntities": "Aucun utilisateur sélectionné dans Alma",
+		"chipStaff": "Personnel",
+		"chipEduId": "edu-ID",
+		"loadMore": "Charger plus",
+		"loadingUsers": "Chargement des utilisateurs...",
+		"searchError": "Échec de la recherche",
+		"retry": "Réessayer",
+		"success": "Comptes liés avec succès",
+		"selectStaffShort": "Personnel...",
+		"selectEduIdShort": "edu-ID...",
+		"linkedToStaff": "Lié au personnel",
+		"linkedToEduId": "Lié à edu-ID"
+	},
+	"errors": {
+		"LINK_NOT_FOUND": "Le lien n'a pas été trouvé",
+		"PRIMARY_ID_DOMAIN_NOT_ALLOWED": "Le domaine \"{{domain}}\" n'est pas autorisé pour cette institution",
+		"INSTITUTIONAL_ID_FORMAT_INVALID": "Format d'identifiant institutionnel invalide (attendu : {{expectedFormat}})",
+		"STAFF_USER_NOT_IN_IZ": "L'utilisateur \"{{almaPrimaryId}}\" n'a pas été trouvé dans cette institution",
+		"STAFF_USER_NOT_STAFF": "L'utilisateur \"{{almaPrimaryId}}\" n'est pas un membre du personnel",
+		"PERSONAL_ACCOUNT_DUPLICATE": "Ce membre du personnel est déjà lié à un edu-ID",
+		"EDUID_ALREADY_LINKED_PERSONAL": "Cet edu-ID est déjà lié à un autre compte personnel",
+		"ALMA_USER_NOT_FOUND": "L'utilisateur \"{{userId}}\" n'a pas été trouvé dans Alma",
+		"ALMA_API_ERROR": "Une erreur est survenue lors de la communication avec Alma",
+		"ALMA_CONNECTION_ERROR": "Impossible de se connecter à Alma. Veuillez réessayer plus tard",
+		"EDUID_ACCOUNT_NOT_FOUND": "Compte Switch edu-ID introuvable. Veuillez vérifier l'identifiant personnel",
+		"EDUID_API_ERROR": "Le service Switch edu-ID a renvoyé une erreur. Veuillez réessayer plus tard",
+		"EDUID_CONNECTION_ERROR": "Le service Switch edu-ID est injoignable. Veuillez réessayer plus tard",
+		"EDUID_SYNC_FAILED": "La synchronisation Switch edu-ID a échoué. Veuillez réessayer plus tard",
+		"VALIDATION_FAILED": "Saisie invalide : {{fields}}",
+		"RATE_LIMIT_EXCEEDED": "Trop de requêtes. Veuillez patienter et réessayer",
+		"INTERNAL_ERROR": "Une erreur interne est survenue (Référence : {{errorId}})",
+		"UNAUTHORIZED": "Vous n'êtes pas autorisé à effectuer cette action",
+		"UNKNOWN": "Une erreur inattendue est survenue",
+		"fields": {
+			"almaPrimaryId": "ID du personnel",
+			"eduIdPersonalId": "edu-ID",
+			"givenName": "Prénom",
+			"surname": "Nom"
+		}
+	},
+	"dialog": {
+		"confirm": "Confirmer",
+		"cancel": "Annuler"
+	},
+	"listUsers": {
+		"searchPlaceholder": "Rechercher",
+		"allLibraries": "Toutes les bibliothèques",
+		"loadingLinks": "Chargement des utilisateurs...",
+		"loadError": "Impossible de charger les liens",
+		"retry": "Réessayer",
+		"noLinksFound": "Aucun lien trouvé",
+		"noLinksYet": "Aucun compte lié pour l'instant",
+		"unlink": "Dissocier",
+		"toggleConfirmTitle": "Modifier le statut du lien",
+		"toggleEnableMessage": "Activer le lien pour {{almaPrimaryId}} ?",
+		"toggleDisableMessage": "Désactiver le lien pour {{almaPrimaryId}} ? L'utilisateur ne pourra pas s'authentifier via edu-ID tant que le lien est désactivé.",
+		"toggleSuccess": "Statut du lien mis à jour",
+		"unlinkConfirmTitle": "Supprimer le lien",
+		"unlinkConfirmMessage": "Supprimer définitivement le lien pour {{almaPrimaryId}} ? Cette action est irréversible.",
+		"unlinkSuccess": "Lien supprimé avec succès",
+		"searchLibraryCodes": "Rechercher...",
+		"librariesSelected": "{{count}} sélectionnés",
+		"noLibraryCodesFound": "Aucun code de bibliothèque trouvé",
+		"clearFilter": "Effacer le filtre",
+		"summary": "{{eduIds}} edu-IDs · {{links}} liens",
+		"summaryFiltered": "{{filteredEduIds}} sur {{totalEduIds}} edu-IDs · {{filteredLinks}} sur {{totalLinks}} liens"
+	}
+}

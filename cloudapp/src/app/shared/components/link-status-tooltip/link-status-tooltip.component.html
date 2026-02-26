@@ -1,0 +1,23 @@
+<ng-content></ng-content>
+
+@if (isVisible) {
+	<div class="link-tooltip" [ngStyle]="tooltipStyle">
+		<div class="tooltip-label">
+			@if (user.userType === 'staff') {
+				{{ 'link.linkedToEduId' | translate }}
+			} @else {
+				{{ 'link.linkedToStaff' | translate }}
+			}
+			@if (user.linkCount && user.linkCount > 1) {
+				<span class="count">({{ user.linkCount }})</span>
+			}
+		</div>
+		@if (user.linkedTo?.length) {
+			<ul class="linked-list">
+				@for (id of user.linkedTo; track id) {
+					<li>{{ id }}</li>
+				}
+			</ul>
+		}
+	</div>
+}

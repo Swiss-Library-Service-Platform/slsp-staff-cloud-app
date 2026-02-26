@@ -1,0 +1,81 @@
+:host {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+// Tab styling - SLSP purple theme
+// Using ::ng-deep to style Angular Material components
+::ng-deep {
+	mat-tab-group,
+	.mat-mdc-tab-group {
+		display: flex;
+		flex-direction: column;
+		flex-grow: 1;
+		margin-top: 0.5rem;
+	}
+
+	.mat-mdc-tab-header {
+		background-color: var(--slsp-purple) !important;
+		border-radius: 5px;
+		border-bottom: none !important;
+		margin: 0 2px;
+		position: relative;
+		z-index: 100;
+	}
+
+	.mat-mdc-tab-labels {
+		background-color: var(--slsp-purple);
+		border-radius: 5px;
+		padding: 4px 0;
+	}
+
+	// Equal width tabs
+	.mat-mdc-tab {
+		flex: 1 1 0 !important;
+		min-width: 0 !important;
+	}
+
+	.mat-mdc-tab-label-container {
+		border-bottom: none !important;
+	}
+
+	// Tab label styling
+	.mat-mdc-tab:not(.mat-mdc-tab-disabled) .mdc-tab__text-label {
+		color: rgba(255, 255, 255, 0.8) !important;
+		display: flex;
+		align-items: center;
+		gap: 6px;
+
+		mat-icon {
+			font-size: 18px;
+			width: 18px;
+			height: 18px;
+		}
+	}
+
+	.mat-mdc-tab.mdc-tab--active .mdc-tab__text-label {
+		color: white !important;
+	}
+
+	// Pagination chevrons
+	.mat-mdc-tab-header-pagination-chevron {
+		border-color: white !important;
+	}
+
+	// Indicator - white bar floating inside purple
+	.mat-mdc-tab-group .mdc-tab-indicator {
+		top: -4px;
+	}
+
+	.mdc-tab-indicator__content--underline {
+		border-color: white !important;
+		border-radius: 3px;
+		border-width: 4px !important;
+		margin: 0 8px;
+	}
+
+	.mat-mdc-tab-body-wrapper {
+		flex-grow: 1;
+	}
+}

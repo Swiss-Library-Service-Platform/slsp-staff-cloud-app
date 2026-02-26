@@ -1,0 +1,247 @@
+@mixin themed-styles($theme, $typography) {
+	/* Include themed component mixins or theme dependent styles here */
+}
+
+@mixin global-styles {
+	:root {
+		// height: 100%;
+
+		// SLSP brand colors
+		--slsp-purple: rgba(78, 74, 153, 1);
+		--slsp-purple-light: #eeeef7;
+		--slsp-purple-transparent: rgba(78, 74, 153, 0.1);
+
+		// Font color
+		--color-font-primary: #5e5e5e;
+		// User type colors - Staff (blue)
+		--color-staff: #1976d2;
+		--color-staff-light: rgba(25, 118, 210, 0.06);
+
+		// User type colors - edu-ID (warm amber)
+		--color-eduid: #fca200;
+		--color-eduid-light: #ffa6001a;
+
+		// Status colors
+		--color-success: #4caf50;
+		--color-warn: #f44336;
+
+		// Derived shades
+		--color-staff-dark: #1565c0;
+
+		// Standard grey borders (Material Design)
+		--border-color: rgba(0, 0, 0, 0.12); // Standard borders/dividers
+		--border-color-light: rgba(0, 0, 0, 0.06); // Subtle separators
+		--border-color-strong: rgba(0, 0, 0, 0.2); // Emphasized borders
+	}
+
+	// Fix CloudApp SDK's broken Material text field vertical alignment
+	// SDK sets .mdc-text-field { padding: 2px 2px 0 } which breaks centering
+	.mdc-text-field {
+		align-items: center !important; // Override SDK's baseline alignment
+	}
+
+	// Add proper vertical padding to inputs for better spacing
+	.mdc-text-field__input {
+		padding-top: 8px !important;
+		padding-bottom: 8px !important;
+	}
+
+	// Standardize outline border colors (Material uses too dark by default)
+	.mdc-notched-outline__leading,
+	.mdc-notched-outline__notch,
+	.mdc-notched-outline__trailing {
+		border-color: var(--border-color) !important;
+	}
+
+	// Focused state - use primary color
+	.mdc-text-field--focused {
+		.mdc-notched-outline__leading,
+		.mdc-notched-outline__notch,
+		.mdc-notched-outline__trailing {
+			border-color: var(--slsp-purple) !important;
+		}
+	}
+
+	// Hide hint/error space below form fields (not used in this app)
+	.mat-mdc-form-field-subscript-wrapper {
+		display: none !important;
+	}
+
+	// Normalize outline form field heights
+	// (mat-select renders shorter than matInput by default)
+	.mat-mdc-text-field-wrapper {
+		height: 40px !important;
+	}
+
+	// Add horizontal padding to form fields for better spacing
+	.mat-mdc-form-field-infix {
+		padding-left: 8px !important;
+		padding-right: 8px !important;
+	}
+
+	// Adjust icon padding in form fields
+	.mat-mdc-form-field-icon-prefix {
+		padding: 0 !important;
+	}
+	.mat-mdc-form-field-icon-prefix > .mat-icon, .mat-mdc-form-field-icon-suffix > .mat-icon {
+		padding: 0 4px !important;
+	}
+
+	/*
+	body[class*='cloudapp-theme'] {
+		height: 100%;
+		margin: 0;
+		padding: 0;
+	}
+	*/
+
+	// Alert positioning - disabled: absolute positioning blocked clicks on main content
+	/*
+	cloudapp-alert {
+		font-weight: bold;
+		position: absolute;
+		top: 1rem;
+		width: 100%;
+		z-index: 99;
+	}
+	*/
+
+	// Form field styling
+	.mat-mdc-form-field.mat-focused {
+		.mat-mdc-floating-label {
+			color: var(--slsp-purple);
+		}
+	}
+
+	.mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
+		color: var(--slsp-purple);
+	}
+
+	// Primary button with SLSP purple
+	.mat-mdc-unelevated-button.mat-primary {
+		--mdc-filled-button-container-color: var(--slsp-purple);
+	}
+
+	// Alma-style raised button: border + bottom ridge
+	.mat-mdc-raised-button.mat-primary {
+		--mdc-protected-button-container-color: white;
+		--mdc-protected-button-label-text-color: var(--slsp-purple);
+		--mdc-protected-button-disabled-container-color: #f5f5f5;
+		--mdc-protected-button-disabled-label-text-color: rgba(0, 0, 0, 0.3);
+		border: 1px solid var(--border-color-strong);
+		border-bottom-width: 2px;
+		box-shadow: none !important;
+
+		&:disabled {
+			border-color: var(--border-color);
+		}
+	}
+
+	// Warn color for outlined (stroked) buttons — SDK theme doesn't define warn palette
+	.mat-mdc-outlined-button.mat-warn {
+		--mdc-outlined-button-label-text-color: var(--color-warn);
+		--mdc-outlined-button-outline-color: var(--color-warn);
+
+		&:hover {
+			background-color: #ffc0c04a;
+		}
+	}
+
+	// Shared filter bar (search + filter controls above content)
+	.search-filter-bar {
+		background-color: #fafafa;
+		padding: 12px 16px;
+		border-bottom: 1px solid var(--border-color);
+	}
+
+	// Loading shade
+	.loading-shade {
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background: var(--slsp-purple-transparent);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		z-index: 100;
+	}
+
+	// Library code dropdown panel (rendered in overlay, outside component scope)
+	.library-code-panel {
+		.library-search-header {
+			display: flex;
+			align-items: center;
+			padding: 8px 12px;
+			border-bottom: 1px solid var(--border-color);
+			position: sticky;
+			top: 0;
+			background: white;
+			z-index: 1;
+		}
+
+		.library-search-input {
+			flex: 1;
+			min-width: 0; // Allow input to shrink when vertical scrollbar appears
+			border: none;
+			outline: none;
+			font-size: 13px;
+			padding: 4px 0;
+			background: transparent;
+		}
+
+		.library-search-clear {
+			width: 24px;
+			height: 24px;
+			line-height: 24px;
+
+			mat-icon {
+				font-size: 16px;
+				width: 16px;
+				height: 16px;
+			}
+		}
+
+		.library-codes-loading,
+		.library-codes-empty {
+			display: flex;
+			justify-content: center;
+			padding: 16px;
+			color: rgba(0, 0, 0, 0.5);
+			font-size: 13px;
+		}
+
+		// Styled multi-select checkboxes
+		.mat-pseudo-checkbox {
+			width: 16px;
+			height: 16px;
+			border-radius: 3px;
+			border: 1.5px solid rgba(0, 0, 0, 0.35);
+			transition: background-color 0.1s ease, border-color 0.1s ease;
+		}
+
+		.mat-pseudo-checkbox-checked,
+		.mat-pseudo-checkbox-indeterminate {
+			background-color: var(--slsp-purple);
+			border-color: var(--slsp-purple);
+		}
+
+		// Compact option rows
+		.mat-mdc-option {
+			min-height: 36px;
+			font-size: 13px;
+
+			&:hover .mat-pseudo-checkbox:not(.mat-pseudo-checkbox-checked) {
+				border-color: var(--slsp-purple);
+			}
+		}
+	}
+
+	// Library codes tooltip (multiline, rendered in overlay)
+	.library-codes-tooltip {
+		white-space: pre-line;
+		max-width: 200px;
+		font-size: 12px;
+	}
+}

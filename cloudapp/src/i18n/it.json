@@ -1,0 +1,98 @@
+{
+	"Auth": {
+		"Loading": "Verifica dell'autorizzazione...",
+		"UnauthorizedTitle": "Accesso negato",
+		"UnauthorizedMessage": "Questa app richiede il ruolo User Manager.\nPer accedere, contatta il supporto SLSP.",
+		"ErrorTitle": "Servizio non disponibile",
+		"ErrorMessage": "Il servizio è attualmente non disponibile.\nRiprova più tardi."
+	},
+	"tabs": {
+		"linkAccounts": "Collega",
+		"listUsers": "Utenti",
+		"groups": "Gruppi"
+	},
+	"general": {
+		"comingSoon": "Prossimamente"
+	},
+	"error": {
+		"restApiError": "Errore API REST: {{0}}"
+	},
+	"link": {
+		"panelStaffLabel": "Account personale Alma",
+		"panelEduIdLabel": "Account Switch edu-ID",
+		"selectStaffPlaceholder": "Seleziona un membro del personale...",
+		"selectEduIdPlaceholder": "Seleziona un utente edu-ID...",
+		"linkAccountsButton": "Collega account",
+		"searchPlaceholder": "Cerca tra gli utenti Alma",
+		"filterAll": "Tutti",
+		"filterStaff": "Personale",
+		"filterEduId": "edu-ID",
+		"noUsersFound": "Nessun utente trovato",
+		"noEntities": "Nessun utente selezionato in Alma",
+		"chipStaff": "Personale",
+		"chipEduId": "edu-ID",
+		"loadMore": "Carica altri",
+		"loadingUsers": "Caricamento utenti...",
+		"searchError": "Ricerca fallita",
+		"retry": "Riprova",
+		"success": "Account collegati con successo",
+		"selectStaffShort": "Personale...",
+		"selectEduIdShort": "edu-ID...",
+		"linkedToStaff": "Collegato al personale",
+		"linkedToEduId": "Collegato a edu-ID"
+	},
+	"errors": {
+		"LINK_NOT_FOUND": "Il collegamento non è stato trovato",
+		"PRIMARY_ID_DOMAIN_NOT_ALLOWED": "Il dominio \"{{domain}}\" non è consentito per questa istituzione",
+		"INSTITUTIONAL_ID_FORMAT_INVALID": "Formato dell'ID istituzionale non valido (previsto: {{expectedFormat}})",
+		"STAFF_USER_NOT_IN_IZ": "L'utente \"{{almaPrimaryId}}\" non è stato trovato in questa istituzione",
+		"STAFF_USER_NOT_STAFF": "L'utente \"{{almaPrimaryId}}\" non è un membro del personale",
+		"PERSONAL_ACCOUNT_DUPLICATE": "Questo membro del personale è già collegato a un edu-ID",
+		"EDUID_ALREADY_LINKED_PERSONAL": "Questo edu-ID è già collegato a un altro account personale",
+		"ALMA_USER_NOT_FOUND": "L'utente \"{{userId}}\" non è stato trovato in Alma",
+		"ALMA_API_ERROR": "Si è verificato un errore durante la comunicazione con Alma",
+		"ALMA_CONNECTION_ERROR": "Impossibile connettersi ad Alma. Riprova più tardi",
+		"EDUID_ACCOUNT_NOT_FOUND": "Account Switch edu-ID non trovato. Verifica l'identificatore personale",
+		"EDUID_API_ERROR": "Il servizio Switch edu-ID ha restituito un errore. Riprova più tardi",
+		"EDUID_CONNECTION_ERROR": "Impossibile raggiungere il servizio Switch edu-ID. Riprova più tardi",
+		"EDUID_SYNC_FAILED": "Sincronizzazione Switch edu-ID non riuscita. Riprova più tardi",
+		"VALIDATION_FAILED": "Input non valido: {{fields}}",
+		"RATE_LIMIT_EXCEEDED": "Troppe richieste. Attendi e riprova",
+		"INTERNAL_ERROR": "Si è verificato un errore interno (Riferimento: {{errorId}})",
+		"UNAUTHORIZED": "Non sei autorizzato a eseguire questa azione",
+		"UNKNOWN": "Si è verificato un errore imprevisto",
+		"fields": {
+			"almaPrimaryId": "ID del personale",
+			"eduIdPersonalId": "edu-ID",
+			"givenName": "Nome",
+			"surname": "Cognome"
+		}
+	},
+	"dialog": {
+		"confirm": "Conferma",
+		"cancel": "Annulla"
+	},
+	"listUsers": {
+		"searchPlaceholder": "Cerca",
+		"allLibraries": "Tutte le biblioteche",
+		"loadingLinks": "Caricamento degli utenti...",
+		"loadError": "Impossibile caricare i collegamenti",
+		"retry": "Riprova",
+		"noLinksFound": "Nessun collegamento trovato",
+		"noLinksYet": "Nessun account collegato ancora",
+		"unlink": "Scollega",
+		"toggleConfirmTitle": "Modifica stato collegamento",
+		"toggleEnableMessage": "Attivare il collegamento per {{almaPrimaryId}}?",
+		"toggleDisableMessage": "Disattivare il collegamento per {{almaPrimaryId}}? L'utente non potrà autenticarsi tramite edu-ID finché il collegamento è disattivato.",
+		"toggleSuccess": "Stato del collegamento aggiornato",
+		"unlinkConfirmTitle": "Rimuovi collegamento",
+		"unlinkConfirmMessage": "Rimuovere definitivamente il collegamento per {{almaPrimaryId}}? Questa azione non può essere annullata.",
+		"unlinkSuccess": "Collegamento rimosso con successo",
+		"searchLibraryCodes": "Cerca...",
+		"librariesSelected": "{{count}} selezionati",
+		"noLibraryCodesFound": "Nessun codice biblioteca trovato",
+		"clearFilter": "Cancella filtro",
+		"summary": "{{eduIds}} edu-IDs · {{links}} collegamenti",
+		"summaryFiltered": "{{filteredEduIds}} di {{totalEduIds}} edu-IDs · {{filteredLinks}} di {{totalLinks}} collegamenti"
+	}
+}

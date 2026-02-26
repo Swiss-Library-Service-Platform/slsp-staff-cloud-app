@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch ECA Start",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/bin/bash",
+            "runtimeArgs": [
+                "-c",
+                "export NODE_OPTIONS=--openssl-legacy-provider && eca start"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}

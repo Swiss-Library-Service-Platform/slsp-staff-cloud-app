@@ -1,0 +1,40 @@
+name: Build CloudApp (eca build)
+
+on:
+  push:
+    branches: ['*']
+    paths:
+      [
+        'package.json',
+        'package-lock.json',
+        'cloudapp/src/**',
+        '.github/workflows/**',
+      ]
+  pull_request:
+    branches: ['*']
+    paths:
+      [
+        'package.json',
+        'package-lock.json',
+        'cloudapp/src/**',
+        '.github/workflows/**',
+      ]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Build CloudApp ('eca build')
+        run: |
+          npm ci
+          npm i -g @exlibris/exl-cloudapp-cli
+          eca build
