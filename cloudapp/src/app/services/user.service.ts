@@ -107,8 +107,8 @@ export class UserService {
 		offset = 0,
 		limit = 20
 	): Observable<{ users: LinkUser[]; hasMore: boolean }> {
-		const encodedTerm = encodeURIComponent(term);
-		const url = `/users?q=ALL~${encodedTerm}&limit=${limit}&offset=${offset}`;
+		const joined = term.trim().replace(/\s+/g, '+');
+		const url = `/users?q=ALL~${encodeURIComponent(joined)}&limit=${limit}&offset=${offset}`;
 
 		return this.restService.call(url).pipe(
 			catchError(() => of({ user: [], total_record_count: 0 } as UserSearchResponse)),
