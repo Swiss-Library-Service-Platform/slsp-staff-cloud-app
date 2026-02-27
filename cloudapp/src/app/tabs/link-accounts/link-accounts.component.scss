@@ -173,16 +173,8 @@
 		}
 
 		&.selected {
-			&.user-type-staff {
-				.selected-icon {
-					color: var(--color-staff);
-				}
-			}
-
-			&.user-type-eduid {
-				.selected-icon {
-					color: var(--color-eduid);
-				}
+			.selected-icon {
+					color: var(--color-success);
 			}
 		}
 
