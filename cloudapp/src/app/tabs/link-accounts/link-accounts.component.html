@@ -147,6 +147,7 @@
 						[class.linked]="!canSelectUser(user)"
 						[class.user-type-staff]="user.userType === 'staff'"
 						[class.user-type-eduid]="user.userType === 'eduid'"
+						[matTooltip]="isIncompatible(user) ? ('link.incompatible' | translate) : ''"
 						class="user-list-item"
 					>
 						<div class="user-list-item-content">

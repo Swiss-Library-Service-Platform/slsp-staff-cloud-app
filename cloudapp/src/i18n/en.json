@@ -41,7 +41,8 @@
 		"selectStaffShort": "Select staff...",
 		"selectEduIdShort": "Select edu-ID...",
 		"linkedToStaff": "Linked to Staff",
-		"linkedToEduId": "Linked to edu-ID"
+		"linkedToEduId": "Linked to edu-ID",
+		"incompatible": "Cannot link to selected personal account."
 	},
 	"errors": {
 		"LINK_NOT_FOUND": "The link was not found",
@@ -57,6 +58,7 @@
 		"EDUID_ACCOUNT_NOT_FOUND": "Switch edu-ID account not found. Please verify the personal ID",
 		"EDUID_API_ERROR": "Switch edu-ID service returned an error. Please try again later",
 		"EDUID_CONNECTION_ERROR": "Cannot reach Switch edu-ID service. Please try again later",
+		"EDUID_EMAIL_MISMATCH": "The email {{almaPrimaryId}} is not registered in edu-ID account {{eduIdPersonalId}}. For personal accounts, the Alma primary ID must match an email in the edu-ID account.",
 		"EDUID_SYNC_FAILED": "Switch edu-ID sync failed. Please try again later",
 		"VALIDATION_FAILED": "Invalid input: {{fields}}",
 		"RATE_LIMIT_EXCEEDED": "Too many requests. Please wait and try again",

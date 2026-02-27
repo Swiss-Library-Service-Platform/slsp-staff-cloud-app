@@ -27,6 +27,12 @@ interface AlmaUser {
 		value: string;
 		desc: string;
 	};
+	contact_info?: {
+		email?: Array<{
+			email_address: string;
+			preferred?: boolean;
+		}>;
+	};
 }
 
 interface UserSearchResponse {
@@ -157,12 +163,17 @@ export class UserService {
 			[user.first_name, user.last_name].filter(Boolean).join(' ') ||
 			user.primary_id;
 
+		const emails = (user.contact_info?.email ?? [])
+			.map((e) => e.email_address?.toLowerCase())
+			.filter((e): e is string => !!e);
+
 		return {
 			primaryId: user.primary_id,
 			fullName,
 			firstName: user.first_name,
 			lastName: user.last_name,
 			userType,
+			emails,
 		};
 	}
 

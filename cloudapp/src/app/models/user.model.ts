@@ -10,6 +10,7 @@ export interface LinkUser {
 	linkedTo?: string[];
 	linkCount?: number;
 	hasDisabledLinks?: boolean;
+	emails?: string[];
 }
 
 export interface LinkSelection {

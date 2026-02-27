@@ -41,7 +41,8 @@
 		"selectStaffShort": "Personnel...",
 		"selectEduIdShort": "edu-ID...",
 		"linkedToStaff": "Lié au personnel",
-		"linkedToEduId": "Lié à edu-ID"
+		"linkedToEduId": "Lié à edu-ID",
+		"incompatible": "Ne peut pas être lié au compte personnel sélectionné."
 	},
 	"errors": {
 		"LINK_NOT_FOUND": "Le lien n'a pas été trouvé",
@@ -57,6 +58,7 @@
 		"EDUID_ACCOUNT_NOT_FOUND": "Compte Switch edu-ID introuvable. Veuillez vérifier l'identifiant personnel",
 		"EDUID_API_ERROR": "Le service Switch edu-ID a renvoyé une erreur. Veuillez réessayer plus tard",
 		"EDUID_CONNECTION_ERROR": "Le service Switch edu-ID est injoignable. Veuillez réessayer plus tard",
+		"EDUID_EMAIL_MISMATCH": "L'e-mail {{almaPrimaryId}} n'est pas enregistrée dans le compte edu-ID {{eduIdPersonalId}}. Pour les comptes personnels, l'identifiant principal Alma doit correspondre à une adresse e-mail du compte edu-ID.",
 		"EDUID_SYNC_FAILED": "La synchronisation Switch edu-ID a échoué. Veuillez réessayer plus tard",
 		"VALIDATION_FAILED": "Saisie invalide : {{fields}}",
 		"RATE_LIMIT_EXCEEDED": "Trop de requêtes. Veuillez patienter et réessayer",

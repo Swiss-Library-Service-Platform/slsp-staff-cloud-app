@@ -41,7 +41,8 @@
 		"selectStaffShort": "Mitarbeiter...",
 		"selectEduIdShort": "edu-ID...",
 		"linkedToStaff": "Verknüpft mit Mitarbeiter",
-		"linkedToEduId": "Verknüpft mit edu-ID"
+		"linkedToEduId": "Verknüpft mit edu-ID",
+		"incompatible": "Kann nicht mit dem ausgewählten persönlichen Konto verknüpft werden."
 	},
 	"errors": {
 		"LINK_NOT_FOUND": "Die Verknüpfung wurde nicht gefunden",
@@ -57,6 +58,7 @@
 		"EDUID_ACCOUNT_NOT_FOUND": "Switch edu-ID-Konto nicht gefunden. Bitte überprüfen Sie die persönliche ID",
 		"EDUID_API_ERROR": "Der Switch edu-ID-Dienst hat einen Fehler zurückgegeben. Bitte versuchen Sie es später erneut",
 		"EDUID_CONNECTION_ERROR": "Der Switch edu-ID-Dienst ist nicht erreichbar. Bitte versuchen Sie es später erneut",
+		"EDUID_EMAIL_MISMATCH": "Die E-Mail {{almaPrimaryId}} ist nicht im edu-ID-Konto {{eduIdPersonalId}} registriert. Bei persönlichen Konten muss die Alma-Primär-ID mit einer E-Mail im edu-ID-Konto übereinstimmen.",
 		"EDUID_SYNC_FAILED": "Switch edu-ID-Synchronisation fehlgeschlagen. Bitte versuchen Sie es später erneut",
 		"VALIDATION_FAILED": "Ungültige Eingabe: {{fields}}",
 		"RATE_LIMIT_EXCEEDED": "Zu viele Anfragen. Bitte warten Sie und versuchen Sie es erneut",

@@ -211,10 +211,43 @@ export class LinkAccountsComponent implements OnInit {
 
 	/**
 	 * Check if a user can be selected for linking.
-	 * Staff users can only have 1 link, edu-ID users can have multiple.
+	 * Considers existing links AND compatibility with current selection.
 	 */
 	public canSelectUser(user: LinkUser): boolean {
-		return user.userType === 'eduid' || (user.linkCount ?? 0) === 0;
+		// Staff with existing links can't be selected
+		if (user.userType === 'staff' && (user.linkCount ?? 0) > 0) {
+			return false;
+		}
+
+		const sel = this.selectionSnapshot;
+
+		// When edu-ID selected, check staff compatibility
+		if (sel.eduid && !sel.staff && user.userType === 'staff') {
+			if (this.isPersonalAccount(user.primaryId)) {
+				return sel.eduid.emails?.includes(user.primaryId.toLowerCase()) ?? false;
+			}
+			return true; // institutional always OK
+		}
+
+		// When staff selected, check edu-ID compatibility
+		if (sel.staff && !sel.eduid && user.userType === 'eduid') {
+			if (this.isPersonalAccount(sel.staff.primaryId)) {
+				return user.emails?.includes(sel.staff.primaryId.toLowerCase()) ?? false;
+			}
+			return true; // institutional staff → all edu-ID OK
+		}
+
+		return true;
+	}
+
+	/**
+	 * Check if user is disabled due to incompatibility (not due to existing links).
+	 */
+	public isIncompatible(user: LinkUser): boolean {
+		if (user.userType === 'staff' && (user.linkCount ?? 0) > 0) {
+			return false;
+		}
+		return !this.canSelectUser(user);
 	}
 
 	/**
@@ -316,19 +349,23 @@ export class LinkAccountsComponent implements OnInit {
 			this.filterType$,
 			this.selection$,
 		]).pipe(
-			map(([fetchState, filterType, selection]) => ({
-				users:
+			map(([fetchState, filterType, selection]) => {
+				const filtered =
 					filterType === 'all'
 						? fetchState.users
 						: fetchState.users.filter(
 								(u: LinkUser) => u.userType === filterType
-							),
-				loading: fetchState.loading,
-				error: fetchState.error,
-				filterType,
-				selection,
-				canLink: selection.staff !== null && selection.eduid !== null,
-			})),
+							);
+
+				return {
+					users: filtered,
+					loading: fetchState.loading,
+					error: fetchState.error,
+					filterType,
+					selection,
+					canLink: selection.staff !== null && selection.eduid !== null,
+				};
+			}),
 			distinctUntilChanged(
 				(a, b) =>
 					a.loading === b.loading &&
@@ -354,6 +391,14 @@ export class LinkAccountsComponent implements OnInit {
 			.subscribe((value) => {
 				this.searchTerm$.next(value || '');
 			});
+	}
+
+	/**
+	 * Check if a primary ID is a personal account (email format with dot in domain).
+	 * Personal: john.doe@ethz.ch — Institutional: SERVICE_DESK@ETH
+	 */
+	private isPersonalAccount(primaryId: string): boolean {
+		return /^[^@]+@[^@]+\.[^@]+$/.test(primaryId);
 	}
 
 	/**
