@@ -23,7 +23,7 @@ export class AuthService {
 
 	/**
 	 * Check if the current user is authorized to use the app.
-	 * Calls backend /api/auth/me with Alma JWT token.
+	 * Calls backend /api/cloudapp/auth/me with Alma JWT token.
 	 *
 	 * Returns:
 	 * - { status: 'authorized', info } - User is allowed
@@ -31,7 +31,7 @@ export class AuthService {
 	 * - { status: 'error', message } - Network/server error
 	 */
 	public checkAuth(): Observable<AuthResult> {
-		return this.backend.get<AuthInfo>('/api/auth/me').pipe(
+		return this.backend.get<AuthInfo>('/api/cloudapp/auth/me').pipe(
 			map(
 				(info): AuthResult => ({
 					status: 'authorized',

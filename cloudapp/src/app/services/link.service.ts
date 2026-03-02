@@ -65,7 +65,7 @@ export interface LinksSummary {
 }
 
 /**
- * Response from GET /api/links — groups with aggregate counts.
+ * Response from GET /api/cloudapp/links — groups with aggregate counts.
  */
 export interface LinksListResponse {
 	groups: EduIdGroup[];
@@ -107,7 +107,7 @@ export class LinkService {
 	 * Used to populate the library code filter dropdown.
 	 */
 	public getLibraryCodes(): Observable<string[]> {
-		return this.backend.get<string[]>('/api/links/library-codes');
+		return this.backend.get<string[]>('/api/cloudapp/links/library-codes');
 	}
 
 	/**
@@ -129,7 +129,7 @@ export class LinkService {
 		const query = params.toString();
 
 		return this.backend.get<LinksListResponse>(
-			`/api/links${query ? '?' + query : ''}`
+			`/api/cloudapp/links${query ? '?' + query : ''}`
 		);
 	}
 
@@ -144,7 +144,7 @@ export class LinkService {
 			return of({ statuses: {} });
 		}
 
-		return this.backend.post<LinkStatusResponse>('/api/links/status', {
+		return this.backend.post<LinkStatusResponse>('/api/cloudapp/links/status', {
 			primaryIds,
 		});
 	}
@@ -170,7 +170,7 @@ export class LinkService {
 			surname,
 		};
 
-		return this.backend.post<LinkResponse>('/api/links', request).pipe(
+		return this.backend.post<LinkResponse>('/api/cloudapp/links', request).pipe(
 			map(
 				(link): CreateLinkResult => ({
 					status: 'success',
@@ -200,7 +200,7 @@ export class LinkService {
 		isEnabled: boolean
 	): Observable<ToggleLinkResult> {
 		return this.backend
-			.patch<LinkResponse>(`/api/links/${linkId}`, { isEnabled })
+			.patch<LinkResponse>(`/api/cloudapp/links/${linkId}`, { isEnabled })
 			.pipe(
 				map(
 					(link): ToggleLinkResult => ({
@@ -230,7 +230,7 @@ export class LinkService {
 	 * @param linkId - The link ID to delete
 	 */
 	public deleteLink(linkId: number): Observable<DeleteLinkResult> {
-		return this.backend.delete<void>(`/api/links/${linkId}`).pipe(
+		return this.backend.delete<void>(`/api/cloudapp/links/${linkId}`).pipe(
 			map(
 				(): DeleteLinkResult => ({
 					status: 'success',
