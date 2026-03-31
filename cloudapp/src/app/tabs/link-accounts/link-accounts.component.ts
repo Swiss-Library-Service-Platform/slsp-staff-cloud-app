@@ -214,8 +214,8 @@ export class LinkAccountsComponent implements OnInit {
 	 * Considers existing links AND compatibility with current selection.
 	 */
 	public canSelectUser(user: LinkUser): boolean {
-		// Staff with existing links can't be selected
-		if (user.userType === 'staff' && (user.linkCount ?? 0) > 0) {
+		// Personal staff with existing links can't be selected (max 1 link globally)
+		if (user.userType === 'staff' && this.isPersonalAccount(user.primaryId) && (user.linkCount ?? 0) > 0) {
 			return false;
 		}
 
@@ -244,7 +244,7 @@ export class LinkAccountsComponent implements OnInit {
 	 * Check if user is disabled due to incompatibility (not due to existing links).
 	 */
 	public isIncompatible(user: LinkUser): boolean {
-		if (user.userType === 'staff' && (user.linkCount ?? 0) > 0) {
+		if (user.userType === 'staff' && this.isPersonalAccount(user.primaryId) && (user.linkCount ?? 0) > 0) {
 			return false;
 		}
 		return !this.canSelectUser(user);
