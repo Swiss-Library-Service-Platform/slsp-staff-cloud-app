@@ -10,9 +10,14 @@
    "pages": {
       "help": "https://github.com/Swiss-Library-Service-Platform/slsp-staff-cloud-app"
    },
+   "icon": {
+      "type": "url",
+      "value": "/assets/logo_text_left.png"
+   },
    "license": "https://github.com/Swiss-Library-Service-Platform/slsp-staff-cloud-app/blob/main/LICENCE",
    "contentSecurity": {
       "connectSrc": [
+         "http://localhost:8080",
          "https://staff-test.swisscovery.network/"
       ]
    },
