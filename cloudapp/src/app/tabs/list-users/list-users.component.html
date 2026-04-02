@@ -167,9 +167,15 @@
 							<app-user-type-chip
 								[userType]="'eduid'"
 							></app-user-type-chip>
-							<span class="eduid-id">{{
-								group.eduIdPersonalId
-							}}</span>
+							<div class="eduid-info">
+								<span
+									*ngIf="group.eduIdGivenName || group.eduIdSurname"
+									class="eduid-name"
+								>{{ group.eduIdGivenName }} {{ group.eduIdSurname }}</span>
+								<span class="eduid-id">{{
+									group.eduIdPersonalId
+								}}</span>
+							</div>
 							<span class="staff-count">{{ group.staffLinks.length }}</span>
 							<mat-icon class="expand-icon" [class.collapsed]="isGroupCollapsed(group.eduIdPersonalId)">
 								expand_more

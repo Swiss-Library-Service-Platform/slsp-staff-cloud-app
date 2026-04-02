@@ -30,5 +30,7 @@ export interface StaffLink {
 
 export interface EduIdGroup {
 	eduIdPersonalId: string;
+	eduIdGivenName?: string;
+	eduIdSurname?: string;
 	staffLinks: StaffLink[];
 }

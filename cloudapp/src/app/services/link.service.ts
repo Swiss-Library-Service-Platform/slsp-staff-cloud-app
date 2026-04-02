@@ -29,6 +29,8 @@ export interface LinkResponse {
 	isEnabled: boolean;
 	givenName?: string;
 	surname?: string;
+	eduIdGivenName?: string;
+	eduIdSurname?: string;
 	izCode: string;
 	createdAt: string;
 }
