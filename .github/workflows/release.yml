@@ -1,0 +1,42 @@
+name: Auto Release
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get latest tag and bump patch version
+          LATEST_TAG=$(git tag --sort=-v:refname | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | head -1)
+          if [ -z "$LATEST_TAG" ]; then
+            NEXT_TAG="v0.9.0"
+          else
+            PATCH=$(echo "$LATEST_TAG" | sed 's/v.*\.\([0-9]*\)$/\1/')
+            PREFIX=$(echo "$LATEST_TAG" | sed 's/\.[0-9]*$//')
+            NEXT_TAG="${PREFIX}.$((PATCH + 1))"
+          fi
+
+          # Use first line of commit message as description
+          COMMIT_MSG=$(git log -1 --pretty=%s)
+
+          RELEASE_NAME="${NEXT_TAG} - Initial BETA version - ${COMMIT_MSG}"
+
+          echo "Creating release: ${RELEASE_NAME}"
+          gh release create "$NEXT_TAG" \
+            --title "$RELEASE_NAME" \
+            --notes "**${COMMIT_MSG}**" \
+            --latest
