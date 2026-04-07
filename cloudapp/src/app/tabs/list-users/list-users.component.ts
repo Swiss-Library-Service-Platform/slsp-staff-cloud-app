@@ -53,8 +53,6 @@ interface ListUsersViewModel {
 	styleUrls: ['./list-users.component.scss'],
 })
 export class ListUsersComponent implements OnInit {
-	public readonly INLINE_CODE_THRESHOLD = 3;
-
 	public searchControl = new FormControl('');
 	public libraryCodeControl = new FormControl<string[]>([]);
 	public libraryCodeSearch = new FormControl('');

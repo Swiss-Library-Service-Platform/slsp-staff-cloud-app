@@ -189,22 +189,9 @@
 								<mat-icon class="library-icon"
 									>apartment</mat-icon
 								>
-								<ng-container
-									*ngIf="
-										group.libraryCodes.length <=
-											INLINE_CODE_THRESHOLD;
-										else codesBadge
-									"
-								>
-									<span class="codes">{{
-										group.libraryCodes.join(', ')
-									}}</span>
-								</ng-container>
-								<ng-template #codesBadge>
-									<span class="codes-count">
-										{{ group.libraryCodes.length }}
-									</span>
-								</ng-template>
+								<span class="codes-count">
+									{{ group.libraryCodes.length }}
+								</span>
 							</div>
 							<span
 								class="link-count"
