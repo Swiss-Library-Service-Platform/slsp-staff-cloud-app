@@ -27,7 +27,7 @@ import {
 	tap,
 } from 'rxjs/operators';
 
-import { EduIdGroup, StaffLink } from '../../models/user.model';
+import { EduIdLink, StaffUserGroup } from '../../models/user.model';
 import { LinkService, LinksSummary } from '../../services/link.service';
 import { NavigationService } from '../../services/navigation.service';
 import {
@@ -40,7 +40,7 @@ import {
 } from '../../utils/backend-error';
 
 interface ListUsersViewModel {
-	groups: EduIdGroup[];
+	groups: StaffUserGroup[];
 	total: LinksSummary | null;
 	filtered: LinksSummary | null;
 	loading: boolean;
@@ -114,19 +114,18 @@ export class ListUsersComponent implements OnInit {
 		this.retry$.next();
 	}
 
-	public onToggleChange(staffLink: StaffLink, enabled: boolean): void {
-		this.toggleOverrides.set(staffLink.id, enabled);
+	public onToggleChange(link: EduIdLink, enabled: boolean): void {
+		this.toggleOverrides.set(link.linkId, enabled);
 
 		const messageKey = enabled
 			? 'listUsers.toggleEnableMessage'
 			: 'listUsers.toggleDisableMessage';
-
 		const dialogData: ConfirmDialogData = {
 			title: this.translateService.instant(
 				'listUsers.toggleConfirmTitle'
 			),
 			message: this.translateService.instant(messageKey, {
-				almaPrimaryId: staffLink.almaPrimaryId,
+				eduIdPersonalId: link.eduIdPersonalId,
 			}),
 			confirmLabel: this.translateService.instant('dialog.confirm'),
 			cancelLabel: this.translateService.instant('dialog.cancel'),
@@ -142,18 +141,18 @@ export class ListUsersComponent implements OnInit {
 			.pipe(
 				switchMap((confirmed) => {
 					if (!confirmed) {
-						this.toggleOverrides.delete(staffLink.id);
+						this.toggleOverrides.delete(link.linkId);
 
 						return EMPTY;
 					}
 
-					this.togglingLinks.add(staffLink.id);
+					this.togglingLinks.add(link.linkId);
 
 					return this.linkService
-						.toggleLink(staffLink.id, enabled)
+						.toggleLink(link.linkId, enabled)
 						.pipe(
 							finalize(() =>
-								this.togglingLinks.delete(staffLink.id)
+								this.togglingLinks.delete(link.linkId)
 							)
 						);
 				})
@@ -166,7 +165,7 @@ export class ListUsersComponent implements OnInit {
 						)
 					);
 				} else {
-					this.toggleOverrides.delete(staffLink.id);
+					this.toggleOverrides.delete(link.linkId);
 					this.alertService.error(
 						translateBackendError(
 							this.translateService,
@@ -177,32 +176,32 @@ export class ListUsersComponent implements OnInit {
 			});
 	}
 
-	public isEffectivelyEnabled(staffLink: StaffLink): boolean {
-		const override = this.toggleOverrides.get(staffLink.id);
+	public isEffectivelyEnabled(link: EduIdLink): boolean {
+		const override = this.toggleOverrides.get(link.linkId);
 
-		return override !== undefined ? override : staffLink.isEnabled;
+		return override !== undefined ? override : link.isEnabled;
 	}
 
-	public toggleGroup(eduIdPersonalId: string): void {
-		if (this.collapsedGroups.has(eduIdPersonalId)) {
-			this.collapsedGroups.delete(eduIdPersonalId);
+	public toggleGroup(almaPrimaryId: string): void {
+		if (this.collapsedGroups.has(almaPrimaryId)) {
+			this.collapsedGroups.delete(almaPrimaryId);
 		} else {
-			this.collapsedGroups.add(eduIdPersonalId);
+			this.collapsedGroups.add(almaPrimaryId);
 		}
 	}
 
-	public isGroupCollapsed(eduIdPersonalId: string): boolean {
-		return this.collapsedGroups.has(eduIdPersonalId);
+	public isGroupCollapsed(almaPrimaryId: string): boolean {
+		return this.collapsedGroups.has(almaPrimaryId);
 	}
 
-	public onUnlink(staffLink: StaffLink): void {
+	public onUnlink(link: EduIdLink): void {
 		const dialogData: ConfirmDialogData = {
 			title: this.translateService.instant(
 				'listUsers.unlinkConfirmTitle'
 			),
 			message: this.translateService.instant(
 				'listUsers.unlinkConfirmMessage',
-				{ almaPrimaryId: staffLink.almaPrimaryId }
+				{ eduIdPersonalId: link.eduIdPersonalId }
 			),
 			confirmLabel: this.translateService.instant('listUsers.unlink'),
 			cancelLabel: this.translateService.instant('dialog.cancel'),
@@ -222,13 +221,13 @@ export class ListUsersComponent implements OnInit {
 						return EMPTY;
 					}
 
-					this.unlinkingLinks.add(staffLink.id);
+					this.unlinkingLinks.add(link.linkId);
 
 					return this.linkService
-						.deleteLink(staffLink.id)
+						.deleteLink(link.linkId)
 						.pipe(
 							finalize(() =>
-								this.unlinkingLinks.delete(staffLink.id)
+								this.unlinkingLinks.delete(link.linkId)
 							)
 						);
 				})
@@ -270,12 +269,12 @@ export class ListUsersComponent implements OnInit {
 		return index;
 	}
 
-	public trackByEduId(_index: number, group: EduIdGroup): string {
-		return group.eduIdPersonalId;
+	public trackByStaffUser(_index: number, group: StaffUserGroup): string {
+		return group.almaPrimaryId;
 	}
 
-	public trackByLinkId(_index: number, link: StaffLink): number {
-		return link.id;
+	public trackByLinkId(_index: number, link: EduIdLink): number {
+		return link.linkId;
 	}
 
 	private setupViewModel(): void {

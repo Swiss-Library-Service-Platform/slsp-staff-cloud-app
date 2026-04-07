@@ -4,7 +4,7 @@ import { Observable, of, Subject } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 
 import { BackendError } from '../models/backend-error.model';
-import { EduIdGroup } from '../models/user.model';
+import { StaffUserGroup } from '../models/user.model';
 import { parseBackendError } from '../utils/backend-error';
 import { BackendHttpService } from './backend-http.service';
 
@@ -57,20 +57,21 @@ export type DeleteLinkResult =
 	| { status: 'error'; error: BackendError };
 
 /**
- * Aggregate link counts.
+ * Aggregate staff user and link counts.
  */
 export interface LinksSummary {
-	eduIdAccounts: number;
-	staffLinks: number;
+	staffUsers: number;
+	linkedUsers: number;
+	links: number;
 	enabledLinks: number;
 	disabledLinks: number;
 }
 
 /**
- * Response from GET /api/cloudapp/links — groups with aggregate counts.
+ * Response from GET /api/cloudapp/links — staff users grouped with their edu-ID links.
  */
 export interface LinksListResponse {
-	groups: EduIdGroup[];
+	groups: StaffUserGroup[];
 	total: LinksSummary;
 	filtered: LinksSummary;
 }
@@ -113,7 +114,7 @@ export class LinkService {
 	}
 
 	/**
-	 * Fetch all links grouped by edu-ID, with optional search and library code filter.
+	 * Fetch all staff users grouped with their edu-ID links, with optional search and library code filter.
 	 * Returns groups along with total and filtered aggregate counts.
 	 */
 	public getLinks(

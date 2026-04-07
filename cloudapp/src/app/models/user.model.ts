@@ -18,19 +18,19 @@ export interface LinkSelection {
 	eduid: LinkUser | null;
 }
 
-export interface StaffLink {
-	id: number;
-	almaPrimaryId: string;
-	givenName: string;
-	surname: string;
-	isEnabled: boolean;
-	libraryCodes: string[];
-	createdAt: string;
-}
-
-export interface EduIdGroup {
+export interface EduIdLink {
+	linkId: number;
 	eduIdPersonalId: string;
 	eduIdGivenName?: string;
 	eduIdSurname?: string;
-	staffLinks: StaffLink[];
+	isEnabled: boolean;
+	createdAt: string;
+}
+
+export interface StaffUserGroup {
+	almaPrimaryId: string;
+	givenName: string;
+	surname: string;
+	libraryCodes: string[];
+	eduIdLinks: EduIdLink[];
 }

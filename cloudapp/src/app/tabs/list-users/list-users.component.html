@@ -111,16 +111,19 @@
 		>
 			<ng-container *ngIf="isFiltered() && vm.filtered; else unfiltered">
 				{{ 'listUsers.summaryFiltered' | translate: {
-					filteredEduIds: vm.filtered.eduIdAccounts,
-					totalEduIds: vm.total.eduIdAccounts,
-					filteredLinks: vm.filtered.staffLinks,
-					totalLinks: vm.total.staffLinks
+					filteredStaff: vm.filtered.staffUsers,
+					totalStaff: vm.total.staffUsers,
+					filteredLinked: vm.filtered.linkedUsers,
+					totalLinked: vm.total.linkedUsers,
+					filteredLinks: vm.filtered.links,
+					totalLinks: vm.total.links
 				} }}
 			</ng-container>
 			<ng-template #unfiltered>
 				{{ 'listUsers.summary' | translate: {
-					eduIds: vm.total.eduIdAccounts,
-					links: vm.total.staffLinks
+					staff: vm.total.staffUsers,
+					linked: vm.total.linkedUsers,
+					links: vm.total.links
 				} }}
 			</ng-template>
 		</div>
@@ -151,70 +154,36 @@
 					<div
 						*ngFor="
 							let group of vm.groups;
-							trackBy: trackByEduId
+							trackBy: trackByStaffUser
 						"
-						class="eduid-group"
+						class="staff-group"
 					>
-						<!-- edu-ID header row -->
+						<!-- Staff user header row -->
 						<div
-							class="eduid-header"
+							class="staff-header"
+							[class.no-links]="group.eduIdLinks.length === 0"
 							tabindex="0"
 							role="button"
-							(click)="toggleGroup(group.eduIdPersonalId)"
-							(keydown.enter)="toggleGroup(group.eduIdPersonalId)"
-							(keydown.space)="toggleGroup(group.eduIdPersonalId); $event.preventDefault()"
+							(click)="toggleGroup(group.almaPrimaryId)"
+							(keydown.enter)="toggleGroup(group.almaPrimaryId)"
+							(keydown.space)="toggleGroup(group.almaPrimaryId); $event.preventDefault()"
 						>
 							<app-user-type-chip
-								[userType]="'eduid'"
+								[userType]="'staff'"
 							></app-user-type-chip>
-							<div class="eduid-info">
-								<span
-									*ngIf="group.eduIdGivenName || group.eduIdSurname"
-									class="eduid-name"
-								>{{ group.eduIdGivenName }} {{ group.eduIdSurname }}</span>
-								<span class="eduid-id">{{
-									group.eduIdPersonalId
-								}}</span>
-							</div>
-							<span class="staff-count">{{ group.staffLinks.length }}</span>
-							<mat-icon class="expand-icon" [class.collapsed]="isGroupCollapsed(group.eduIdPersonalId)">
-								expand_more
-							</mat-icon>
-						</div>
-
-						<!-- Staff rows nested under edu-ID -->
-						<ng-container *ngIf="!isGroupCollapsed(group.eduIdPersonalId)">
-						<div
-							*ngFor="
-								let link of group.staffLinks;
-								trackBy: trackByLinkId
-							"
-							class="staff-row"
-							[class.disabled-link]="!isEffectivelyEnabled(link)"
-						>
-							<mat-slide-toggle
-								[checked]="isEffectivelyEnabled(link)"
-								[disabled]="isToggling(link.id) || isUnlinking(link.id)"
-								(change)="
-									onToggleChange(link, $event.checked)
-								"
-								color="primary"
-							></mat-slide-toggle>
-
 							<div class="staff-info">
 								<span class="staff-id">{{
-									link.almaPrimaryId
+									group.almaPrimaryId
 								}}</span>
-								<span class="staff-name"
-									>{{ link.givenName }}
-									{{ link.surname }}</span
-								>
+								<span
+									*ngIf="group.givenName || group.surname"
+									class="staff-name"
+								>{{ group.givenName }} {{ group.surname }}</span>
 							</div>
-
 							<div
 								class="library-codes"
-								*ngIf="link.libraryCodes.length"
-								[matTooltip]="link.libraryCodes.join('\n')"
+								*ngIf="group.libraryCodes.length"
+								[matTooltip]="group.libraryCodes.join('\n')"
 								matTooltipClass="library-codes-tooltip"
 							>
 								<mat-icon class="library-icon"
@@ -222,37 +191,104 @@
 								>
 								<ng-container
 									*ngIf="
-										link.libraryCodes.length <=
+										group.libraryCodes.length <=
 											INLINE_CODE_THRESHOLD;
 										else codesBadge
 									"
 								>
 									<span class="codes">{{
-										link.libraryCodes.join(', ')
+										group.libraryCodes.join(', ')
 									}}</span>
 								</ng-container>
 								<ng-template #codesBadge>
 									<span class="codes-count">
-										{{ link.libraryCodes.length }}
+										{{ group.libraryCodes.length }}
 									</span>
 								</ng-template>
 							</div>
-
-							<button
-								mat-icon-button
-								class="unlink-button"
-								[disabled]="isUnlinking(link.id) || isToggling(link.id)"
-								(click)="onUnlink(link)"
-								[matTooltip]="'listUsers.unlink' | translate"
+							<span
+								class="link-count"
+								*ngIf="group.eduIdLinks.length > 0"
+							>{{ group.eduIdLinks.length }}</span>
+							<mat-icon
+								class="expand-icon"
+								[class.collapsed]="isGroupCollapsed(group.almaPrimaryId)"
+								*ngIf="group.eduIdLinks.length > 0"
 							>
-								<mat-icon *ngIf="!isUnlinking(link.id)">link_off</mat-icon>
-								<mat-spinner
-									*ngIf="isUnlinking(link.id)"
-									diameter="16"
-									class="button-spinner"
-								></mat-spinner>
-							</button>
+								expand_more
+							</mat-icon>
 						</div>
+
+						<!-- edu-ID link rows nested under staff user -->
+						<ng-container
+							*ngIf="
+								!isGroupCollapsed(group.almaPrimaryId) &&
+								group.eduIdLinks.length > 0
+							"
+						>
+							<div
+								*ngFor="
+									let link of group.eduIdLinks;
+									trackBy: trackByLinkId
+								"
+								class="eduid-link-row"
+								[class.disabled-link]="
+									!isEffectivelyEnabled(link)
+								"
+							>
+								<mat-slide-toggle
+									[checked]="isEffectivelyEnabled(link)"
+									[disabled]="
+										isToggling(link.linkId) ||
+										isUnlinking(link.linkId)
+									"
+									(change)="
+										onToggleChange(link, $event.checked)
+									"
+									color="primary"
+								></mat-slide-toggle>
+
+								<app-user-type-chip
+									[userType]="'eduid'"
+								></app-user-type-chip>
+								<div class="eduid-info">
+									<span
+										*ngIf="
+											link.eduIdGivenName ||
+											link.eduIdSurname
+										"
+										class="eduid-name"
+									>{{ link.eduIdGivenName }}
+										{{ link.eduIdSurname }}</span
+									>
+									<span class="eduid-id">{{
+										link.eduIdPersonalId
+									}}</span>
+								</div>
+
+								<button
+									mat-icon-button
+									class="unlink-button"
+									[disabled]="
+										isUnlinking(link.linkId) ||
+										isToggling(link.linkId)
+									"
+									(click)="onUnlink(link)"
+									[matTooltip]="
+										'listUsers.unlink' | translate
+									"
+								>
+									<mat-icon
+										*ngIf="!isUnlinking(link.linkId)"
+										>link_off</mat-icon
+									>
+									<mat-spinner
+										*ngIf="isUnlinking(link.linkId)"
+										diameter="16"
+										class="button-spinner"
+									></mat-spinner>
+								</button>
+							</div>
 						</ng-container>
 					</div>
 				</div>
@@ -267,8 +303,8 @@
 						}}</mat-icon>
 						<span>{{
 							searchControl.value
-								? ('listUsers.noLinksFound' | translate)
-								: ('listUsers.noLinksYet' | translate)
+								? ('listUsers.noResults' | translate)
+								: ('listUsers.noStaffUsers' | translate)
 						}}</span>
 					</div>
 				</ng-template>
