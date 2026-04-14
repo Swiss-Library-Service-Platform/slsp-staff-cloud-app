@@ -18,11 +18,13 @@
    "contentSecurity": {
       "connectSrc": [
          "http://localhost:8080",
-         "https://staff-test.swisscovery.network/"
+         "https://staff-test.swisscovery.network/",
+         "https://staff.swisscovery.network/"
       ]
    },
    "relevantForInst": [
       "41SLSP_NETWORK",
-      "41SLSP_HPH"
+      "41SLSP_HPH",
+      "41SLSP_UZB"
    ]
 }
