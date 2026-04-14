@@ -135,10 +135,6 @@ export class BackendHttpService {
 						? BackendHttpService.SANDBOX_URL
 						: BackendHttpService.PROD_URL;
 
-
-				// TODO: dont commit
-				this.baseUrl = BackendHttpService.PROD_URL;
-
 				return this.baseUrl;
 			})
 		);
