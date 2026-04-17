@@ -7,7 +7,7 @@
 
 /** Personal staff: email with at least one letter in local part */
 const PERSONAL_STAFF_PATTERN =
-	/^[a-zA-Z0-9._]*[a-zA-Z][a-zA-Z0-9._]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+	/^[a-zA-Z0-9._-]*[a-zA-Z][a-zA-Z0-9._-]*@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 /** Institutional staff: NP_ prefix */
 const INSTITUTIONAL_STAFF_PATTERN = /^NP_[A-Za-z0-9_]+$/;
 /** edu-ID: digits@eduid.ch or digits@test.eduid.ch */
