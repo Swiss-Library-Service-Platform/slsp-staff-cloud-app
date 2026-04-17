@@ -14,8 +14,6 @@ import { BackendHttpService } from './backend-http.service';
 export interface CreateLinkRequest {
 	almaPrimaryId: string;
 	eduIdPersonalId: string;
-	givenName?: string;
-	surname?: string;
 }
 
 /**
@@ -157,20 +155,14 @@ export class LinkService {
 	 *
 	 * @param staffPrimaryId - Alma staff user primary ID
 	 * @param eduIdPersonalId - edu-ID personal identifier (e.g., 123456@eduid.ch)
-	 * @param givenName - Optional given name for the staff user
-	 * @param surname - Optional surname for the staff user
 	 */
 	public createLink(
 		staffPrimaryId: string,
-		eduIdPersonalId: string,
-		givenName?: string,
-		surname?: string
+		eduIdPersonalId: string
 	): Observable<CreateLinkResult> {
 		const request: CreateLinkRequest = {
 			almaPrimaryId: staffPrimaryId,
 			eduIdPersonalId,
-			givenName,
-			surname,
 		};
 
 		return this.backend.post<LinkResponse>('/api/cloudapp/links', request).pipe(

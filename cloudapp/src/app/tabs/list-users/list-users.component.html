@@ -104,6 +104,18 @@
 			</div>
 		</div>
 
+		<!-- Filter toggles -->
+		<div class="filter-toggles" *ngIf="!vm.loading && !vm.error">
+			<mat-checkbox [formControl]="showUnlinkedControl">
+				{{ 'listUsers.showUnlinked' | translate }}
+				<span class="toggle-count" *ngIf="vm.unlinkedCount > 0">({{ vm.unlinkedCount }})</span>
+			</mat-checkbox>
+			<mat-checkbox [formControl]="showInvalidControl">
+				{{ 'listUsers.showInvalid' | translate }}
+				<span class="toggle-count" *ngIf="vm.invalidCount > 0">({{ vm.invalidCount }})</span>
+			</mat-checkbox>
+		</div>
+
 		<!-- Summary bar -->
 		<div
 			class="list-summary"
@@ -180,6 +192,11 @@
 									class="staff-name"
 								>{{ group.givenName }} {{ group.surname }}</span>
 							</div>
+							<mat-icon
+								*ngIf="isInvalidStaffId(group.almaPrimaryId)"
+								class="invalid-icon"
+								[matTooltip]="'validation.invalidStaffId' | translate"
+							>error_outline</mat-icon>
 							<div
 								class="library-codes"
 								*ngIf="group.libraryCodes.length"
@@ -252,6 +269,11 @@
 										link.eduIdPersonalId
 									}}</span>
 								</div>
+								<mat-icon
+									*ngIf="isInvalidEduIdId(link.eduIdPersonalId)"
+									class="invalid-icon"
+									[matTooltip]="'validation.invalidEduId' | translate"
+								>error_outline</mat-icon>
 
 								<button
 									mat-icon-button

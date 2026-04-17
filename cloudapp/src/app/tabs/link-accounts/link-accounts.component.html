@@ -147,7 +147,13 @@
 						[class.linked]="!canSelectUser(user)"
 						[class.user-type-staff]="user.userType === 'staff'"
 						[class.user-type-eduid]="user.userType === 'eduid'"
-						[matTooltip]="isIncompatible(user) ? ('link.incompatible' | translate) : ''"
+						[matTooltip]="isInvalidAccount(user)
+							? (user.userType === 'staff'
+								? ('validation.invalidStaffId' | translate)
+								: ('validation.invalidEduId' | translate))
+							: isIncompatible(user)
+								? ('link.incompatible' | translate)
+								: ''"
 						class="user-list-item"
 					>
 						<div class="user-list-item-content">
@@ -158,6 +164,10 @@
 								<span class="name">{{ user.fullName }}</span>
 								<span class="id" [title]="user.primaryId">{{ user.primaryId }}</span>
 							</div>
+							<mat-icon
+								*ngIf="isInvalidAccount(user)"
+								class="invalid-icon"
+							>error_outline</mat-icon>
 							@if (user.isLinked) {
 								<app-link-status-tooltip [user]="user">
 									<span

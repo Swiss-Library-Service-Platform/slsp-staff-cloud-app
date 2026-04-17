@@ -208,6 +208,14 @@
 				}
 			}
 
+			.invalid-icon {
+				flex-shrink: 0;
+				font-size: 18px;
+				width: 18px;
+				height: 18px;
+				color: var(--color-warn);
+			}
+
 			.selected-icon {
 				flex-shrink: 0;
 				font-size: 20px;

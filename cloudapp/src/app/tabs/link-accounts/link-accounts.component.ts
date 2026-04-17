@@ -28,6 +28,11 @@ import {
 import { LinkSelection, LinkUser, UserType } from '../../models/user.model';
 import { LinkService, LinkStatus } from '../../services/link.service';
 import { NavigationService } from '../../services/navigation.service';
+import {
+	isPersonalStaffAccount,
+	isValidEduIdId,
+	isValidStaffId,
+} from '../../utils/account-validation';
 import { translateBackendError } from '../../utils/backend-error';
 import { UserService } from '../../services/user.service';
 
@@ -162,9 +167,7 @@ export class LinkAccountsComponent implements OnInit {
 		this.linkService
 			.createLink(
 				selection.staff.primaryId,
-				selection.eduid.primaryId,
-				selection.staff.firstName,
-				selection.staff.lastName
+				selection.eduid.primaryId
 			)
 			.pipe(finalize(() => (this.isLinking = false)))
 			.subscribe((result) => {
@@ -210,10 +213,25 @@ export class LinkAccountsComponent implements OnInit {
 	}
 
 	/**
+	 * Check if a user's primary ID fails format validation.
+	 */
+	public isInvalidAccount(user: LinkUser): boolean {
+		if (user.userType === 'staff') {
+			return !isValidStaffId(user.primaryId);
+		}
+
+		return !isValidEduIdId(user.primaryId);
+	}
+
+	/**
 	 * Check if a user can be selected for linking.
-	 * Considers existing links AND compatibility with current selection.
+	 * Considers validation, existing links, AND compatibility with current selection.
 	 */
 	public canSelectUser(user: LinkUser): boolean {
+		if (this.isInvalidAccount(user)) {
+			return false;
+		}
+
 		// Personal staff with existing links can't be selected (max 1 link globally)
 		if (user.userType === 'staff' && this.isPersonalAccount(user.primaryId) && (user.linkCount ?? 0) > 0) {
 			return false;
@@ -226,6 +244,7 @@ export class LinkAccountsComponent implements OnInit {
 			if (this.isPersonalAccount(user.primaryId)) {
 				return sel.eduid.emails?.includes(user.primaryId.toLowerCase()) ?? false;
 			}
+
 			return true; // institutional always OK
 		}
 
@@ -234,6 +253,7 @@ export class LinkAccountsComponent implements OnInit {
 			if (this.isPersonalAccount(sel.staff.primaryId)) {
 				return user.emails?.includes(sel.staff.primaryId.toLowerCase()) ?? false;
 			}
+
 			return true; // institutional staff → all edu-ID OK
 		}
 
@@ -241,12 +261,17 @@ export class LinkAccountsComponent implements OnInit {
 	}
 
 	/**
-	 * Check if user is disabled due to incompatibility (not due to existing links).
+	 * Check if user is disabled due to incompatibility (not due to existing links or invalid format).
 	 */
 	public isIncompatible(user: LinkUser): boolean {
+		if (this.isInvalidAccount(user)) {
+			return false;
+		}
+
 		if (user.userType === 'staff' && this.isPersonalAccount(user.primaryId) && (user.linkCount ?? 0) > 0) {
 			return false;
 		}
+
 		return !this.canSelectUser(user);
 	}
 
@@ -394,11 +419,10 @@ export class LinkAccountsComponent implements OnInit {
 	}
 
 	/**
-	 * Check if a primary ID is a personal account (email format with dot in domain).
-	 * Personal: john.doe@ethz.ch — Institutional: SERVICE_DESK@ETH
+	 * Check if a primary ID is a personal staff account (email format).
 	 */
 	private isPersonalAccount(primaryId: string): boolean {
-		return /^[^@]+@[^@]+\.[^@]+$/.test(primaryId);
+		return isPersonalStaffAccount(primaryId);
 	}
 
 	/**

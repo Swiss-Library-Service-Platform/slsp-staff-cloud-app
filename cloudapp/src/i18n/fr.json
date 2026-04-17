@@ -73,6 +73,10 @@
 		"confirm": "Confirmer",
 		"cancel": "Annuler"
 	},
+	"validation": {
+		"invalidStaffId": "Ce format d'identifiant de compte n'est pas pris en charge pour la liaison. Attendu : e-mail (ex. john.doe@inst.ch) ou institutionnel (NP_*).",
+		"invalidEduId": "Ce format edu-ID n'est pas valide. Attendu : chiffres@eduid.ch."
+	},
 	"listUsers": {
 		"searchPlaceholder": "Rechercher",
 		"allLibraries": "Toutes les bibliothèques",
@@ -94,6 +98,8 @@
 		"noLibraryCodesFound": "Aucun code de bibliothèque trouvé",
 		"clearFilter": "Effacer le filtre",
 		"summary": "{{staff}} membres du personnel · {{linked}} liés · {{links}} liens",
-		"summaryFiltered": "{{filteredStaff}} sur {{totalStaff}} personnel · {{filteredLinked}} sur {{totalLinked}} liés · {{filteredLinks}} sur {{totalLinks}} liens"
+		"summaryFiltered": "{{filteredStaff}} sur {{totalStaff}} personnel · {{filteredLinked}} sur {{totalLinked}} liés · {{filteredLinks}} sur {{totalLinks}} liens",
+		"showUnlinked": "Afficher non liés",
+		"showInvalid": "Afficher invalides"
 	}
 }

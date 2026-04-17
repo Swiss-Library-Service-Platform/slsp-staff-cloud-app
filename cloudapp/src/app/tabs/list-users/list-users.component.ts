@@ -35,6 +35,10 @@ import {
 	ConfirmDialogData,
 } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import {
+	isValidEduIdId,
+	isValidStaffId,
+} from '../../utils/account-validation';
+import {
 	parseBackendError,
 	translateBackendError,
 } from '../../utils/backend-error';
@@ -45,6 +49,8 @@ interface ListUsersViewModel {
 	filtered: LinksSummary | null;
 	loading: boolean;
 	error: string | null;
+	unlinkedCount: number;
+	invalidCount: number;
 }
 
 @Component({
@@ -56,6 +62,8 @@ export class ListUsersComponent implements OnInit {
 	public searchControl = new FormControl('');
 	public libraryCodeControl = new FormControl<string[]>([]);
 	public libraryCodeSearch = new FormControl('');
+	public showUnlinkedControl = new FormControl(false);
+	public showInvalidControl = new FormControl(false);
 	public availableLibraryCodes$!: Observable<string[]>;
 	public filteredLibraryCodes$!: Observable<string[]>;
 	public libraryCodesLoading = true;
@@ -82,6 +90,14 @@ export class ListUsersComponent implements OnInit {
 		this.setupSearchSync();
 		this.setupLibraryCodeSync();
 		this.setupNavigationListener();
+	}
+
+	public isInvalidStaffId(almaPrimaryId: string): boolean {
+		return !isValidStaffId(almaPrimaryId);
+	}
+
+	public isInvalidEduIdId(eduIdPersonalId: string): boolean {
+		return !isValidEduIdId(eduIdPersonalId);
 	}
 
 	public clearSearch(): void {
@@ -310,8 +326,8 @@ export class ListUsersComponent implements OnInit {
 			retry$,
 			linksChanged$
 		).pipe(debounceTime(50));
-
-		this.vm$ = filterTrigger$.pipe(
+		// API fetch stream (server-side filtering)
+		const apiResult$ = filterTrigger$.pipe(
 			switchMap(({ search, libraryCodes, silent }) => {
 				if (!silent) {
 					this.toggleOverrides.clear();
@@ -319,13 +335,7 @@ export class ListUsersComponent implements OnInit {
 
 				const loading$ = silent
 					? EMPTY
-					: of<ListUsersViewModel>({
-							groups: [],
-							total: null,
-							filtered: null,
-							loading: true,
-							error: null,
-						});
+					: of<ListUsersViewModel | null>(null);
 
 				return concat(
 					loading$,
@@ -337,25 +347,18 @@ export class ListUsersComponent implements OnInit {
 								: undefined
 						)
 						.pipe(
-							map((response): ListUsersViewModel => {
+							map((response) => {
 								if (silent) {
 									this.toggleOverrides.clear();
 								}
 
-								return {
-									groups: response.groups,
-									total: response.total,
-									filtered: response.filtered,
-									loading: false,
-									error: null,
-								};
+								return response;
 							}),
 							catchError((err) =>
-								of<ListUsersViewModel>({
-									groups: [],
-									total: null,
-									filtered: null,
-									loading: false,
+								of({
+									groups: [] as StaffUserGroup[],
+									total: null as LinksSummary | null,
+									filtered: null as LinksSummary | null,
 									error: translateBackendError(
 										this.translateService,
 										parseBackendError(err)
@@ -366,6 +369,82 @@ export class ListUsersComponent implements OnInit {
 				);
 			}),
 			shareReplay(1)
+		);
+		// Client-side toggle states
+		const showUnlinked$ = this.showUnlinkedControl.valueChanges.pipe(
+			startWith(this.showUnlinkedControl.value)
+		);
+		const showInvalid$ = this.showInvalidControl.valueChanges.pipe(
+			startWith(this.showInvalidControl.value)
+		);
+
+		// Combine API result with client-side toggles
+		this.vm$ = combineLatest([
+			apiResult$,
+			showUnlinked$,
+			showInvalid$,
+		]).pipe(
+			map(([result, showUnlinked, showInvalid]): ListUsersViewModel => {
+				if (result === null) {
+					return {
+						groups: [],
+						total: null,
+						filtered: null,
+						loading: true,
+						error: null,
+						unlinkedCount: 0,
+						invalidCount: 0,
+					};
+				}
+
+				if ('error' in result && result.error) {
+					return {
+						groups: [],
+						total: null,
+						filtered: null,
+						loading: false,
+						error: result.error as string,
+						unlinkedCount: 0,
+						invalidCount: 0,
+					};
+				}
+
+				const allGroups = result.groups;
+				// Compute counts from unfiltered groups
+				const unlinkedCount = allGroups.filter(
+					(g) => g.eduIdLinks.length === 0
+				).length;
+				const invalidCount = allGroups.filter((g) =>
+					this.isInvalidStaffId(g.almaPrimaryId)
+				).length;
+				// Apply client-side filters
+				let visibleGroups = allGroups;
+
+				if (!showUnlinked) {
+					visibleGroups = visibleGroups.filter(
+						(g) => g.eduIdLinks.length > 0
+					);
+				}
+
+				if (!showInvalid) {
+					visibleGroups = visibleGroups.filter(
+						(g) => !this.isInvalidStaffId(g.almaPrimaryId)
+					);
+				}
+
+				return {
+					groups: visibleGroups,
+					total: 'total' in result ? result.total ?? null : null,
+					filtered:
+						'filtered' in result
+							? result.filtered ?? null
+							: null,
+					loading: false,
+					error: null,
+					unlinkedCount,
+					invalidCount,
+				};
+			})
 		);
 	}
 
