@@ -42,7 +42,11 @@
 		"selectEduIdShort": "Select edu-ID...",
 		"linkedToStaff": "Linked to Staff",
 		"linkedToEduId": "Linked to edu-ID",
-		"incompatible": "Cannot link to selected personal account."
+		"incompatible": "Cannot link to selected personal account.",
+		"startDate": "Start date",
+		"endDate": "End date",
+		"schedulingOptional": "Scheduling (optional)",
+		"clearDate": "Clear date"
 	},
 	"errors": {
 		"LINK_NOT_FOUND": "The link was not found.",
@@ -61,6 +65,7 @@
 		"RATE_LIMIT_EXCEEDED": "Too many requests. Please wait and try again.",
 		"INTERNAL_ERROR": "An internal error occurred (Reference: {{errorId}}).",
 		"UNAUTHORIZED": "You are not authorized to perform this action.",
+		"INVALID_DATE_RANGE": "Start date must be before or equal to end date.",
 		"UNKNOWN": "An unexpected error occurred.",
 		"fields": {
 			"almaPrimaryId": "Staff user ID",
@@ -99,7 +104,27 @@
 		"clearFilter": "Clear filter",
 		"summary": "{{staff}} staff users · {{linked}} linked · {{links}} links",
 		"summaryFiltered": "{{filteredStaff}} of {{totalStaff}} staff · {{filteredLinked}} of {{totalLinked}} linked · {{filteredLinks}} of {{totalLinks}} links",
-		"showUnlinked": "Show unlinked",
-		"showInvalid": "Show invalid"
+		"filterActivity": "Activity",
+		"filterActivityAll": "All",
+		"filterActivityActive": "Active",
+		"filterActivityInactive": "Inactive",
+		"filterLinked": "Linked",
+		"filterLinkedAll": "All",
+		"filterLinkedLinked": "Linked",
+		"filterLinkedUnlinked": "Unlinked",
+		"filterValidity": "Validity",
+		"filterValidityAll": "All",
+		"filterValidityValid": "Valid",
+		"filterValidityInvalid": "Invalid",
+		"noSchedule": "No schedule set",
+		"editScheduleTitle": "Edit Link Schedule",
+		"scheduleSave": "Save",
+		"scheduleUpdated": "Schedule updated",
+		"scheduleRange": "{{start}} – {{end}}",
+		"scheduleNoEnd": "From {{date}}",
+		"scheduleNoStart": "Until {{date}}",
+		"scheduleNotStarted": "Starts {{date}}",
+		"scheduleExpired": "Expired {{date}}",
+		"libraryCodesLabel": "Library Codes"
 	}
 }

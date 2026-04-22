@@ -42,7 +42,11 @@
 		"selectEduIdShort": "edu-ID...",
 		"linkedToStaff": "Lié au personnel",
 		"linkedToEduId": "Lié à edu-ID",
-		"incompatible": "Ne peut pas être lié au compte personnel sélectionné."
+		"incompatible": "Ne peut pas être lié au compte personnel sélectionné.",
+		"startDate": "Date de début",
+		"endDate": "Date de fin",
+		"schedulingOptional": "Planification (optionnel)",
+		"clearDate": "Effacer la date"
 	},
 	"errors": {
 		"LINK_NOT_FOUND": "Le lien n'a pas été trouvé.",
@@ -61,6 +65,7 @@
 		"RATE_LIMIT_EXCEEDED": "Trop de requêtes. Veuillez patienter et réessayer.",
 		"INTERNAL_ERROR": "Une erreur interne est survenue (Référence : {{errorId}}).",
 		"UNAUTHORIZED": "Vous n'êtes pas autorisé à effectuer cette action.",
+		"INVALID_DATE_RANGE": "La date de début doit être antérieure ou égale à la date de fin.",
 		"UNKNOWN": "Une erreur inattendue est survenue.",
 		"fields": {
 			"almaPrimaryId": "ID du personnel",
@@ -99,7 +104,27 @@
 		"clearFilter": "Effacer le filtre",
 		"summary": "{{staff}} membres du personnel · {{linked}} liés · {{links}} liens",
 		"summaryFiltered": "{{filteredStaff}} sur {{totalStaff}} personnel · {{filteredLinked}} sur {{totalLinked}} liés · {{filteredLinks}} sur {{totalLinks}} liens",
-		"showUnlinked": "Afficher non liés",
-		"showInvalid": "Afficher invalides"
+		"filterActivity": "Activité",
+		"filterActivityAll": "Tous",
+		"filterActivityActive": "Actif",
+		"filterActivityInactive": "Inactif",
+		"filterLinked": "Lié",
+		"filterLinkedAll": "Tous",
+		"filterLinkedLinked": "Liés",
+		"filterLinkedUnlinked": "Non liés",
+		"filterValidity": "Validité",
+		"filterValidityAll": "Tous",
+		"filterValidityValid": "Valide",
+		"filterValidityInvalid": "Invalide",
+		"noSchedule": "Aucun planning défini",
+		"editScheduleTitle": "Modifier le planning du lien",
+		"scheduleSave": "Enregistrer",
+		"scheduleUpdated": "Planning mis à jour",
+		"scheduleRange": "{{start}} – {{end}}",
+		"scheduleNoEnd": "À partir du {{date}}",
+		"scheduleNoStart": "Jusqu'au {{date}}",
+		"scheduleNotStarted": "Commence le {{date}}",
+		"scheduleExpired": "Expiré le {{date}}",
+		"libraryCodesLabel": "Codes de bibliothèque"
 	}
 }
