@@ -56,6 +56,25 @@ interface ListUsersViewModel {
 	error: string | null;
 }
 
+type ViewPreset = 'all' | 'linked' | 'invalid' | 'unlinked' | 'outOfSchedule' | 'disabled';
+
+const VIEW_PRESET_FILTERS: Record<
+	ViewPreset,
+	{
+		linked: 'all' | 'linked' | 'unlinked';
+		enabled: 'all' | 'enabled' | 'disabled';
+		schedule: 'all' | 'active' | 'inactive';
+		validity: 'all' | 'valid' | 'invalid';
+	}
+> = {
+	all: { linked: 'all', enabled: 'all', schedule: 'all', validity: 'all' },
+	linked: { linked: 'linked', enabled: 'all', schedule: 'all', validity: 'all' },
+	invalid: { linked: 'all', enabled: 'all', schedule: 'all', validity: 'invalid' },
+	unlinked: { linked: 'unlinked', enabled: 'all', schedule: 'all', validity: 'valid' },
+	outOfSchedule: { linked: 'linked', enabled: 'all', schedule: 'inactive', validity: 'all' },
+	disabled: { linked: 'linked', enabled: 'disabled', schedule: 'all', validity: 'all' },
+};
+
 @Component({
 	selector: 'app-list-users',
 	templateUrl: './list-users.component.html',
@@ -65,15 +84,7 @@ export class ListUsersComponent implements OnInit {
 	public searchControl = new FormControl('');
 	public libraryCodeControl = new FormControl<string[]>([]);
 	public libraryCodeSearch = new FormControl('');
-	public activityControl = new FormControl<'all' | 'active' | 'inactive'>(
-		'all'
-	);
-	public linkedControl = new FormControl<'all' | 'linked' | 'unlinked'>(
-		'linked'
-	);
-	public validityControl = new FormControl<'all' | 'valid' | 'invalid'>(
-		'valid'
-	);
+	public viewControl = new FormControl<ViewPreset>('linked');
 	public availableLibraryCodes$!: Observable<string[]>;
 	public filteredLibraryCodes$!: Observable<string[]>;
 	public libraryCodesLoading = true;
@@ -92,15 +103,7 @@ export class ListUsersComponent implements OnInit {
 
 	private searchTerm$ = new BehaviorSubject<string>('');
 	private selectedLibraryCodes$ = new BehaviorSubject<string[]>([]);
-	private selectedActivity$ = new BehaviorSubject<
-		'all' | 'active' | 'inactive'
-	>('all');
-	private selectedLinked$ = new BehaviorSubject<
-		'all' | 'linked' | 'unlinked'
-	>('linked');
-	private selectedValidity$ = new BehaviorSubject<
-		'all' | 'valid' | 'invalid'
-	>('valid');
+	private selectedView$ = new BehaviorSubject<ViewPreset>('linked');
 	private retry$ = new Subject<void>();
 
 	public ngOnInit(): void {
@@ -409,9 +412,7 @@ export class ListUsersComponent implements OnInit {
 		return !!(
 			this.searchControl.value ||
 			(this.libraryCodeControl.value?.length ?? 0) > 0 ||
-			this.activityControl.value !== 'all' ||
-			this.linkedControl.value !== 'all' ||
-			this.validityControl.value !== 'all'
+			this.viewControl.value !== 'all'
 		);
 	}
 
@@ -430,16 +431,19 @@ export class ListUsersComponent implements OnInit {
 	private getCurrentFilterParams(): {
 		search: string;
 		libraryCodes: string[];
-		activity: 'all' | 'active' | 'inactive';
+		enabled: 'all' | 'enabled' | 'disabled';
+		schedule: 'all' | 'active' | 'inactive';
 		linked: 'all' | 'linked' | 'unlinked';
 		validity: 'all' | 'valid' | 'invalid';
 	} {
+		const preset =
+			VIEW_PRESET_FILTERS[this.selectedView$.value] ??
+			VIEW_PRESET_FILTERS.linked;
+
 		return {
 			search: this.searchTerm$.value,
 			libraryCodes: this.selectedLibraryCodes$.value,
-			activity: this.selectedActivity$.value,
-			linked: this.selectedLinked$.value,
-			validity: this.selectedValidity$.value,
+			...preset,
 		};
 	}
 
@@ -453,9 +457,7 @@ export class ListUsersComponent implements OnInit {
 				(a, b) => JSON.stringify(a) === JSON.stringify(b)
 			)
 		);
-		const activity$ = this.selectedActivity$.pipe(distinctUntilChanged());
-		const linked$ = this.selectedLinked$.pipe(distinctUntilChanged());
-		const validity$ = this.selectedValidity$.pipe(distinctUntilChanged());
+		const view$ = this.selectedView$.pipe(distinctUntilChanged());
 		const retry$ = this.retry$.pipe(
 			map(() => ({ ...this.getCurrentFilterParams(), silent: false }))
 		);
@@ -463,23 +465,17 @@ export class ListUsersComponent implements OnInit {
 			map(() => ({ ...this.getCurrentFilterParams(), silent: true }))
 		);
 		const filterTrigger$ = merge(
-			combineLatest([
-				searchTerm$,
-				libraryCodes$,
-				activity$,
-				linked$,
-				validity$,
-			]).pipe(
-				map(
-					([search, libraryCodes, activity, linked, validity]) => ({
+			combineLatest([searchTerm$, libraryCodes$, view$]).pipe(
+				map(([search, libraryCodes, view]) => {
+					const preset = VIEW_PRESET_FILTERS[view];
+
+					return {
 						search,
 						libraryCodes,
-						activity,
-						linked,
-						validity,
+						...preset,
 						silent: false,
-					})
-				)
+					};
+				})
 			),
 			retry$,
 			linksChanged$
@@ -487,7 +483,7 @@ export class ListUsersComponent implements OnInit {
 
 		this.vm$ = filterTrigger$.pipe(
 			switchMap(
-				({ search, libraryCodes, activity, linked, validity, silent }) => {
+				({ search, libraryCodes, enabled, schedule, linked, validity, silent }) => {
 					if (!silent) {
 						this.toggleOverrides.clear();
 					}
@@ -504,7 +500,8 @@ export class ListUsersComponent implements OnInit {
 								libraryCodes: libraryCodes.length
 									? libraryCodes
 									: undefined,
-								activity,
+								enabled,
+								schedule,
 								linked,
 								validity,
 							})
@@ -610,20 +607,10 @@ export class ListUsersComponent implements OnInit {
 	}
 
 	private setupFilterSyncs(): void {
-		this.activityControl.valueChanges
+		this.viewControl.valueChanges
 			.pipe(takeUntilDestroyed(this.destroyRef))
 			.subscribe((value) =>
-				this.selectedActivity$.next(value || 'all')
-			);
-		this.linkedControl.valueChanges
-			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe((value) =>
-				this.selectedLinked$.next(value || 'linked')
-			);
-		this.validityControl.valueChanges
-			.pipe(takeUntilDestroyed(this.destroyRef))
-			.subscribe((value) =>
-				this.selectedValidity$.next(value || 'valid')
+				this.selectedView$.next(value || 'linked')
 			);
 	}
 

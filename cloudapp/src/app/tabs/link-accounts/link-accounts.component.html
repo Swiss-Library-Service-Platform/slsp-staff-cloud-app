@@ -67,48 +67,46 @@
 			</div>
 
 			<!-- Scheduling (optional) -->
-			@if (vm.canLink) {
-				<div class="scheduling-section">
-					<div
-					class="scheduling-header"
-					tabindex="0"
-					role="button"
-					(click)="showScheduling = !showScheduling"
-					(keydown.enter)="showScheduling = !showScheduling"
-					(keydown.space)="showScheduling = !showScheduling; $event.preventDefault()"
-				>
-						<mat-icon class="scheduling-toggle" [class.open]="showScheduling">
-							expand_more
-						</mat-icon>
-						<span class="scheduling-label">{{ 'link.schedulingOptional' | translate }}</span>
-						@if (startDateControl.value || endDateControl.value) {
-							<mat-icon class="scheduling-active-dot">circle</mat-icon>
-						}
-					</div>
-
-					@if (showScheduling) {
-						<div class="scheduling-fields">
-							<mat-form-field appearance="outline" class="date-field">
-								<mat-label>{{ 'link.startDate' | translate }}</mat-label>
-								<input matInput [matDatepicker]="createStart" [formControl]="startDateControl" />
-								<mat-datepicker-toggle matIconSuffix [for]="createStart"></mat-datepicker-toggle>
-								<mat-datepicker #createStart></mat-datepicker>
-							</mat-form-field>
-
-							<mat-form-field appearance="outline" class="date-field">
-								<mat-label>{{ 'link.endDate' | translate }}</mat-label>
-								<input matInput [matDatepicker]="createEnd" [formControl]="endDateControl" />
-								<mat-datepicker-toggle matIconSuffix [for]="createEnd"></mat-datepicker-toggle>
-								<mat-datepicker #createEnd></mat-datepicker>
-							</mat-form-field>
-						</div>
-
-						@if (!isDateRangeValid) {
-							<mat-error class="date-range-error">{{ 'errors.INVALID_DATE_RANGE' | translate }}</mat-error>
-						}
+			<div class="scheduling-section">
+				<div
+				class="scheduling-header"
+				tabindex="0"
+				role="button"
+				(click)="showScheduling = !showScheduling"
+				(keydown.enter)="showScheduling = !showScheduling"
+				(keydown.space)="showScheduling = !showScheduling; $event.preventDefault()"
+			>
+					<mat-icon class="scheduling-toggle" [class.open]="showScheduling">
+						expand_more
+					</mat-icon>
+					<span class="scheduling-label">{{ 'link.schedulingOptional' | translate }}</span>
+					@if (startDateControl.value || endDateControl.value) {
+						<mat-icon class="scheduling-active-dot">circle</mat-icon>
 					}
 				</div>
-			}
+
+				@if (showScheduling) {
+					<div class="scheduling-fields">
+						<mat-form-field appearance="outline" class="date-field">
+							<mat-label>{{ 'link.startDate' | translate }}</mat-label>
+							<input matInput [matDatepicker]="createStart" [formControl]="startDateControl" (focus)="createStart.open()" readonly />
+							<mat-datepicker-toggle matIconSuffix [for]="createStart"></mat-datepicker-toggle>
+							<mat-datepicker #createStart></mat-datepicker>
+						</mat-form-field>
+
+						<mat-form-field appearance="outline" class="date-field">
+							<mat-label>{{ 'link.endDate' | translate }}</mat-label>
+							<input matInput [matDatepicker]="createEnd" [formControl]="endDateControl" (focus)="createEnd.open()" readonly />
+							<mat-datepicker-toggle matIconSuffix [for]="createEnd"></mat-datepicker-toggle>
+							<mat-datepicker #createEnd></mat-datepicker>
+						</mat-form-field>
+					</div>
+
+					@if (!isDateRangeValid) {
+						<mat-error class="date-range-error">{{ 'errors.INVALID_DATE_RANGE' | translate }}</mat-error>
+					}
+				}
+			</div>
 
 			<button
 				mat-flat-button

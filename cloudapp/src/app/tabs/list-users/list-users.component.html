@@ -4,7 +4,6 @@
 		<div class="search-filter-bar">
 			<div class="search-row">
 				<mat-form-field appearance="outline" class="search-field">
-					<mat-icon matPrefix>search</mat-icon>
 					<input
 						matInput
 						[formControl]="searchControl"
@@ -23,7 +22,37 @@
 					</button>
 				</mat-form-field>
 
+				<mat-form-field appearance="outline" class="view-select" *ngIf="!vm.loading && !vm.error">
+					<mat-select [formControl]="viewControl" panelClass="view-select-panel">
+						<mat-option value="all">
+							{{ 'listUsers.viewAll' | translate }}
+							<span class="option-count" *ngIf="vm.total">({{ vm.total.staffUsers }})</span>
+						</mat-option>
+						<mat-option value="linked">
+							{{ 'listUsers.viewLinked' | translate }}
+							<span class="option-count" *ngIf="vm.total">({{ vm.total.linkedUsers }})</span>
+						</mat-option>
+						<mat-option value="invalid">
+							{{ 'listUsers.viewInvalid' | translate }}
+							<span class="option-count" *ngIf="vm.total">({{ vm.total.invalidUsers }})</span>
+						</mat-option>
+						<mat-option value="unlinked">
+							{{ 'listUsers.viewUnlinked' | translate }}
+							<span class="option-count" *ngIf="vm.total">({{ vm.total.staffUsers - vm.total.linkedUsers }})</span>
+						</mat-option>
+						<mat-option value="outOfSchedule">
+							{{ 'listUsers.viewOutOfSchedule' | translate }}
+							<span class="option-count" *ngIf="vm.total">({{ vm.total.outOfScheduleUsers }})</span>
+						</mat-option>
+						<mat-option value="disabled">
+							{{ 'listUsers.viewDisabled' | translate }}
+							<span class="option-count" *ngIf="vm.total">({{ vm.total.disabledUsers }})</span>
+						</mat-option>
+					</mat-select>
+				</mat-form-field>
+
 				<mat-form-field appearance="outline" class="library-select">
+					<mat-icon matPrefix>apartment</mat-icon>
 					<mat-select
 						[formControl]="libraryCodeControl"
 						multiple
@@ -102,45 +131,6 @@
 					<mat-icon>filter_list_off</mat-icon>
 				</button>
 			</div>
-		</div>
-
-		<!-- Filter dropdowns (server-side) -->
-		<div class="filter-row" *ngIf="!vm.loading && !vm.error">
-			<mat-form-field appearance="outline" class="filter-select">
-				<mat-select [formControl]="linkedControl">
-					<mat-option value="all">{{ 'listUsers.filterLinkedAll' | translate }}</mat-option>
-					<mat-option value="linked">
-						{{ 'listUsers.filterLinkedLinked' | translate }}
-						<span class="option-count" *ngIf="vm.total">({{ vm.total.linkedUsers }})</span>
-					</mat-option>
-					<mat-option value="unlinked">
-						{{ 'listUsers.filterLinkedUnlinked' | translate }}
-						<span class="option-count" *ngIf="vm.total">({{ vm.total.staffUsers - vm.total.linkedUsers }})</span>
-					</mat-option>
-				</mat-select>
-			</mat-form-field>
-
-			<mat-form-field appearance="outline" class="filter-select">
-				<mat-select [formControl]="activityControl">
-					<mat-option value="all">{{ 'listUsers.filterActivityAll' | translate }}</mat-option>
-					<mat-option value="active">
-						{{ 'listUsers.filterActivityActive' | translate }}
-						<span class="option-count" *ngIf="vm.total">({{ vm.total.activeLinks }})</span>
-					</mat-option>
-					<mat-option value="inactive">{{ 'listUsers.filterActivityInactive' | translate }}</mat-option>
-				</mat-select>
-			</mat-form-field>
-
-			<mat-form-field appearance="outline" class="filter-select">
-				<mat-select [formControl]="validityControl">
-					<mat-option value="all">{{ 'listUsers.filterValidityAll' | translate }}</mat-option>
-					<mat-option value="valid">{{ 'listUsers.filterValidityValid' | translate }}</mat-option>
-					<mat-option value="invalid">
-						{{ 'listUsers.filterValidityInvalid' | translate }}
-						<span class="option-count" *ngIf="vm.total">({{ vm.total.invalidUsers }})</span>
-					</mat-option>
-				</mat-select>
-			</mat-form-field>
 		</div>
 
 		<!-- Summary bar -->

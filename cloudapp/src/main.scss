@@ -67,10 +67,14 @@
 		display: none !important;
 	}
 
-	// Normalize outline form field heights
+	// Normalize outline form field heights and text size
 	// (mat-select renders shorter than matInput by default)
 	.mat-mdc-text-field-wrapper {
 		height: 40px !important;
+	}
+	.mat-mdc-form-field {
+		--mat-form-field-container-text-size: 13px;
+		--mat-select-trigger-text-size: 13px;
 	}
 
 	// Add horizontal padding to form fields for better spacing
@@ -85,6 +89,17 @@
 	}
 	.mat-mdc-form-field-icon-prefix > .mat-icon, .mat-mdc-form-field-icon-suffix > .mat-icon {
 		padding: 0 4px !important;
+	}
+
+	// Compact datepicker toggle icons
+	.mat-datepicker-toggle {
+		--mdc-icon-button-state-layer-size: 32px;
+		--mdc-icon-button-icon-size: 18px;
+
+		.mat-mdc-icon-button .mat-mdc-button-touch-target {
+			width: 32px;
+			height: 32px;
+		}
 	}
 
 	/*
@@ -235,6 +250,14 @@
 			&:hover .mat-pseudo-checkbox:not(.mat-pseudo-checkbox-checked) {
 				border-color: var(--slsp-purple);
 			}
+		}
+	}
+
+	// View preset dropdown panel (rendered in overlay, outside component scope)
+	.view-select-panel {
+		.mat-mdc-option {
+			min-height: 36px;
+			font-size: 11px;
 		}
 	}
 

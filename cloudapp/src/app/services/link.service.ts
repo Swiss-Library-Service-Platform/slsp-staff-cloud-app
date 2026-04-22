@@ -79,6 +79,8 @@ export interface LinksSummary {
 	disabledLinks: number;
 	activeLinks: number;
 	invalidUsers: number;
+	disabledUsers: number;
+	outOfScheduleUsers: number;
 }
 
 /**
@@ -118,7 +120,8 @@ export interface LinkStatusResponse {
 export interface LinksFilterParams {
 	search?: string;
 	libraryCodes?: string[];
-	activity?: 'all' | 'active' | 'inactive';
+	enabled?: 'all' | 'enabled' | 'disabled';
+	schedule?: 'all' | 'active' | 'inactive';
 	linked?: 'all' | 'linked' | 'unlinked';
 	validity?: 'all' | 'valid' | 'invalid';
 }
@@ -156,8 +159,10 @@ export class LinkService {
 			params.libraryCodes.forEach((code) => urlParams.append('libraryCode', code));
 		}
 
-		if (params.activity && params.activity !== 'all')
-			urlParams.set('activity', params.activity);
+		if (params.enabled && params.enabled !== 'all')
+			urlParams.set('enabled', params.enabled);
+		if (params.schedule && params.schedule !== 'all')
+			urlParams.set('schedule', params.schedule);
 		if (params.linked && params.linked !== 'all')
 			urlParams.set('linked', params.linked);
 		if (params.validity && params.validity !== 'all')

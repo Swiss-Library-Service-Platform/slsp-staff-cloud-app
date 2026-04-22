@@ -4,16 +4,31 @@
 		display: flex;
 		gap: 8px;
 		align-items: flex-start;
+
+		// Consistent compact font size for all form fields in the row
+		// matInput reads --mat-form-field-container-text-size
+		// mat-select reads --mat-select-trigger-text-size
+		::ng-deep .mat-mdc-form-field {
+			--mat-form-field-container-text-size: 11px;
+			--mat-select-trigger-text-size: 11px;
+		}
 	}
 
 	.search-field {
 		flex: 1;
-		min-width: 0;
+		min-width: 80px;
 	}
 
 	.library-select {
-		width: 160px;
+		width: 110px;
 		flex-shrink: 0;
+
+		::ng-deep .mat-mdc-form-field-icon-prefix > .mat-icon {
+			font-size: 16px;
+			width: 16px;
+			height: 16px;
+			color: rgba(0, 0, 0, 0.4);
+		}
 	}
 
 	.clear-library-filter {
@@ -31,25 +46,14 @@
 	}
 }
 
-// Filter dropdowns (server-side)
-.filter-row {
-	display: flex;
-	gap: 6px;
-	padding: 4px 16px;
-	border-bottom: 1px solid var(--border-color-light);
+// View preset dropdown (in search row)
+.search-filter-bar .view-select {
+	width: 120px;
+	flex-shrink: 0;
 
-	.filter-select {
-		flex: 1;
-		min-width: 0;
-
-		::ng-deep .mat-mdc-select-trigger {
-			font-size: 11px;
-		}
-
-		.option-count {
-			color: rgba(0, 0, 0, 0.35);
-			font-size: 11px;
-		}
+	.option-count {
+		color: rgba(0, 0, 0, 0.35);
+		font-size: 11px;
 	}
 }
 
