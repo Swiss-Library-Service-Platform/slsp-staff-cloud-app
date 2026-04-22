@@ -74,7 +74,7 @@
 		"cancel": "Cancel"
 	},
 	"validation": {
-		"invalidStaffId": "This staff account ID format is not supported for linking. Expected: email (e.g. john.doe@inst.ch) or institutional (NP_*).",
+		"invalidStaffId": "This staff account ID format is not supported for linking. Expected: email (e.g. john.doe@inst.ch) or non-personal (NP_*).",
 		"invalidEduId": "This edu-ID format is not valid. Expected: digits@eduid.ch."
 	},
 	"listUsers": {

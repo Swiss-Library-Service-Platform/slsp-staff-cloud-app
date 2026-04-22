@@ -74,7 +74,7 @@
 		"cancel": "Annuler"
 	},
 	"validation": {
-		"invalidStaffId": "Ce format d'identifiant de compte n'est pas pris en charge pour la liaison. Attendu : e-mail (ex. john.doe@inst.ch) ou institutionnel (NP_*).",
+		"invalidStaffId": "Ce format d'identifiant de compte n'est pas pris en charge pour la liaison. Attendu : e-mail (ex. john.doe@inst.ch) ou non-personal (NP_*).",
 		"invalidEduId": "Ce format edu-ID n'est pas valide. Attendu : chiffres@eduid.ch."
 	},
 	"listUsers": {
