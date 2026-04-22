@@ -1,0 +1,19 @@
+<ng-content></ng-content>
+
+@if (isVisible) {
+	<div
+		class="library-codes-tooltip"
+		(mouseenter)="onTooltipEnter()"
+		(mouseleave)="onTooltipLeave()"
+	>
+		<div class="tooltip-label">
+			{{ 'listUsers.libraryCodesLabel' | translate }}
+			<span class="count">({{ libraryCodes.length }})</span>
+		</div>
+		<ul class="codes-list">
+			@for (code of libraryCodes; track code) {
+				<li>{{ code }}</li>
+			}
+		</ul>
+	</div>
+}

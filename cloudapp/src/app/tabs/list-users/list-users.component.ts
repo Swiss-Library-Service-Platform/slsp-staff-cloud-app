@@ -35,6 +35,11 @@ import {
 	ConfirmDialogData,
 } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import {
+	EditScheduleDialogComponent,
+	EditScheduleDialogData,
+	EditScheduleDialogResult,
+} from '../../shared/components/edit-schedule-dialog/edit-schedule-dialog.component';
+import {
 	isValidEduIdId,
 	isValidStaffId,
 } from '../../utils/account-validation';
@@ -49,8 +54,6 @@ interface ListUsersViewModel {
 	filtered: LinksSummary | null;
 	loading: boolean;
 	error: string | null;
-	unlinkedCount: number;
-	invalidCount: number;
 }
 
 @Component({
@@ -62,8 +65,15 @@ export class ListUsersComponent implements OnInit {
 	public searchControl = new FormControl('');
 	public libraryCodeControl = new FormControl<string[]>([]);
 	public libraryCodeSearch = new FormControl('');
-	public showUnlinkedControl = new FormControl(false);
-	public showInvalidControl = new FormControl(false);
+	public activityControl = new FormControl<'all' | 'active' | 'inactive'>(
+		'all'
+	);
+	public linkedControl = new FormControl<'all' | 'linked' | 'unlinked'>(
+		'linked'
+	);
+	public validityControl = new FormControl<'all' | 'valid' | 'invalid'>(
+		'valid'
+	);
 	public availableLibraryCodes$!: Observable<string[]>;
 	public filteredLibraryCodes$!: Observable<string[]>;
 	public libraryCodesLoading = true;
@@ -82,6 +92,15 @@ export class ListUsersComponent implements OnInit {
 
 	private searchTerm$ = new BehaviorSubject<string>('');
 	private selectedLibraryCodes$ = new BehaviorSubject<string[]>([]);
+	private selectedActivity$ = new BehaviorSubject<
+		'all' | 'active' | 'inactive'
+	>('all');
+	private selectedLinked$ = new BehaviorSubject<
+		'all' | 'linked' | 'unlinked'
+	>('linked');
+	private selectedValidity$ = new BehaviorSubject<
+		'all' | 'valid' | 'invalid'
+	>('valid');
 	private retry$ = new Subject<void>();
 
 	public ngOnInit(): void {
@@ -89,6 +108,7 @@ export class ListUsersComponent implements OnInit {
 		this.setupViewModel();
 		this.setupSearchSync();
 		this.setupLibraryCodeSync();
+		this.setupFilterSyncs();
 		this.setupNavigationListener();
 	}
 
@@ -272,10 +292,126 @@ export class ListUsersComponent implements OnInit {
 		return this.unlinkingLinks.has(linkId);
 	}
 
+	public getScheduleTooltip(link: EduIdLink): string {
+		const today = new Date().toISOString().split('T')[0];
+
+		if (link.startDate && link.endDate) {
+			return this.translateService.instant('listUsers.scheduleRange', {
+				start: this.formatDate(link.startDate),
+				end: this.formatDate(link.endDate),
+			});
+		}
+
+		if (link.startDate && !link.endDate) {
+			if (link.startDate > today) {
+				return this.translateService.instant(
+					'listUsers.scheduleNotStarted',
+					{ date: this.formatDate(link.startDate) }
+				);
+			}
+
+			return this.translateService.instant('listUsers.scheduleNoEnd', {
+				date: this.formatDate(link.startDate),
+			});
+		}
+
+		if (!link.startDate && link.endDate) {
+			if (link.endDate < today) {
+				return this.translateService.instant(
+					'listUsers.scheduleExpired',
+					{ date: this.formatDate(link.endDate) }
+				);
+			}
+
+			return this.translateService.instant('listUsers.scheduleNoStart', {
+				date: this.formatDate(link.endDate),
+			});
+		}
+
+		return this.translateService.instant('listUsers.noSchedule');
+	}
+
+	public getScheduleIcon(link: EduIdLink): string {
+		if (!link.startDate && !link.endDate) {
+			return 'event_available';
+		}
+
+		return link.isActive ? 'event_available' : 'event_busy';
+	}
+
+	public onEditSchedule(
+		group: StaffUserGroup,
+		link: EduIdLink
+	): void {
+		const eduIdName = [link.eduIdGivenName, link.eduIdSurname]
+			.filter(Boolean)
+			.join(' ');
+		const dialogData: EditScheduleDialogData = {
+			staffId: group.almaPrimaryId,
+			eduIdName: eduIdName || link.eduIdPersonalId,
+			startDate: link.startDate,
+			endDate: link.endDate,
+		};
+
+		this.dialog
+			.open(EditScheduleDialogComponent, {
+				data: dialogData,
+				width: '350px',
+				autoFocus: false,
+			})
+			.afterClosed()
+			.pipe(
+				switchMap(
+					(result: EditScheduleDialogResult | undefined) => {
+						if (!result) return EMPTY;
+
+						if (
+							result.startDate === link.startDate &&
+							result.endDate === link.endDate
+						) {
+							return EMPTY;
+						}
+
+						this.togglingLinks.add(link.linkId);
+
+						return this.linkService
+							.updateLink(link.linkId, {
+								startDate: result.startDate,
+								endDate: result.endDate,
+							})
+							.pipe(
+								finalize(() =>
+									this.togglingLinks.delete(link.linkId)
+								)
+							);
+					}
+				)
+			)
+			.subscribe((result) => {
+				if (result.status === 'success') {
+					this.alertService.success(
+						this.translateService.instant(
+							'listUsers.scheduleUpdated'
+						)
+					);
+				} else {
+					this.alertService.error(
+						translateBackendError(
+							this.translateService,
+							result.error
+						)
+					);
+				}
+			});
+	}
+
 	public isFiltered(): boolean {
 		return !!(
 			this.searchControl.value ||
-			(this.libraryCodeControl.value?.length ?? 0) > 0
+			(this.libraryCodeControl.value?.length ?? 0) > 0 ||
+			this.activityControl.value !== 'all' ||
+			this.linkedControl.value !== 'all' ||
+			this.validityControl.value !== 'all'
 		);
 	}
 
@@ -291,6 +427,22 @@ export class ListUsersComponent implements OnInit {
 		return link.linkId;
 	}
 
+	private getCurrentFilterParams(): {
+		search: string;
+		libraryCodes: string[];
+		activity: 'all' | 'active' | 'inactive';
+		linked: 'all' | 'linked' | 'unlinked';
+		validity: 'all' | 'valid' | 'invalid';
+	} {
+		return {
+			search: this.searchTerm$.value,
+			libraryCodes: this.selectedLibraryCodes$.value,
+			activity: this.selectedActivity$.value,
+			linked: this.selectedLinked$.value,
+			validity: this.selectedValidity$.value,
+		};
+	}
+
 	private setupViewModel(): void {
 		const searchTerm$ = concat(
 			this.searchTerm$.pipe(take(1)),
@@ -301,90 +453,86 @@ export class ListUsersComponent implements OnInit {
 				(a, b) => JSON.stringify(a) === JSON.stringify(b)
 			)
 		);
+		const activity$ = this.selectedActivity$.pipe(distinctUntilChanged());
+		const linked$ = this.selectedLinked$.pipe(distinctUntilChanged());
+		const validity$ = this.selectedValidity$.pipe(distinctUntilChanged());
 		const retry$ = this.retry$.pipe(
-			map(() => ({
-				search: this.searchTerm$.value,
-				libraryCodes: this.selectedLibraryCodes$.value,
-				silent: false,
-			}))
+			map(() => ({ ...this.getCurrentFilterParams(), silent: false }))
 		);
 		const linksChanged$ = this.linkService.linksChanged$.pipe(
-			map(() => ({
-				search: this.searchTerm$.value,
-				libraryCodes: this.selectedLibraryCodes$.value,
-				silent: true,
-			}))
+			map(() => ({ ...this.getCurrentFilterParams(), silent: true }))
 		);
 		const filterTrigger$ = merge(
-			combineLatest([searchTerm$, libraryCodes$]).pipe(
-				map(([search, libraryCodes]) => ({
-					search,
-					libraryCodes,
-					silent: false,
-				}))
+			combineLatest([
+				searchTerm$,
+				libraryCodes$,
+				activity$,
+				linked$,
+				validity$,
+			]).pipe(
+				map(
+					([search, libraryCodes, activity, linked, validity]) => ({
+						search,
+						libraryCodes,
+						activity,
+						linked,
+						validity,
+						silent: false,
+					})
+				)
 			),
 			retry$,
 			linksChanged$
 		).pipe(debounceTime(50));
-		// API fetch stream (server-side filtering)
-		const apiResult$ = filterTrigger$.pipe(
-			switchMap(({ search, libraryCodes, silent }) => {
-				if (!silent) {
-					this.toggleOverrides.clear();
-				}
 
-				const loading$ = silent
-					? EMPTY
-					: of<ListUsersViewModel | null>(null);
+		this.vm$ = filterTrigger$.pipe(
+			switchMap(
+				({ search, libraryCodes, activity, linked, validity, silent }) => {
+					if (!silent) {
+						this.toggleOverrides.clear();
+					}
 
-				return concat(
-					loading$,
-					this.linkService
-						.getLinks(
-							search || undefined,
-							libraryCodes.length
-								? libraryCodes
-								: undefined
-						)
-						.pipe(
-							map((response) => {
-								if (silent) {
-									this.toggleOverrides.clear();
-								}
+					const loading$ = silent
+						? EMPTY
+						: of<ListUsersViewModel | null>(null);
 
-								return response;
-							}),
-							catchError((err) =>
-								of({
-									groups: [] as StaffUserGroup[],
-									total: null as LinksSummary | null,
-									filtered: null as LinksSummary | null,
-									error: translateBackendError(
-										this.translateService,
-										parseBackendError(err)
-									),
-								})
+					return concat(
+						loading$,
+						this.linkService
+							.getLinks({
+								search: search || undefined,
+								libraryCodes: libraryCodes.length
+									? libraryCodes
+									: undefined,
+								activity,
+								linked,
+								validity,
+							})
+							.pipe(
+								map((response) => {
+									if (silent) {
+										this.toggleOverrides.clear();
+									}
+
+									return response;
+								}),
+								catchError((err) =>
+									of({
+										groups: [] as StaffUserGroup[],
+										total: null as LinksSummary | null,
+										filtered:
+											null as LinksSummary | null,
+										error: translateBackendError(
+											this.translateService,
+											parseBackendError(err)
+										),
+									})
+								)
 							)
-						)
-				);
-			}),
-			shareReplay(1)
-		);
-		// Client-side toggle states
-		const showUnlinked$ = this.showUnlinkedControl.valueChanges.pipe(
-			startWith(this.showUnlinkedControl.value)
-		);
-		const showInvalid$ = this.showInvalidControl.valueChanges.pipe(
-			startWith(this.showInvalidControl.value)
-		);
-
-		// Combine API result with client-side toggles
-		this.vm$ = combineLatest([
-			apiResult$,
-			showUnlinked$,
-			showInvalid$,
-		]).pipe(
-			map(([result, showUnlinked, showInvalid]): ListUsersViewModel => {
+					);
+				}
+			),
+			map((result): ListUsersViewModel => {
 				if (result === null) {
 					return {
 						groups: [],
@@ -392,8 +540,6 @@ export class ListUsersComponent implements OnInit {
 						filtered: null,
 						loading: true,
 						error: null,
-						unlinkedCount: 0,
-						invalidCount: 0,
 					};
 				}
 
@@ -404,36 +550,11 @@ export class ListUsersComponent implements OnInit {
 						filtered: null,
 						loading: false,
 						error: result.error as string,
-						unlinkedCount: 0,
-						invalidCount: 0,
 					};
 				}
 
-				const allGroups = result.groups;
-				// Compute counts from unfiltered groups
-				const unlinkedCount = allGroups.filter(
-					(g) => g.eduIdLinks.length === 0
-				).length;
-				const invalidCount = allGroups.filter((g) =>
-					this.isInvalidStaffId(g.almaPrimaryId)
-				).length;
-				// Apply client-side filters
-				let visibleGroups = allGroups;
-
-				if (!showUnlinked) {
-					visibleGroups = visibleGroups.filter(
-						(g) => g.eduIdLinks.length > 0
-					);
-				}
-
-				if (!showInvalid) {
-					visibleGroups = visibleGroups.filter(
-						(g) => !this.isInvalidStaffId(g.almaPrimaryId)
-					);
-				}
-
 				return {
-					groups: visibleGroups,
+					groups: result.groups,
 					total: 'total' in result ? result.total ?? null : null,
 					filtered:
 						'filtered' in result
@@ -441,10 +562,9 @@ export class ListUsersComponent implements OnInit {
 							: null,
 					loading: false,
 					error: null,
-					unlinkedCount,
-					invalidCount,
 				};
-			})
+			}),
+			shareReplay(1)
 		);
 	}
 
@@ -489,6 +609,24 @@ export class ListUsersComponent implements OnInit {
 			);
 	}
 
+	private setupFilterSyncs(): void {
+		this.activityControl.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((value) =>
+				this.selectedActivity$.next(value || 'all')
+			);
+		this.linkedControl.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((value) =>
+				this.selectedLinked$.next(value || 'linked')
+			);
+		this.validityControl.valueChanges
+			.pipe(takeUntilDestroyed(this.destroyRef))
+			.subscribe((value) =>
+				this.selectedValidity$.next(value || 'valid')
+			);
+	}
+
 	private setupNavigationListener(): void {
 		this.navigationService.listUsersNavigation$
 			.pipe(takeUntilDestroyed(this.destroyRef))
@@ -496,5 +634,14 @@ export class ListUsersComponent implements OnInit {
 				this.searchControl.setValue(searchTerm);
 				this.libraryCodeControl.setValue([]);
 			});
+	}
+
+	private formatDate(isoDate: string): string {
+		const date = new Date(isoDate + 'T00:00:00');
+
+		return date.toLocaleDateString(
+			this.translateService.currentLang || 'en',
+			{ year: 'numeric', month: 'short', day: 'numeric' }
+		);
 	}
 }

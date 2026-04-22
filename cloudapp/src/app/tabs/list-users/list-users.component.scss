@@ -31,24 +31,25 @@
 	}
 }
 
-// Filter toggles
-.filter-toggles {
+// Filter dropdowns (server-side)
+.filter-row {
 	display: flex;
-	gap: 16px;
-	padding: 6px 16px;
+	gap: 6px;
+	padding: 4px 16px;
 	border-bottom: 1px solid var(--border-color-light);
 
-	::ng-deep .mat-mdc-checkbox {
-		--mdc-checkbox-state-layer-size: 24px;
+	.filter-select {
+		flex: 1;
+		min-width: 0;
 
-		.mdc-label {
+		::ng-deep .mat-mdc-select-trigger {
 			font-size: 11px;
-			color: rgba(0, 0, 0, 0.5);
 		}
-	}
 
-	.toggle-count {
-		color: rgba(0, 0, 0, 0.35);
+		.option-count {
+			color: rgba(0, 0, 0, 0.35);
+			font-size: 11px;
+		}
 	}
 }
 
@@ -236,6 +237,36 @@
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
+		}
+	}
+
+	.schedule-button {
+		flex-shrink: 0;
+		--mdc-icon-button-state-layer-size: 32px;
+		--mdc-icon-button-icon-size: 18px;
+		transition: color 0.15s ease;
+
+		&.no-schedule {
+			opacity: 0.5;
+			cursor: default;
+		}
+		
+		&.active {
+			color: var(--color-success, #4caf50);
+		}
+
+		&.inactive {
+			color: var(--color-warn, #f44336);
+		}
+
+		&:hover:not(:disabled) {
+			color: var(--slsp-purple);
+		}
+
+		mat-icon {
+			font-size: 18px;
+			width: 18px;
+			height: 18px;
 		}
 	}
 

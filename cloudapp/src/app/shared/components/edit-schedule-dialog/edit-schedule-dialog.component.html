@@ -1,0 +1,67 @@
+<h2 mat-dialog-title>{{ 'listUsers.editScheduleTitle' | translate }}</h2>
+<mat-dialog-content>
+	<div class="link-info">
+		<div class="link-user staff">
+			<mat-icon class="user-icon">person</mat-icon>
+			<span class="user-label">{{ data.staffId }}</span>
+		</div>
+		<div class="link-user eduid">
+			<mat-icon class="user-icon">person</mat-icon>
+			<span class="user-label">{{ data.eduIdName }}</span>
+		</div>
+	</div>
+
+	<div class="date-fields">
+		<mat-form-field appearance="outline" class="date-field">
+			<mat-label>{{ 'link.startDate' | translate }}</mat-label>
+			<input matInput [matDatepicker]="startPicker" [formControl]="startDateControl" (focus)="startPicker.open()" readonly />
+			<mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+			@if (startDateControl.value) {
+				<button
+					mat-icon-button
+					matIconSuffix
+					(click)="clearStartDate()"
+					[attr.aria-label]="'link.clearDate' | translate"
+				>
+					<mat-icon>clear</mat-icon>
+				</button>
+			}
+			<mat-datepicker #startPicker></mat-datepicker>
+		</mat-form-field>
+
+		<mat-form-field appearance="outline" class="date-field">
+			<mat-label>{{ 'link.endDate' | translate }}</mat-label>
+			<input matInput [matDatepicker]="endPicker" [formControl]="endDateControl" (focus)="endPicker.open()" readonly />
+			<mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+			@if (endDateControl.value) {
+				<button
+					mat-icon-button
+					matIconSuffix
+					(click)="clearEndDate()"
+					[attr.aria-label]="'link.clearDate' | translate"
+				>
+					<mat-icon>clear</mat-icon>
+				</button>
+			}
+			<mat-datepicker #endPicker></mat-datepicker>
+		</mat-form-field>
+	</div>
+
+	@if (!isDateRangeValid) {
+		<mat-error>{{ 'errors.INVALID_DATE_RANGE' | translate }}</mat-error>
+	}
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+	<button mat-stroked-button (click)="onCancel()">
+		{{ 'dialog.cancel' | translate }}
+	</button>
+	<button
+		mat-flat-button
+		color="primary"
+		[disabled]="!isDateRangeValid"
+		(click)="onSave()"
+	>
+		{{ 'listUsers.scheduleSave' | translate }}
+	</button>
+</mat-dialog-actions>

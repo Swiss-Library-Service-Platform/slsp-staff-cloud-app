@@ -104,16 +104,43 @@
 			</div>
 		</div>
 
-		<!-- Filter toggles -->
-		<div class="filter-toggles" *ngIf="!vm.loading && !vm.error">
-			<mat-checkbox [formControl]="showUnlinkedControl">
-				{{ 'listUsers.showUnlinked' | translate }}
-				<span class="toggle-count" *ngIf="vm.unlinkedCount > 0">({{ vm.unlinkedCount }})</span>
-			</mat-checkbox>
-			<mat-checkbox [formControl]="showInvalidControl">
-				{{ 'listUsers.showInvalid' | translate }}
-				<span class="toggle-count" *ngIf="vm.invalidCount > 0">({{ vm.invalidCount }})</span>
-			</mat-checkbox>
+		<!-- Filter dropdowns (server-side) -->
+		<div class="filter-row" *ngIf="!vm.loading && !vm.error">
+			<mat-form-field appearance="outline" class="filter-select">
+				<mat-select [formControl]="linkedControl">
+					<mat-option value="all">{{ 'listUsers.filterLinkedAll' | translate }}</mat-option>
+					<mat-option value="linked">
+						{{ 'listUsers.filterLinkedLinked' | translate }}
+						<span class="option-count" *ngIf="vm.total">({{ vm.total.linkedUsers }})</span>
+					</mat-option>
+					<mat-option value="unlinked">
+						{{ 'listUsers.filterLinkedUnlinked' | translate }}
+						<span class="option-count" *ngIf="vm.total">({{ vm.total.staffUsers - vm.total.linkedUsers }})</span>
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<mat-form-field appearance="outline" class="filter-select">
+				<mat-select [formControl]="activityControl">
+					<mat-option value="all">{{ 'listUsers.filterActivityAll' | translate }}</mat-option>
+					<mat-option value="active">
+						{{ 'listUsers.filterActivityActive' | translate }}
+						<span class="option-count" *ngIf="vm.total">({{ vm.total.activeLinks }})</span>
+					</mat-option>
+					<mat-option value="inactive">{{ 'listUsers.filterActivityInactive' | translate }}</mat-option>
+				</mat-select>
+			</mat-form-field>
+
+			<mat-form-field appearance="outline" class="filter-select">
+				<mat-select [formControl]="validityControl">
+					<mat-option value="all">{{ 'listUsers.filterValidityAll' | translate }}</mat-option>
+					<mat-option value="valid">{{ 'listUsers.filterValidityValid' | translate }}</mat-option>
+					<mat-option value="invalid">
+						{{ 'listUsers.filterValidityInvalid' | translate }}
+						<span class="option-count" *ngIf="vm.total">({{ vm.total.invalidUsers }})</span>
+					</mat-option>
+				</mat-select>
+			</mat-form-field>
 		</div>
 
 		<!-- Summary bar -->
@@ -197,19 +224,19 @@
 								class="invalid-icon"
 								[matTooltip]="'validation.invalidStaffId' | translate"
 							>error_outline</mat-icon>
-							<div
-								class="library-codes"
+							<app-library-codes-tooltip
 								*ngIf="group.libraryCodes.length"
-								[matTooltip]="group.libraryCodes.join('\n')"
-								matTooltipClass="library-codes-tooltip"
+								[libraryCodes]="group.libraryCodes"
 							>
-								<mat-icon class="library-icon"
-									>apartment</mat-icon
-								>
-								<span class="codes-count">
-									{{ group.libraryCodes.length }}
-								</span>
-							</div>
+								<div class="library-codes">
+									<mat-icon class="library-icon"
+										>apartment</mat-icon
+									>
+									<span class="codes-count">
+										{{ group.libraryCodes.length }}
+									</span>
+								</div>
+							</app-library-codes-tooltip>
 							<span
 								class="link-count"
 								*ngIf="group.eduIdLinks.length > 0"
@@ -275,6 +302,18 @@
 									[matTooltip]="'validation.invalidEduId' | translate"
 								>error_outline</mat-icon>
 
+								<button
+									mat-icon-button
+									class="schedule-button"
+									[class.no-schedule]="!link.startDate && !link.endDate"
+									[class.active]="(link.startDate || link.endDate) && link.isActive"
+									[class.inactive]="(link.startDate || link.endDate) && !link.isActive"
+									[disabled]="isToggling(link.linkId) || isUnlinking(link.linkId)"
+									(click)="onEditSchedule(group, link)"
+									[matTooltip]="getScheduleTooltip(link)"
+								>
+									<mat-icon>{{ getScheduleIcon(link) }}</mat-icon>
+								</button>
 								<button
 									mat-icon-button
 									class="unlink-button"
