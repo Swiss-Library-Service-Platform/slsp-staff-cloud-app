@@ -14,7 +14,8 @@
 		"groups": "Groups"
 	},
 	"general": {
-		"comingSoon": "Coming soon"
+		"comingSoon": "Coming soon",
+		"cacheNote": "Changes may take a few minutes to take effect."
 	},
 	"error": {
 		"restApiError": "REST API error: {{0}}"
@@ -90,7 +91,7 @@
 		"retry": "Retry",
 		"noResults": "No users found",
 		"noStaffUsers": "No staff users yet",
-		"unlink": "Unlink",
+		"unlink": "Remove link",
 		"toggleConfirmTitle": "Change Link Status",
 		"toggleEnableMessage": "Enable the link for {{eduIdPersonalId}}?",
 		"toggleDisableMessage": "Disable the link for {{eduIdPersonalId}}? The user will not be able to authenticate via edu-ID while disabled.",

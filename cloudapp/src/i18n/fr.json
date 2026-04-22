@@ -14,7 +14,8 @@
 		"groups": "Groupes"
 	},
 	"general": {
-		"comingSoon": "Bientôt disponible"
+		"comingSoon": "Bientôt disponible",
+		"cacheNote": "Les modifications peuvent prendre quelques minutes avant d'être effectives."
 	},
 	"error": {
 		"restApiError": "Erreur API REST : {{0}}"
@@ -90,7 +91,7 @@
 		"retry": "Réessayer",
 		"noResults": "Aucun utilisateur trouvé",
 		"noStaffUsers": "Aucun membre du personnel",
-		"unlink": "Dissocier",
+		"unlink": "Supprimer le lien",
 		"toggleConfirmTitle": "Modifier le statut du lien",
 		"toggleEnableMessage": "Activer le lien pour {{eduIdPersonalId}} ?",
 		"toggleDisableMessage": "Désactiver le lien pour {{eduIdPersonalId}} ? L'utilisateur ne pourra pas s'authentifier via edu-ID tant que le lien est désactivé.",

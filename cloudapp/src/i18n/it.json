@@ -14,7 +14,8 @@
 		"groups": "Gruppi"
 	},
 	"general": {
-		"comingSoon": "Prossimamente"
+		"comingSoon": "Prossimamente",
+		"cacheNote": "Le modifiche potrebbero richiedere alcuni minuti per diventare effettive."
 	},
 	"error": {
 		"restApiError": "Errore API REST: {{0}}"
@@ -90,7 +91,7 @@
 		"retry": "Riprova",
 		"noResults": "Nessun utente trovato",
 		"noStaffUsers": "Nessun membro del personale",
-		"unlink": "Scollega",
+		"unlink": "Rimuovi collegamento",
 		"toggleConfirmTitle": "Modifica stato collegamento",
 		"toggleEnableMessage": "Attivare il collegamento per {{eduIdPersonalId}}?",
 		"toggleDisableMessage": "Disattivare il collegamento per {{eduIdPersonalId}}? L'utente non potrà autenticarsi tramite edu-ID finché il collegamento è disattivato.",

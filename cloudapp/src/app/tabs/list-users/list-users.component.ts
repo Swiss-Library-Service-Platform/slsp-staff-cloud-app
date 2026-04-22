@@ -199,7 +199,11 @@ export class ListUsersComponent implements OnInit {
 					this.alertService.success(
 						this.translateService.instant(
 							'listUsers.toggleSuccess'
-						)
+						) +
+							' ' +
+							this.translateService.instant(
+								'general.cacheNote'
+							)
 					);
 				} else {
 					this.toggleOverrides.delete(link.linkId);
@@ -274,7 +278,11 @@ export class ListUsersComponent implements OnInit {
 					this.alertService.success(
 						this.translateService.instant(
 							'listUsers.unlinkSuccess'
-						)
+						) +
+							' ' +
+							this.translateService.instant(
+								'general.cacheNote'
+							)
 					);
 				} else {
 					this.alertService.error(
@@ -395,7 +403,11 @@ export class ListUsersComponent implements OnInit {
 					this.alertService.success(
 						this.translateService.instant(
 							'listUsers.scheduleUpdated'
-						)
+						) +
+							' ' +
+							this.translateService.instant(
+								'general.cacheNote'
+							)
 					);
 				} else {
 					this.alertService.error(

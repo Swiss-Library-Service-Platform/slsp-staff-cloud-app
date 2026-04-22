@@ -14,7 +14,8 @@
 		"groups": "Gruppen"
 	},
 	"general": {
-		"comingSoon": "Demnächst verfügbar"
+		"comingSoon": "Demnächst verfügbar",
+		"cacheNote": "Änderungen können einige Minuten dauern, bis sie wirksam werden."
 	},
 	"error": {
 		"restApiError": "Fehler bei der REST-API: {{0}}"
@@ -90,7 +91,7 @@
 		"retry": "Erneut versuchen",
 		"noResults": "Keine Benutzer gefunden",
 		"noStaffUsers": "Noch keine Mitarbeiter",
-		"unlink": "Trennen",
+		"unlink": "Verknüpfung entfernen",
 		"toggleConfirmTitle": "Verknüpfungsstatus ändern",
 		"toggleEnableMessage": "Verknüpfung für {{eduIdPersonalId}} aktivieren?",
 		"toggleDisableMessage": "Verknüpfung für {{eduIdPersonalId}} deaktivieren? Der Benutzer kann sich nicht mehr über edu-ID authentifizieren, solange sie deaktiviert ist.",
