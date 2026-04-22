@@ -1,6 +1,20 @@
-<ng-content></ng-content>
+<div
+	cdkOverlayOrigin
+	#trigger="cdkOverlayOrigin"
+	(mouseenter)="onTriggerEnter()"
+	(mouseleave)="onTriggerLeave()"
+>
+	<ng-content></ng-content>
+</div>
 
-@if (isVisible) {
+<ng-template
+	cdkConnectedOverlay
+	[cdkConnectedOverlayOrigin]="trigger"
+	[cdkConnectedOverlayOpen]="isVisible"
+	[cdkConnectedOverlayPositions]="positions"
+	[cdkConnectedOverlayHasBackdrop]="false"
+	[cdkConnectedOverlayPanelClass]="'library-codes-overlay'"
+>
 	<div
 		class="library-codes-tooltip"
 		(mouseenter)="onTooltipEnter()"
@@ -16,4 +30,4 @@
 			}
 		</ul>
 	</div>
-}
+</ng-template>

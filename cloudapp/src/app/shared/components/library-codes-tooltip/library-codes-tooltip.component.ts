@@ -1,10 +1,5 @@
-import {
-	Component,
-	HostBinding,
-	HostListener,
-	Input,
-	OnDestroy,
-} from '@angular/core';
+import { ConnectedPosition } from '@angular/cdk/overlay';
+import { Component, Input, OnDestroy } from '@angular/core';
 
 @Component({
 	selector: 'app-library-codes-tooltip',
@@ -14,20 +9,51 @@ import {
 export class LibraryCodesTooltipComponent implements OnDestroy {
 	@Input() public libraryCodes: string[] = [];
 
-	@HostBinding('class.tooltip-wrapper') public tooltipWrapper = true;
-
 	public isVisible = false;
+
+	public positions: ConnectedPosition[] = [
+		// Prefer left of trigger
+		{
+			originX: 'start',
+			originY: 'center',
+			overlayX: 'end',
+			overlayY: 'center',
+			offsetX: -6,
+		},
+		// Fallback: right of trigger
+		{
+			originX: 'end',
+			originY: 'center',
+			overlayX: 'start',
+			overlayY: 'center',
+			offsetX: 6,
+		},
+		// Fallback: above
+		{
+			originX: 'center',
+			originY: 'top',
+			overlayX: 'center',
+			overlayY: 'bottom',
+			offsetY: -6,
+		},
+		// Fallback: below
+		{
+			originX: 'center',
+			originY: 'bottom',
+			overlayX: 'center',
+			overlayY: 'top',
+			offsetY: 6,
+		},
+	];
 
 	private hideTimeout: ReturnType<typeof setTimeout> | null = null;
 
-	@HostListener('mouseenter')
-	public onMouseEnter(): void {
+	public onTriggerEnter(): void {
 		this.cancelHide();
 		this.isVisible = true;
 	}
 
-	@HostListener('mouseleave')
-	public onMouseLeave(): void {
+	public onTriggerLeave(): void {
 		this.scheduleHide();
 	}
 
