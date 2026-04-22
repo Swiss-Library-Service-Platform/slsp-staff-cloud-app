@@ -25,7 +25,7 @@ import {
 	tap,
 } from 'rxjs/operators';
 
-import { LinkSelection, LinkUser, UserType } from '../../models/user.model';
+import { LinkSelection, LinkUser, LinkDetail, UserType } from '../../models/user.model';
 import { LinkService, LinkStatus } from '../../services/link.service';
 import { NavigationService } from '../../services/navigation.service';
 import {
@@ -56,8 +56,11 @@ interface LinkAccountsViewModel {
 	styleUrls: ['./link-accounts.component.scss'],
 })
 export class LinkAccountsComponent implements OnInit {
-	// Form control for search input
+	// Form controls
 	public searchControl = new FormControl('');
+	public startDateControl = new FormControl<Date | null>(null);
+	public endDateControl = new FormControl<Date | null>(null);
+	public showScheduling = false;
 
 	// User interaction subjects (kept for two-way binding)
 	public filterType$ = new BehaviorSubject<FilterType>('all');
@@ -85,6 +88,17 @@ export class LinkAccountsComponent implements OnInit {
 
 	private searchTerm$ = new BehaviorSubject<string>('');
 	private retry$ = new Subject<void>();
+
+	public get isDateRangeValid(): boolean {
+		const start = this.startDateControl.value;
+		const end = this.endDateControl.value;
+
+		if (start && end) {
+			return start <= end;
+		}
+
+		return true;
+	}
 
 	public ngOnInit(): void {
 		this.setupViewModel();
@@ -158,16 +172,25 @@ export class LinkAccountsComponent implements OnInit {
 	public onLinkAccounts(): void {
 		const selection = this.selection$.value;
 
-		if (!selection.staff || !selection.eduid) {
+		if (!selection.staff || !selection.eduid || !this.isDateRangeValid) {
 			return;
 		}
 
 		this.isLinking = true;
 
+		const startDate = this.startDateControl.value
+			? this.toIsoDate(this.startDateControl.value)
+			: null;
+		const endDate = this.endDateControl.value
+			? this.toIsoDate(this.endDateControl.value)
+			: null;
+
 		this.linkService
 			.createLink(
 				selection.staff.primaryId,
-				selection.eduid.primaryId
+				selection.eduid.primaryId,
+				startDate,
+				endDate
 			)
 			.pipe(finalize(() => (this.isLinking = false)))
 			.subscribe((result) => {
@@ -176,7 +199,6 @@ export class LinkAccountsComponent implements OnInit {
 						this.translateService.instant('link.success')
 					);
 					this.clearAllSelections();
-					// linksChanged$ (fired by createLink) triggers the refresh
 				} else {
 					this.alertService.error(
 						translateBackendError(
@@ -280,6 +302,17 @@ export class LinkAccountsComponent implements OnInit {
 	 */
 	private clearAllSelections(): void {
 		this.selection$.next({ staff: null, eduid: null });
+		this.startDateControl.reset();
+		this.endDateControl.reset();
+		this.showScheduling = false;
+	}
+
+	private toIsoDate(date: Date): string {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+
+		return `${year}-${month}-${day}`;
 	}
 
 	/**
@@ -440,7 +473,20 @@ export class LinkAccountsComponent implements OnInit {
 				isLinked: links.length > 0,
 				linkedTo: links.map((l) => l.linkedTo),
 				linkCount: links.length,
-				hasDisabledLinks: links.some((l) => !l.isEnabled),
+				hasActiveLink: links.some((l) => l.isEnabled && l.isActive),
+				linkDetails: links.map(
+					(l): LinkDetail => ({
+						linkedTo: l.linkedTo,
+						displayName:
+							l.givenName || l.surname
+								? `${l.givenName ?? ''} ${l.surname ?? ''}`.trim()
+								: undefined,
+						isEnabled: l.isEnabled,
+						isActive: l.isActive,
+						startDate: l.startDate,
+						endDate: l.endDate,
+					})
+				),
 			};
 		});
 	}

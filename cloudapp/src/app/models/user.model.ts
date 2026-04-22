@@ -1,5 +1,14 @@
 export type UserType = 'staff' | 'eduid';
 
+export interface LinkDetail {
+	linkedTo: string;
+	displayName?: string;
+	isEnabled: boolean;
+	isActive: boolean;
+	startDate: string | null;
+	endDate: string | null;
+}
+
 export interface LinkUser {
 	primaryId: string;
 	fullName: string;
@@ -9,7 +18,8 @@ export interface LinkUser {
 	isLinked?: boolean;
 	linkedTo?: string[];
 	linkCount?: number;
-	hasDisabledLinks?: boolean;
+	hasActiveLink?: boolean;
+	linkDetails?: LinkDetail[];
 	emails?: string[];
 }
 
@@ -24,6 +34,9 @@ export interface EduIdLink {
 	eduIdGivenName?: string;
 	eduIdSurname?: string;
 	isEnabled: boolean;
+	startDate: string | null;
+	endDate: string | null;
+	isActive: boolean;
 	createdAt: string;
 }
 

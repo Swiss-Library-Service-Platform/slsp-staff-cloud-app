@@ -100,6 +100,62 @@
 		}
 	}
 
+	.scheduling-section {
+		margin-top: 10px;
+
+		.scheduling-header {
+			display: flex;
+			align-items: center;
+			gap: 4px;
+			cursor: pointer;
+			user-select: none;
+			padding: 4px 0;
+
+			.scheduling-toggle {
+				font-size: 18px;
+				width: 18px;
+				height: 18px;
+				color: rgba(0, 0, 0, 0.4);
+				transition: transform 0.15s ease;
+
+				&.open {
+					transform: rotate(0deg);
+				}
+
+				&:not(.open) {
+					transform: rotate(-90deg);
+				}
+			}
+
+			.scheduling-label {
+				font-size: 12px;
+				color: rgba(0, 0, 0, 0.5);
+			}
+
+			.scheduling-active-dot {
+				font-size: 8px;
+				width: 8px;
+				height: 8px;
+				color: var(--color-success);
+			}
+		}
+
+		.scheduling-fields {
+			display: flex;
+			gap: 8px;
+			margin-top: 6px;
+
+			.date-field {
+				flex: 1;
+				min-width: 0;
+			}
+		}
+
+		.date-range-error {
+			font-size: 11px;
+		}
+	}
+
 	.link-button {
 		width: 100%;
 		margin-top: 12px;
@@ -233,7 +289,7 @@
 				background-color: rgba(76, 175, 80, 0.1);
 				cursor: pointer;
 
-				&.has-disabled {
+				&.inactive {
 					background-color: rgba(0, 0, 0, 0.06);
 
 					mat-icon,

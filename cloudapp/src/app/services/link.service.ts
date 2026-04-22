@@ -14,10 +14,21 @@ import { BackendHttpService } from './backend-http.service';
 export interface CreateLinkRequest {
 	almaPrimaryId: string;
 	eduIdPersonalId: string;
+	startDate?: string | null;
+	endDate?: string | null;
 }
 
 /**
- * Response from successful link creation.
+ * Request to update an existing link (enable/disable, schedule dates).
+ */
+export interface UpdateLinkRequest {
+	isEnabled?: boolean | null;
+	startDate?: string | null;
+	endDate?: string | null;
+}
+
+/**
+ * Response from successful link creation or update.
  */
 export interface LinkResponse {
 	id: number;
@@ -25,6 +36,9 @@ export interface LinkResponse {
 	slspUniqueId: string;
 	eduIdPersonalId: string;
 	isEnabled: boolean;
+	startDate: string | null;
+	endDate: string | null;
+	isActive: boolean;
 	givenName?: string;
 	surname?: string;
 	eduIdGivenName?: string;
@@ -63,6 +77,8 @@ export interface LinksSummary {
 	links: number;
 	enabledLinks: number;
 	disabledLinks: number;
+	activeLinks: number;
+	invalidUsers: number;
 }
 
 /**
@@ -80,7 +96,12 @@ export interface LinksListResponse {
 export interface LinkStatus {
 	linkId: number;
 	linkedTo: string;
+	givenName?: string;
+	surname?: string;
 	isEnabled: boolean;
+	startDate: string | null;
+	endDate: string | null;
+	isActive: boolean;
 }
 
 /**
@@ -89,6 +110,17 @@ export interface LinkStatus {
  */
 export interface LinkStatusResponse {
 	statuses: Record<string, LinkStatus[]>;
+}
+
+/**
+ * Filter parameters for the list endpoint.
+ */
+export interface LinksFilterParams {
+	search?: string;
+	libraryCodes?: string[];
+	activity?: 'all' | 'active' | 'inactive';
+	linked?: 'all' | 'linked' | 'unlinked';
+	validity?: 'all' | 'valid' | 'invalid';
 }
 
 @Injectable({
@@ -112,22 +144,26 @@ export class LinkService {
 	}
 
 	/**
-	 * Fetch all staff users grouped with their edu-ID links, with optional search and library code filter.
+	 * Fetch all staff users grouped with their edu-ID links, with optional filters.
 	 * Returns groups along with total and filtered aggregate counts.
 	 */
-	public getLinks(
-		search?: string,
-		libraryCodes?: string[]
-	): Observable<LinksListResponse> {
-		const params = new URLSearchParams();
+	public getLinks(params: LinksFilterParams = {}): Observable<LinksListResponse> {
+		const urlParams = new URLSearchParams();
 
-		if (search) params.set('search', search);
+		if (params.search) urlParams.set('search', params.search);
 
-		if (libraryCodes?.length) {
-			libraryCodes.forEach((code) => params.append('libraryCode', code));
+		if (params.libraryCodes?.length) {
+			params.libraryCodes.forEach((code) => urlParams.append('libraryCode', code));
 		}
 
-		const query = params.toString();
+		if (params.activity && params.activity !== 'all')
+			urlParams.set('activity', params.activity);
+		if (params.linked && params.linked !== 'all')
+			urlParams.set('linked', params.linked);
+		if (params.validity && params.validity !== 'all')
+			urlParams.set('validity', params.validity);
+
+		const query = urlParams.toString();
 
 		return this.backend.get<LinksListResponse>(
 			`/api/cloudapp/links${query ? '?' + query : ''}`
@@ -155,14 +191,20 @@ export class LinkService {
 	 *
 	 * @param staffPrimaryId - Alma staff user primary ID
 	 * @param eduIdPersonalId - edu-ID personal identifier (e.g., 123456@eduid.ch)
+	 * @param startDate - Optional start date (ISO format YYYY-MM-DD)
+	 * @param endDate - Optional end date (ISO format YYYY-MM-DD)
 	 */
 	public createLink(
 		staffPrimaryId: string,
-		eduIdPersonalId: string
+		eduIdPersonalId: string,
+		startDate?: string | null,
+		endDate?: string | null
 	): Observable<CreateLinkResult> {
 		const request: CreateLinkRequest = {
 			almaPrimaryId: staffPrimaryId,
 			eduIdPersonalId,
+			...(startDate !== undefined && { startDate }),
+			...(endDate !== undefined && { endDate }),
 		};
 
 		return this.backend.post<LinkResponse>('/api/cloudapp/links', request).pipe(
@@ -185,17 +227,17 @@ export class LinkService {
 	}
 
 	/**
-	 * Toggle a link's enabled/disabled state.
+	 * Update a link (enable/disable, change schedule dates).
 	 *
 	 * @param linkId - The link ID
-	 * @param isEnabled - The desired enabled state
+	 * @param request - Fields to update (all optional, null clears a date)
 	 */
-	public toggleLink(
+	public updateLink(
 		linkId: number,
-		isEnabled: boolean
+		request: UpdateLinkRequest
 	): Observable<ToggleLinkResult> {
 		return this.backend
-			.patch<LinkResponse>(`/api/cloudapp/links/${linkId}`, { isEnabled })
+			.patch<LinkResponse>(`/api/cloudapp/links/${linkId}`, request)
 			.pipe(
 				map(
 					(link): ToggleLinkResult => ({
@@ -216,6 +258,17 @@ export class LinkService {
 					}
 				})
 			);
+	}
+
+	/**
+	 * Toggle a link's enabled/disabled state.
+	 * Convenience wrapper around updateLink.
+	 */
+	public toggleLink(
+		linkId: number,
+		isEnabled: boolean
+	): Observable<ToggleLinkResult> {
+		return this.updateLink(linkId, { isEnabled });
 	}
 
 	/**

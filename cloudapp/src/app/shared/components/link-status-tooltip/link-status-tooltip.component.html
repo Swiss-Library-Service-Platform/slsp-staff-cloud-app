@@ -1,7 +1,7 @@
 <ng-content></ng-content>
 
 @if (isVisible) {
-	<div class="link-tooltip" [ngStyle]="tooltipStyle">
+	<div class="link-tooltip" #tooltip [ngStyle]="tooltipStyle">
 		<div class="tooltip-label">
 			@if (user.userType === 'staff') {
 				{{ 'link.linkedToEduId' | translate }}
@@ -12,7 +12,23 @@
 				<span class="count">({{ user.linkCount }})</span>
 			}
 		</div>
-		@if (user.linkedTo?.length) {
+		@if (user.linkDetails?.length) {
+			<ul class="linked-list">
+				@for (link of user.linkDetails; track link.linkedTo) {
+					<li>
+						<span class="link-icons">
+							<mat-icon [class]="'enabled-icon ' + (link.isEnabled ? 'enabled' : 'disabled')">
+								{{ link.isEnabled ? 'check_circle' : 'cancel' }}
+							</mat-icon>
+							<mat-icon [class]="'schedule-icon ' + getScheduleClass(link)">
+								{{ getScheduleIcon(link) }}
+							</mat-icon>
+						</span>
+						<span class="link-id">{{ link.displayName || link.linkedTo }}</span>
+					</li>
+				}
+			</ul>
+		} @else if (user.linkedTo?.length) {
 			<ul class="linked-list">
 				@for (id of user.linkedTo; track id) {
 					<li>{{ id }}</li>
