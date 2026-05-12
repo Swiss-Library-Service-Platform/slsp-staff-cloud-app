@@ -93,6 +93,7 @@ export class ListUsersComponent implements OnInit {
 	public collapsedGroups = new Set<string>();
 	public togglingLinks = new Set<number>();
 	public unlinkingLinks = new Set<number>();
+	public exporting = false;
 
 	private alertService = inject(AlertService);
 	private destroyRef = inject(DestroyRef);
@@ -426,6 +427,35 @@ export class ListUsersComponent implements OnInit {
 			(this.libraryCodeControl.value?.length ?? 0) > 0 ||
 			this.viewControl.value !== 'all'
 		);
+	}
+
+	public onExport(): void {
+		if (this.exporting) return;
+
+		this.exporting = true;
+		const params = this.getCurrentFilterParams();
+
+		this.linkService
+			.exportLinks(params)
+			.pipe(finalize(() => (this.exporting = false)))
+			.subscribe({
+				next: (blob) => {
+					const url = URL.createObjectURL(blob);
+					const a = document.createElement('a');
+					a.href = url;
+					a.download = `slsp-staff-export-${new Date().toISOString().split('T')[0]}.csv`;
+					a.click();
+					URL.revokeObjectURL(url);
+				},
+				error: (err) => {
+					this.alertService.error(
+						translateBackendError(
+							this.translateService,
+							parseBackendError(err)
+						)
+					);
+				},
+			});
 	}
 
 	public trackByIndex(index: number): number {

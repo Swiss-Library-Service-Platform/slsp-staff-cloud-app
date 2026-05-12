@@ -120,16 +120,6 @@
 						</ng-container>
 					</mat-select>
 				</mat-form-field>
-
-				<button
-					mat-icon-button
-					*ngIf="(libraryCodeControl.value?.length || 0) > 0"
-					(click)="clearLibraryCodes()"
-					class="clear-library-filter"
-					[matTooltip]="'listUsers.clearFilter' | translate"
-				>
-					<mat-icon>filter_list_off</mat-icon>
-				</button>
 			</div>
 		</div>
 
@@ -138,23 +128,37 @@
 			class="list-summary"
 			*ngIf="!vm.loading && !vm.error && vm.total"
 		>
-			<ng-container *ngIf="isFiltered() && vm.filtered; else unfiltered">
-				{{ 'listUsers.summaryFiltered' | translate: {
-					filteredStaff: vm.filtered.staffUsers,
-					totalStaff: vm.total.staffUsers,
-					filteredLinked: vm.filtered.linkedUsers,
-					totalLinked: vm.total.linkedUsers,
-					filteredLinks: vm.filtered.links,
-					totalLinks: vm.total.links
-				} }}
-			</ng-container>
-			<ng-template #unfiltered>
-				{{ 'listUsers.summary' | translate: {
-					staff: vm.total.staffUsers,
-					linked: vm.total.linkedUsers,
-					links: vm.total.links
-				} }}
-			</ng-template>
+			<span class="summary-text">
+				<ng-container *ngIf="isFiltered() && vm.filtered; else unfiltered">
+					{{ 'listUsers.summaryFiltered' | translate: {
+						filteredStaff: vm.filtered.staffUsers,
+						totalStaff: vm.total.staffUsers,
+						filteredLinked: vm.filtered.linkedUsers,
+						filteredLinks: vm.filtered.links
+					} }}
+				</ng-container>
+				<ng-template #unfiltered>
+					{{ 'listUsers.summary' | translate: {
+						staff: vm.total.staffUsers,
+						linked: vm.total.linkedUsers,
+						links: vm.total.links
+					} }}
+				</ng-template>
+			</span>
+			<button
+				mat-icon-button
+				class="export-button"
+				[disabled]="exporting"
+				(click)="onExport()"
+				[matTooltip]="'listUsers.export' | translate"
+			>
+				<mat-icon *ngIf="!exporting">download</mat-icon>
+				<mat-spinner
+					*ngIf="exporting"
+					diameter="14"
+					class="button-spinner"
+				></mat-spinner>
+			</button>
 		</div>
 
 		<!-- Content area -->

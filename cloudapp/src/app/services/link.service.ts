@@ -75,9 +75,6 @@ export interface LinksSummary {
 	staffUsers: number;
 	linkedUsers: number;
 	links: number;
-	enabledLinks: number;
-	disabledLinks: number;
-	activeLinks: number;
 	invalidUsers: number;
 	disabledUsers: number;
 	outOfScheduleUsers: number;
@@ -151,27 +148,8 @@ export class LinkService {
 	 * Returns groups along with total and filtered aggregate counts.
 	 */
 	public getLinks(params: LinksFilterParams = {}): Observable<LinksListResponse> {
-		const urlParams = new URLSearchParams();
-
-		if (params.search) urlParams.set('search', params.search);
-
-		if (params.libraryCodes?.length) {
-			params.libraryCodes.forEach((code) => urlParams.append('libraryCode', code));
-		}
-
-		if (params.enabled && params.enabled !== 'all')
-			urlParams.set('enabled', params.enabled);
-		if (params.schedule && params.schedule !== 'all')
-			urlParams.set('schedule', params.schedule);
-		if (params.linked && params.linked !== 'all')
-			urlParams.set('linked', params.linked);
-		if (params.validity && params.validity !== 'all')
-			urlParams.set('validity', params.validity);
-
-		const query = urlParams.toString();
-
 		return this.backend.get<LinksListResponse>(
-			`/api/cloudapp/links${query ? '?' + query : ''}`
+			`/api/cloudapp/links${this.buildFilterQuery(params)}`
 		);
 	}
 
@@ -274,6 +252,42 @@ export class LinkService {
 		isEnabled: boolean
 	): Observable<ToggleLinkResult> {
 		return this.updateLink(linkId, { isEnabled });
+	}
+
+	/**
+	 * Export linking data as CSV file (blob).
+	 * Uses the same filter params as getLinks().
+	 */
+	public exportLinks(params: LinksFilterParams = {}): Observable<Blob> {
+		return this.backend.getBlob(
+			`/api/cloudapp/links/export${this.buildFilterQuery(params)}`
+		);
+	}
+
+	/**
+	 * Build query string from filter params.
+	 * Shared between getLinks() and exportLinks() to ensure consistent filtering.
+	 */
+	private buildFilterQuery(params: LinksFilterParams): string {
+		const urlParams = new URLSearchParams();
+
+		if (params.search) urlParams.set('search', params.search);
+
+		if (params.libraryCodes?.length) {
+			params.libraryCodes.forEach((code) => urlParams.append('libraryCode', code));
+		}
+
+		if (params.enabled && params.enabled !== 'all')
+			urlParams.set('enabled', params.enabled);
+		if (params.schedule && params.schedule !== 'all')
+			urlParams.set('schedule', params.schedule);
+		if (params.linked && params.linked !== 'all')
+			urlParams.set('linked', params.linked);
+		if (params.validity && params.validity !== 'all')
+			urlParams.set('validity', params.validity);
+
+		const query = urlParams.toString();
+		return query ? '?' + query : '';
 	}
 
 	/**

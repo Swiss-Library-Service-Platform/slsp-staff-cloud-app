@@ -31,19 +31,6 @@
 		}
 	}
 
-	.clear-library-filter {
-		flex-shrink: 0;
-		width: 28px;
-		height: 28px;
-		line-height: 28px;
-
-		mat-icon {
-			font-size: 18px;
-			width: 18px;
-			height: 18px;
-			color: rgba(0, 0, 0, 0.5);
-		}
-	}
 }
 
 // View preset dropdown (in search row)
@@ -59,10 +46,35 @@
 
 // Summary bar
 .list-summary {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 	font-size: 11px;
 	color: rgba(0, 0, 0, 0.45);
-	padding: 6px 16px;
+	padding: 4px 8px 4px 16px;
 	border-bottom: 1px solid var(--border-color-light);
+
+	.export-button {
+		flex-shrink: 0;
+		--mdc-icon-button-state-layer-size: 28px;
+		--mdc-icon-button-icon-size: 16px;
+
+		mat-icon {
+			font-size: 16px;
+			width: 16px;
+			height: 16px;
+			color: rgba(0, 0, 0, 0.4);
+		}
+
+		.button-spinner {
+			width: 14px;
+			height: 14px;
+
+			::ng-deep circle {
+				stroke: rgba(0, 0, 0, 0.35);
+			}
+		}
+	}
 }
 
 // Groups
