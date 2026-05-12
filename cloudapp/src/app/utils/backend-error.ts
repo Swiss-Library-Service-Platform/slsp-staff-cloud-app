@@ -12,6 +12,10 @@ import {
  */
 export function parseBackendError(error: HttpErrorResponse): BackendError {
 	if (error.status === 401 || error.status === 403) {
+		const authBody = error.error;
+		if (authBody && typeof authBody === 'object' && authBody.code) {
+			return { kind: 'coded', code: authBody.code, params: authBody.params ?? {} };
+		}
 		return { kind: 'auth', status: error.status as 401 | 403 };
 	}
 
