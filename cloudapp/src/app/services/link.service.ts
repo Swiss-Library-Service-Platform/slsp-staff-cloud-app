@@ -75,9 +75,6 @@ export interface LinksSummary {
 	staffUsers: number;
 	linkedUsers: number;
 	links: number;
-	enabledLinks: number;
-	disabledLinks: number;
-	activeLinks: number;
 	invalidUsers: number;
 	disabledUsers: number;
 	outOfScheduleUsers: number;

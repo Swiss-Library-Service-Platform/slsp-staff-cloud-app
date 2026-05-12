@@ -110,7 +110,7 @@
 		"noLibraryCodesFound": "Nessun codice biblioteca trovato",
 		"clearFilter": "Cancella filtro",
 		"summary": "{{staff}} personale · {{linked}} collegati · {{links}} collegamenti",
-		"summaryFiltered": "{{filteredStaff}} di {{totalStaff}} personale · {{filteredLinked}} di {{totalLinked}} collegati · {{filteredLinks}} di {{totalLinks}} collegamenti",
+		"summaryFiltered": "{{filteredStaff}} di {{totalStaff}} personale · {{filteredLinked}} collegati · {{filteredLinks}} collegamenti",
 		"viewAll": "Tutti",
 		"viewLinked": "Collegati",
 		"viewUnlinked": "Non collegati",

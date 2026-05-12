@@ -110,7 +110,7 @@
 		"noLibraryCodesFound": "Keine Bibliothekscodes gefunden",
 		"clearFilter": "Filter zurücksetzen",
 		"summary": "{{staff}} Mitarbeiter · {{linked}} verknüpft · {{links}} Verknüpfungen",
-		"summaryFiltered": "{{filteredStaff}} von {{totalStaff}} Mitarbeiter · {{filteredLinked}} von {{totalLinked}} verknüpft · {{filteredLinks}} von {{totalLinks}} Verknüpfungen",
+		"summaryFiltered": "{{filteredStaff}} von {{totalStaff}} Mitarbeiter · {{filteredLinked}} verknüpft · {{filteredLinks}} Verknüpfungen",
 		"viewAll": "Alle",
 		"viewLinked": "Verknüpft",
 		"viewUnlinked": "Unverknüpft",

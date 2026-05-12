@@ -110,7 +110,7 @@
 		"noLibraryCodesFound": "No library codes found",
 		"clearFilter": "Clear filter",
 		"summary": "{{staff}} staff users · {{linked}} linked · {{links}} links",
-		"summaryFiltered": "{{filteredStaff}} of {{totalStaff}} staff · {{filteredLinked}} of {{totalLinked}} linked · {{filteredLinks}} of {{totalLinks}} links",
+		"summaryFiltered": "{{filteredStaff}} of {{totalStaff}} staff · {{filteredLinked}} linked · {{filteredLinks}} links",
 		"viewAll": "All",
 		"viewLinked": "Linked",
 		"viewUnlinked": "Unlinked",

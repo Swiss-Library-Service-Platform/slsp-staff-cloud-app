@@ -110,7 +110,7 @@
 		"noLibraryCodesFound": "Aucun code de bibliothèque trouvé",
 		"clearFilter": "Effacer le filtre",
 		"summary": "{{staff}} membres du personnel · {{linked}} liés · {{links}} liens",
-		"summaryFiltered": "{{filteredStaff}} sur {{totalStaff}} personnel · {{filteredLinked}} sur {{totalLinked}} liés · {{filteredLinks}} sur {{totalLinks}} liens",
+		"summaryFiltered": "{{filteredStaff}} sur {{totalStaff}} personnel · {{filteredLinked}} liés · {{filteredLinks}} liens",
 		"viewAll": "Tous",
 		"viewLinked": "Liés",
 		"viewUnlinked": "Non liés",
