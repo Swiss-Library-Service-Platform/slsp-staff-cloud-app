@@ -56,7 +56,7 @@ Admin overview of all staff users and their edu-ID link status. Filter by name o
 
 ## Support
 
-Report issues: https://github.com/Swiss-Library-Service-Platform/slsp-staff-cloud-app/issues
+For questions or to report an issue, please contact [SLSP Support](https://slsp.atlassian.net/servicedesk/customer/portal/1).
 
 ## License
 
