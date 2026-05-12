@@ -126,6 +126,7 @@
 		"scheduleNoStart": "Fino al {{date}}",
 		"scheduleNotStarted": "Inizia il {{date}}",
 		"scheduleExpired": "Scaduto il {{date}}",
-		"libraryCodesLabel": "Codici biblioteca"
+		"libraryCodesLabel": "Codici biblioteca",
+		"export": "Esportare CSV"
 	}
 }

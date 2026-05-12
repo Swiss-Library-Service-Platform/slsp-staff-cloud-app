@@ -86,6 +86,18 @@ export class BackendHttpService {
 	}
 
 	/**
+	 * GET request returning a Blob (for file downloads).
+	 */
+	public getBlob(path: string): Observable<Blob> {
+		return this.withAuth((token, baseUrl) =>
+			this.http.get(`${baseUrl}${path}`, {
+				headers: { Authorization: `Bearer ${token}` },
+				responseType: 'blob',
+			})
+		);
+	}
+
+	/**
 	 * Get auth token with caching and concurrent request deduplication.
 	 * The Alma SDK's getAuthToken() serializes calls — multiple concurrent
 	 * requests queue up, adding seconds of wait time. This caches the token

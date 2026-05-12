@@ -20,7 +20,10 @@
          "http://localhost:8080",
          "https://staff-test.swisscovery.network/",
          "https://staff.swisscovery.network/"
-      ]
+      ],
+      "sandbox": {
+         "downloads": true
+      }
    },
    "relevantForInst": [
       "41SLSP_NETWORK",
