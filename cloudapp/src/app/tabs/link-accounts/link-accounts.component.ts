@@ -355,7 +355,7 @@ export class LinkAccountsComponent implements OnInit {
 		const fetchState$ = fetchTrigger$.pipe(
 			switchMap((term) => {
 				const source$ = term
-					? this.userService.searchUsers(term).pipe(map((r) => r.users))
+					? this.userService.searchUsers(term)
 					: this.userService.getCurrentEntitiesAsUsers();
 
 				// concat: emit loading state first, then result or error
