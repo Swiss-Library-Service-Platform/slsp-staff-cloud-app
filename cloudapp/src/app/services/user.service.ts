@@ -37,7 +37,6 @@ interface AlmaUser {
 
 interface UserSearchResponse {
 	user?: AlmaUser[];
-	total_record_count?: number;
 }
 
 @Injectable({
@@ -105,45 +104,66 @@ export class UserService {
 
 	/**
 	 * Search users via REST API.
-	 * Uses ALL field to search across first_name, last_name, primary_id, identifiers, etc.
-	 * Fetches full user details for each result to get user_group for classification.
+	 *
+	 * Queries the ALL index (first_name, last_name, primary_id, identifiers, ...)
+	 * and — when the term looks like an email — additionally the exact-match
+	 * `email` index, since Alma's ALL index does not cover contact emails.
+	 * Results from both indexes are merged and deduplicated by primary_id.
+	 *
+	 * `expand=full` returns complete user records, so no per-result detail call
+	 * is needed for classification (user_group) or compatibility (contact_info).
 	 */
-	public searchUsers(
-		term: string,
-		offset = 0,
-		limit = 20
-	): Observable<{ users: LinkUser[]; hasMore: boolean }> {
-		const joined = term.trim().replace(/\s+/g, '+');
-		const url = `/users?q=ALL~${encodeURIComponent(joined)}&limit=${limit}&offset=${offset}`;
+	public searchUsers(term: string): Observable<LinkUser[]> {
+		const trimmed = term.trim();
 
-		return this.restService.call(url).pipe(
-			catchError(() => of({ user: [], total_record_count: 0 } as UserSearchResponse)),
-			switchMap((response: UserSearchResponse) => {
-				const searchResults = response.user || [];
-				const totalCount = response.total_record_count || 0;
-				const hasMore = offset + searchResults.length < totalCount;
+		if (!trimmed) {
+			return of([]);
+		}
 
-				if (searchResults.length === 0) {
-					return of({ users: [], hasMore });
+		const all$ = this.searchByIndex('ALL', trimmed.replace(/\s+/g, '+'));
+		// The `email` index is exact-match only, so a term without `@` can never
+		// match it — skip that call entirely in that case.
+		const email$ = trimmed.includes('@')
+			? this.searchByIndex('email', trimmed)
+			: of<AlmaUser[]>([]);
+
+		return forkJoin([all$, email$]).pipe(
+			map(([allUsers, emailUsers]) => {
+				// Email matches first: an exact email hit is the most relevant.
+				const seen = new Set<string>();
+				const users: LinkUser[] = [];
+
+				for (const almaUser of [...emailUsers, ...allUsers]) {
+					if (seen.has(almaUser.primary_id)) {
+						continue;
+					}
+
+					seen.add(almaUser.primary_id);
+
+					const linkUser = this.mapToLinkUser(almaUser);
+
+					if (linkUser) {
+						users.push(linkUser);
+					}
 				}
 
-				// Fetch full user details for each result (search returns minimal data)
-				const resultsWithLink = searchResults.filter((r) => r.link);
-
-				const userRequests = resultsWithLink.map((result) =>
-					this.restService.call(result.link as string).pipe(
-						map((user: AlmaUser) => this.mapToLinkUser(user)),
-						catchError(() => of(null))
-					)
-				);
-
-				return forkJoin(userRequests).pipe(
-					map((users) => ({
-						users: users.filter((u): u is LinkUser => u !== null),
-						hasMore,
-					}))
-				);
+				return users;
 			})
+		);
+	}
+
+	/**
+	 * Issue a single Alma user search for one `index~value` expression.
+	 * `expand=full` returns complete user records (user_group, contact_info, ...).
+	 * Failures degrade to an empty list so a failing index does not break the
+	 * other one.
+	 */
+	private searchByIndex(index: string, value: string): Observable<AlmaUser[]> {
+		const url = `/users?q=${index}~${encodeURIComponent(value)}&limit=20&expand=full`;
+
+		return this.restService.call(url).pipe(
+			map((response: UserSearchResponse) => response.user ?? []),
+			catchError(() => of<AlmaUser[]>([]))
 		);
 	}
 
