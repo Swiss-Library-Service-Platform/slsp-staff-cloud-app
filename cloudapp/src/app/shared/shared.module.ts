@@ -9,6 +9,7 @@ import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dial
 import { EditScheduleDialogComponent } from './components/edit-schedule-dialog/edit-schedule-dialog.component';
 import { LibraryCodesTooltipComponent } from './components/library-codes-tooltip/library-codes-tooltip.component';
 import { LinkStatusTooltipComponent } from './components/link-status-tooltip/link-status-tooltip.component';
+import { SandboxBannerComponent } from './components/sandbox-banner/sandbox-banner.component';
 import { UserTypeChipComponent } from './components/user-type-chip/user-type-chip.component';
 
 @NgModule({
@@ -17,6 +18,7 @@ import { UserTypeChipComponent } from './components/user-type-chip/user-type-chi
 		EditScheduleDialogComponent,
 		LibraryCodesTooltipComponent,
 		LinkStatusTooltipComponent,
+		SandboxBannerComponent,
 		UserTypeChipComponent,
 	],
 	imports: [CommonModule, MaterialModule, OverlayModule, ReactiveFormsModule, TranslateModule],
@@ -25,6 +27,7 @@ import { UserTypeChipComponent } from './components/user-type-chip/user-type-chi
 		EditScheduleDialogComponent,
 		LibraryCodesTooltipComponent,
 		LinkStatusTooltipComponent,
+		SandboxBannerComponent,
 		UserTypeChipComponent,
 		TranslateModule,
 	],
