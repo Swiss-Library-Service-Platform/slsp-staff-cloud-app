@@ -23,6 +23,7 @@ export class BackendHttpService {
 	private http = inject(HttpClient);
 
 	private baseUrl: string | null = null;
+	private isSandboxCache$: Observable<boolean> | null = null;
 
 	// Token cache — avoids serialized getAuthToken() bottleneck
 	private cachedToken: string | null = null;
@@ -95,6 +96,21 @@ export class BackendHttpService {
 				responseType: 'blob',
 			})
 		);
+	}
+
+	/**
+	 * Emits true when the app is running inside an Alma sandbox.
+	 * Detected from the Alma URL pattern ("psb" subdomain) in init data.
+	*/
+	public isSandbox$(): Observable<boolean> {
+		if (!this.isSandboxCache$) {
+			this.isSandboxCache$ = this.eventsService.getInitData().pipe(
+				map((initData) => /psb/.test(initData['urls']?.['alma'] || '')),
+				shareReplay(1)
+			);
+		}
+
+		return this.isSandboxCache$;
 	}
 
 	/**

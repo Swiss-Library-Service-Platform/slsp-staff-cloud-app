@@ -1,0 +1,7 @@
+@if (isSandbox$ | async) {
+	<div class="sandbox-banner" role="status">
+		<mat-icon class="sandbox-banner__icon">warning</mat-icon>
+		<span class="sandbox-banner__prefix">{{ 'Sandbox.bannerPrefix' | translate }}</span>
+		<span class="sandbox-banner__text">{{ 'Sandbox.bannerText' | translate }}</span>
+	</div>
+}

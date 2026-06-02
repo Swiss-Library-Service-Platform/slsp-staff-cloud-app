@@ -13,6 +13,10 @@
 		"listUsers": "Utenti",
 		"groups": "Gruppi"
 	},
+	"Sandbox": {
+		"bannerPrefix": "Test",
+		"bannerText": "edu-ID di test e backend di test. I collegamenti creati qui non sono utilizzabili per accessi reali."
+	},
 	"general": {
 		"comingSoon": "Prossimamente",
 		"cacheNote": "Le modifiche potrebbero richiedere alcuni minuti per diventare effettive."
