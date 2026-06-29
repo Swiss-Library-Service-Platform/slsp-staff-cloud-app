@@ -4,6 +4,7 @@ import {
 } from '@angular/common/http';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DateAdapter, MAT_DATE_FORMATS } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -21,7 +22,10 @@ import { SharedModule } from './shared/shared.module';
 import { ShellComponent } from './shell/shell.component';
 import { LinkAccountsComponent } from './tabs/link-accounts/link-accounts.component';
 import { ListUsersComponent } from './tabs/list-users/list-users.component';
-import { GroupsComponent } from './tabs/groups/groups.component';
+import {
+	SwissDateAdapter,
+	SWISS_DATE_FORMATS,
+} from './shared/swiss-date-adapter';
 
 @NgModule({
 	declarations: [
@@ -29,7 +33,6 @@ import { GroupsComponent } from './tabs/groups/groups.component';
 		ShellComponent,
 		LinkAccountsComponent,
 		ListUsersComponent,
-		GroupsComponent,
 	],
 	bootstrap: [AppComponent],
 	imports: [
@@ -55,6 +58,8 @@ import { GroupsComponent } from './tabs/groups/groups.component';
 			provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
 			useValue: { appearance: 'fill' },
 		},
+		{ provide: DateAdapter, useClass: SwissDateAdapter },
+		{ provide: MAT_DATE_FORMATS, useValue: SWISS_DATE_FORMATS },
 		provideHttpClient(withInterceptorsFromDi()),
 	],
 })

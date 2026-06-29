@@ -10,8 +10,7 @@
 	},
 	"tabs": {
 		"linkAccounts": "Lier",
-		"listUsers": "Utilisateurs",
-		"groups": "Groupes"
+		"listUsers": "Utilisateurs"
 	},
 	"Sandbox": {
 		"bannerPrefix": "Test",

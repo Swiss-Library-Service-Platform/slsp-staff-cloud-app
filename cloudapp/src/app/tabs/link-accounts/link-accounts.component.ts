@@ -197,7 +197,7 @@ export class LinkAccountsComponent implements OnInit {
 				if (result.status === 'success') {
 					this.alertService.success(
 						this.translateService.instant('link.success') +
-							' ' +
+							'. ' +
 							this.translateService.instant('general.cacheNote')
 					);
 					this.clearAllSelections();

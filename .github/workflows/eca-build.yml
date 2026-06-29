@@ -2,7 +2,7 @@ name: Build CloudApp (eca build)
 
 on:
   push:
-    branches: ['*']
+    branches: ['main']
     paths:
       [
         'package.json',
