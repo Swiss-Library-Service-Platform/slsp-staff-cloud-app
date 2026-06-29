@@ -667,10 +667,9 @@ export class ListUsersComponent implements OnInit {
 
 	private formatDate(isoDate: string): string {
 		const date = new Date(isoDate + 'T00:00:00');
+		const day = String(date.getDate()).padStart(2, '0');
+		const month = String(date.getMonth() + 1).padStart(2, '0');
 
-		return date.toLocaleDateString(
-			this.translateService.currentLang || 'en',
-			{ year: 'numeric', month: 'short', day: 'numeric' }
-		);
+		return `${day}.${month}.${date.getFullYear()}`;
 	}
 }
