@@ -201,7 +201,7 @@ export class ListUsersComponent implements OnInit {
 						this.translateService.instant(
 							'listUsers.toggleSuccess'
 						) +
-							' ' +
+							'. ' +
 							this.translateService.instant(
 								'general.cacheNote'
 							)
@@ -280,7 +280,7 @@ export class ListUsersComponent implements OnInit {
 						this.translateService.instant(
 							'listUsers.unlinkSuccess'
 						) +
-							' ' +
+							'. ' +
 							this.translateService.instant(
 								'general.cacheNote'
 							)
@@ -405,7 +405,7 @@ export class ListUsersComponent implements OnInit {
 						this.translateService.instant(
 							'listUsers.scheduleUpdated'
 						) +
-							' ' +
+							'. ' +
 							this.translateService.instant(
 								'general.cacheNote'
 							)
