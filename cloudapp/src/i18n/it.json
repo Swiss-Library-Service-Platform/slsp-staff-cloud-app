@@ -10,8 +10,7 @@
 	},
 	"tabs": {
 		"linkAccounts": "Collega",
-		"listUsers": "Utenti",
-		"groups": "Gruppi"
+		"listUsers": "Utenti"
 	},
 	"Sandbox": {
 		"bannerPrefix": "Test",
