@@ -33,6 +33,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Audit dependencies (fail on critical)
+        run: npm audit --audit-level=critical
+
       - name: Build CloudApp ('eca build')
         run: |
           npm ci
