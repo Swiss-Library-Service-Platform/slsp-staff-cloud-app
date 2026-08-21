@@ -3,13 +3,14 @@
 		<!-- Search & Filter Bar -->
 		<div class="search-filter-bar">
 			<div class="search-row">
-				<mat-form-field appearance="outline" class="search-field">
+				<mat-form-field
+					appearance="outline"
+					class="search-field ui-control-field ui-control-field--dense"
+				>
 					<input
 						matInput
 						[formControl]="searchControl"
-						[placeholder]="
-							'listUsers.searchPlaceholder' | translate
-						"
+						[placeholder]="'listUsers.searchPlaceholder' | translate"
 					/>
 					<button
 						mat-icon-button
@@ -22,36 +23,58 @@
 					</button>
 				</mat-form-field>
 
-				<mat-form-field appearance="outline" class="view-select" *ngIf="!vm.loading && !vm.error">
-					<mat-select [formControl]="viewControl" panelClass="view-select-panel">
+				<mat-form-field
+					appearance="outline"
+					class="view-select ui-control-field ui-control-field--dense"
+					*ngIf="!vm.loading && !vm.error"
+				>
+					<mat-select
+						[formControl]="viewControl"
+						panelClass="view-select-panel"
+					>
 						<mat-option value="all">
 							{{ 'listUsers.viewAll' | translate }}
-							<span class="option-count" *ngIf="vm.total">({{ vm.total.staffUsers }})</span>
+							<span class="option-count" *ngIf="vm.total"
+								>({{ vm.total.staffUsers }})</span
+							>
 						</mat-option>
 						<mat-option value="linked">
 							{{ 'listUsers.viewLinked' | translate }}
-							<span class="option-count" *ngIf="vm.total">({{ vm.total.linkedUsers }})</span>
+							<span class="option-count" *ngIf="vm.total"
+								>({{ vm.total.linkedUsers }})</span
+							>
 						</mat-option>
 						<mat-option value="invalid">
 							{{ 'listUsers.viewInvalid' | translate }}
-							<span class="option-count" *ngIf="vm.total">({{ vm.total.invalidUsers }})</span>
+							<span class="option-count" *ngIf="vm.total"
+								>({{ vm.total.invalidUsers }})</span
+							>
 						</mat-option>
 						<mat-option value="unlinked">
 							{{ 'listUsers.viewUnlinked' | translate }}
-							<span class="option-count" *ngIf="vm.total">({{ vm.total.staffUsers - vm.total.linkedUsers }})</span>
+							<span class="option-count" *ngIf="vm.total"
+								>({{ vm.total.staffUsers - vm.total.linkedUsers }})</span
+							>
 						</mat-option>
 						<mat-option value="outOfSchedule">
 							{{ 'listUsers.viewOutOfSchedule' | translate }}
-							<span class="option-count" *ngIf="vm.total">({{ vm.total.outOfScheduleUsers }})</span>
+							<span class="option-count" *ngIf="vm.total"
+								>({{ vm.total.outOfScheduleUsers }})</span
+							>
 						</mat-option>
 						<mat-option value="disabled">
 							{{ 'listUsers.viewDisabled' | translate }}
-							<span class="option-count" *ngIf="vm.total">({{ vm.total.disabledUsers }})</span>
+							<span class="option-count" *ngIf="vm.total"
+								>({{ vm.total.disabledUsers }})</span
+							>
 						</mat-option>
 					</mat-select>
 				</mat-form-field>
 
-				<mat-form-field appearance="outline" class="library-select">
+				<mat-form-field
+					appearance="outline"
+					class="library-select ui-control-field ui-control-field--dense"
+				>
 					<mat-icon matPrefix>apartment</mat-icon>
 					<mat-select
 						[formControl]="libraryCodeControl"
@@ -66,10 +89,7 @@
 						<div class="library-search-header">
 							<input
 								[formControl]="libraryCodeSearch"
-								[placeholder]="
-									'listUsers.searchLibraryCodes'
-										| translate
-								"
+								[placeholder]="'listUsers.searchLibraryCodes' | translate"
 								class="library-search-input"
 								(keydown)="$event.stopPropagation()"
 							/>
@@ -83,39 +103,25 @@
 							</button>
 						</div>
 
-						<div
-							*ngIf="libraryCodesLoading"
-							class="library-codes-loading"
-						>
+						<div *ngIf="libraryCodesLoading" class="library-codes-loading">
 							<mat-spinner diameter="20"></mat-spinner>
 						</div>
 
 						<ng-container
-							*ngIf="
-								filteredLibraryCodes$ | async as filteredCodes
-							"
+							*ngIf="filteredLibraryCodes$ | async as filteredCodes"
 						>
 							<mat-option
-								*ngFor="
-									let code of filteredCodes;
-									trackBy: trackByIndex
-								"
+								*ngFor="let code of filteredCodes; trackBy: trackByIndex"
 								[value]="code"
 							>
 								{{ code }}
 							</mat-option>
 
 							<div
-								*ngIf="
-									filteredCodes.length === 0 &&
-									!libraryCodesLoading
-								"
+								*ngIf="filteredCodes.length === 0 && !libraryCodesLoading"
 								class="library-codes-empty"
 							>
-								{{
-									'listUsers.noLibraryCodesFound'
-										| translate
-								}}
+								{{ 'listUsers.noLibraryCodesFound' | translate }}
 							</div>
 						</ng-container>
 					</mat-select>
@@ -124,30 +130,35 @@
 		</div>
 
 		<!-- Summary bar -->
-		<div
-			class="list-summary"
-			*ngIf="!vm.loading && !vm.error && vm.total"
-		>
+		<div class="list-summary" *ngIf="!vm.loading && !vm.error && vm.total">
 			<span class="summary-text">
 				<ng-container *ngIf="isFiltered() && vm.filtered; else unfiltered">
-					{{ 'listUsers.summaryFiltered' | translate: {
-						filteredStaff: vm.filtered.staffUsers,
-						totalStaff: vm.total.staffUsers,
-						filteredLinked: vm.filtered.linkedUsers,
-						filteredLinks: vm.filtered.links
-					} }}
+					{{
+						'listUsers.summaryFiltered'
+							| translate
+								: {
+										filteredStaff: vm.filtered.staffUsers,
+										totalStaff: vm.total.staffUsers,
+										filteredLinked: vm.filtered.linkedUsers,
+										filteredLinks: vm.filtered.links,
+								  }
+					}}
 				</ng-container>
 				<ng-template #unfiltered>
-					{{ 'listUsers.summary' | translate: {
-						staff: vm.total.staffUsers,
-						linked: vm.total.linkedUsers,
-						links: vm.total.links
-					} }}
+					{{
+						'listUsers.summary'
+							| translate
+								: {
+										staff: vm.total.staffUsers,
+										linked: vm.total.linkedUsers,
+										links: vm.total.links,
+								  }
+					}}
 				</ng-template>
 			</span>
 			<button
 				mat-icon-button
-				class="export-button"
+				class="export-button ui-icon-button--compact"
 				[disabled]="exporting"
 				(click)="onExport()"
 				[matTooltip]="'listUsers.export' | translate"
@@ -180,15 +191,9 @@
 
 			<!-- Groups list -->
 			<ng-container *ngIf="!vm.loading && !vm.error">
-				<div
-					*ngIf="vm.groups.length > 0; else emptyState"
-					class="groups-list"
-				>
+				<div *ngIf="vm.groups.length > 0; else emptyState" class="groups-list">
 					<div
-						*ngFor="
-							let group of vm.groups;
-							trackBy: trackByStaffUser
-						"
+						*ngFor="let group of vm.groups; trackBy: trackByStaffUser"
 						class="staff-group"
 					>
 						<!-- Staff user header row -->
@@ -199,45 +204,42 @@
 							role="button"
 							(click)="toggleGroup(group.almaPrimaryId)"
 							(keydown.enter)="toggleGroup(group.almaPrimaryId)"
-							(keydown.space)="toggleGroup(group.almaPrimaryId); $event.preventDefault()"
+							(keydown.space)="
+								toggleGroup(group.almaPrimaryId); $event.preventDefault()
+							"
 						>
-							<app-user-type-chip
-								[userType]="'staff'"
-							></app-user-type-chip>
+							<app-user-type-chip [userType]="'staff'"></app-user-type-chip>
 							<div class="staff-info">
 								<div class="staff-id-line">
-									<span class="staff-id">{{
-										group.almaPrimaryId
-									}}</span>
+									<span class="staff-id">{{ group.almaPrimaryId }}</span>
 									<app-atam-badge *ngIf="group.isAtam" />
 								</div>
 								<span
 									*ngIf="group.givenName || group.surname"
 									class="staff-name"
-								>{{ group.givenName }} {{ group.surname }}</span>
+									>{{ group.givenName }} {{ group.surname }}</span
+								>
 							</div>
 							<mat-icon
 								*ngIf="isInvalidStaffId(group.almaPrimaryId)"
 								class="invalid-icon"
 								[matTooltip]="'validation.invalidStaffId' | translate"
-							>error_outline</mat-icon>
+								>error_outline</mat-icon
+							>
 							<app-library-codes-tooltip
 								*ngIf="group.libraryCodes.length"
 								[libraryCodes]="group.libraryCodes"
 							>
 								<div class="library-codes">
-									<mat-icon class="library-icon"
-										>apartment</mat-icon
-									>
+									<mat-icon class="library-icon">apartment</mat-icon>
 									<span class="codes-count">
 										{{ group.libraryCodes.length }}
 									</span>
 								</div>
 							</app-library-codes-tooltip>
-							<span
-								class="link-count"
-								*ngIf="group.eduIdLinks.length > 0"
-							>{{ group.eduIdLinks.length }}</span>
+							<span class="link-count" *ngIf="group.eduIdLinks.length > 0">{{
+								group.eduIdLinks.length
+							}}</span>
 							<mat-icon
 								class="expand-icon"
 								[class.collapsed]="isGroupCollapsed(group.almaPrimaryId)"
@@ -255,57 +257,48 @@
 							"
 						>
 							<div
-								*ngFor="
-									let link of group.eduIdLinks;
-									trackBy: trackByLinkId
-								"
+								*ngFor="let link of group.eduIdLinks; trackBy: trackByLinkId"
 								class="eduid-link-row"
-								[class.disabled-link]="
-									!isEffectivelyEnabled(link)
-								"
+								[class.disabled-link]="!isEffectivelyEnabled(link)"
 							>
 								<mat-slide-toggle
 									[checked]="isEffectivelyEnabled(link)"
 									[disabled]="
-										isToggling(link.linkId) ||
-										isUnlinking(link.linkId)
+										isToggling(link.linkId) || isUnlinking(link.linkId)
 									"
-									(change)="
-										onToggleChange(link, $event.checked)
-									"
+									(change)="onToggleChange(link, $event.checked)"
 									color="primary"
 								></mat-slide-toggle>
 
-								<app-user-type-chip
-									[userType]="'eduid'"
-								></app-user-type-chip>
+								<app-user-type-chip [userType]="'eduid'"></app-user-type-chip>
 								<div class="eduid-info">
 									<span
-										*ngIf="
-											link.eduIdGivenName ||
-											link.eduIdSurname
-										"
+										*ngIf="link.eduIdGivenName || link.eduIdSurname"
 										class="eduid-name"
-									>{{ link.eduIdGivenName }}
-										{{ link.eduIdSurname }}</span
+										>{{ link.eduIdGivenName }} {{ link.eduIdSurname }}</span
 									>
-									<span class="eduid-id">{{
-										link.eduIdPersonalId
-									}}</span>
+									<span class="eduid-id">{{ link.eduIdPersonalId }}</span>
 								</div>
 								<mat-icon
 									*ngIf="isInvalidEduIdId(link.eduIdPersonalId)"
 									class="invalid-icon"
 									[matTooltip]="'validation.invalidEduId' | translate"
-								>error_outline</mat-icon>
+									>error_outline</mat-icon
+								>
 
 								<button
 									mat-icon-button
-									class="schedule-button"
+									class="schedule-button ui-icon-button--compact"
 									[class.no-schedule]="!link.startDate && !link.endDate"
-									[class.active]="(link.startDate || link.endDate) && link.isActive"
-									[class.inactive]="(link.startDate || link.endDate) && !link.isActive"
-									[disabled]="isToggling(link.linkId) || isUnlinking(link.linkId)"
+									[class.active]="
+										(link.startDate || link.endDate) && link.isActive
+									"
+									[class.inactive]="
+										(link.startDate || link.endDate) && !link.isActive
+									"
+									[disabled]="
+										isToggling(link.linkId) || isUnlinking(link.linkId)
+									"
 									(click)="onEditSchedule(group, link)"
 									[matTooltip]="getScheduleTooltip(link)"
 								>
@@ -313,18 +306,14 @@
 								</button>
 								<button
 									mat-icon-button
-									class="unlink-button"
+									class="unlink-button ui-icon-button--compact"
 									[disabled]="
-										isUnlinking(link.linkId) ||
-										isToggling(link.linkId)
+										isUnlinking(link.linkId) || isToggling(link.linkId)
 									"
 									(click)="onUnlink(link)"
-									[matTooltip]="
-										'listUsers.unlink' | translate
-									"
+									[matTooltip]="'listUsers.unlink' | translate"
 								>
-									<mat-icon
-										*ngIf="!isUnlinking(link.linkId)"
+									<mat-icon *ngIf="!isUnlinking(link.linkId)"
 										>link_off</mat-icon
 									>
 									<mat-spinner
@@ -342,9 +331,7 @@
 				<ng-template #emptyState>
 					<div class="state-message empty">
 						<mat-icon>{{
-							searchControl.value
-								? 'search_off'
-								: 'info_outline'
+							searchControl.value ? 'search_off' : 'info_outline'
 						}}</mat-icon>
 						<span>{{
 							searchControl.value

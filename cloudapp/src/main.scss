@@ -13,6 +13,23 @@
 
 		// Font color
 		--color-font-primary: #5e5e5e;
+		--color-text-primary: rgba(0, 0, 0, 0.8);
+		--color-text-secondary: rgba(0, 0, 0, 0.6);
+		--color-text-muted: rgba(0, 0, 0, 0.45);
+		--color-text-disabled: rgba(0, 0, 0, 0.3);
+
+		// Surfaces and elevation
+		--surface-default: #fff;
+		--surface-subtle: #fafafa;
+		--surface-panel: #f8f8f8;
+		--shadow-overlay: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+		// Shared sizing
+		--radius-small: 4px;
+		--radius-medium: 6px;
+		--control-height-standard: 40px;
+		--control-height-compact: 36px;
+		--filter-chip-height: 28px;
 		// User type colors - Staff (blue)
 		--color-staff: #1976d2;
 		--color-staff-light: rgba(25, 118, 210, 0.06);
@@ -70,7 +87,7 @@
 	// Normalize outline form field heights and text size
 	// (mat-select renders shorter than matInput by default)
 	.mat-mdc-text-field-wrapper {
-		height: 40px !important;
+		height: var(--control-height-standard) !important;
 	}
 	.mat-mdc-form-field {
 		--mat-form-field-container-text-size: 13px;
@@ -87,7 +104,8 @@
 	.mat-mdc-form-field-icon-prefix {
 		padding: 0 !important;
 	}
-	.mat-mdc-form-field-icon-prefix > .mat-icon, .mat-mdc-form-field-icon-suffix > .mat-icon {
+	.mat-mdc-form-field-icon-prefix > .mat-icon,
+	.mat-mdc-form-field-icon-suffix > .mat-icon {
 		padding: 0 4px !important;
 	}
 
@@ -99,6 +117,95 @@
 		.mat-mdc-icon-button .mat-mdc-button-touch-target {
 			width: 32px;
 			height: 32px;
+		}
+	}
+
+	// Reusable field density contracts. Layout remains component-owned.
+	.ui-control-field {
+		--mat-form-field-container-text-size: 13px;
+		--mat-select-trigger-text-size: 13px;
+
+		&.ui-control-field--dense {
+			--mat-form-field-container-text-size: 12px;
+			--mat-select-trigger-text-size: 12px;
+
+			.mat-mdc-text-field-wrapper {
+				height: var(--control-height-compact) !important;
+			}
+
+			.mat-mdc-form-field-infix {
+				min-height: var(--control-height-compact);
+			}
+
+			.mdc-text-field__input {
+				padding-top: 6px !important;
+				padding-bottom: 6px !important;
+			}
+		}
+	}
+
+	.ui-date-field {
+		--mat-form-field-container-text-size: 12px;
+		--mdc-outlined-text-field-label-text-size: 11px;
+		--mat-datepicker-toggle-icon-color: var(--color-text-muted);
+
+		.mdc-notched-outline__leading,
+		.mdc-notched-outline__notch,
+		.mdc-notched-outline__trailing {
+			border-color: var(--border-color) !important;
+		}
+	}
+
+	.ui-icon-button--compact {
+		--mdc-icon-button-state-layer-size: 28px;
+		--mdc-icon-button-icon-size: 16px;
+
+		.mat-mdc-button-touch-target {
+			width: 28px;
+			height: 28px;
+		}
+
+		mat-icon {
+			font-size: 16px;
+			width: 16px;
+			height: 16px;
+		}
+	}
+
+	// Secondary filter controls are intentionally quieter than identity badges.
+	.ui-filter-chips {
+		display: flex;
+
+		.mdc-evolution-chip-set__chips {
+			gap: 6px;
+			margin: 0;
+		}
+
+		.mat-mdc-chip {
+			--mdc-chip-container-height: var(--filter-chip-height);
+			--mdc-chip-container-shape-radius: 14px;
+			--mdc-chip-label-text-size: 12px;
+			--mdc-chip-label-text-weight: 500;
+			--mdc-chip-label-text-tracking: 0;
+			--mdc-chip-label-text-color: var(--color-text-secondary);
+			--mdc-chip-selected-label-text-color: var(--slsp-purple);
+			--mdc-chip-outline-color: var(--border-color-strong);
+			--mdc-chip-focus-outline-color: var(--slsp-purple);
+			--mdc-chip-elevated-selected-container-color: var(--slsp-purple-light);
+			--mdc-chip-with-icon-icon-size: 16px;
+			--mdc-chip-with-icon-selected-icon-color: var(--slsp-purple);
+			margin: 0;
+
+			.mdc-evolution-chip__action--primary {
+				padding-right: 10px;
+				padding-left: 10px;
+			}
+
+			&.mdc-evolution-chip--with-primary-graphic
+				.mdc-evolution-chip__action--primary {
+				padding-left: 4px;
+				padding-right: 10px;
+			}
 		}
 	}
 
@@ -164,9 +271,59 @@
 
 	// Shared filter bar (search + filter controls above content)
 	.search-filter-bar {
-		background-color: #fafafa;
+		background-color: var(--surface-subtle);
 		padding: 12px 16px;
 		border-bottom: 1px solid var(--border-color);
+	}
+
+	// Shared content states used by both primary tabs.
+	.state-message {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 32px 16px;
+		gap: 12px;
+		color: var(--color-text-secondary);
+		text-align: center;
+
+		mat-icon {
+			font-size: 48px;
+			width: 48px;
+			height: 48px;
+			color: var(--color-text-disabled);
+		}
+
+		&.error mat-icon {
+			color: var(--color-warn);
+		}
+	}
+
+	// Shared dialog density for the app's confirmation and schedule dialogs.
+	.mat-mdc-dialog-container {
+		--mdc-dialog-container-shape: var(--radius-medium);
+		--mdc-dialog-subhead-size: 16px;
+		--mdc-dialog-subhead-weight: 500;
+		--mdc-dialog-supporting-text-size: 13px;
+
+		.mat-mdc-dialog-title {
+			padding: 16px 20px 8px;
+		}
+
+		.mat-mdc-dialog-content {
+			padding: 8px 20px 16px;
+			color: var(--color-text-secondary);
+		}
+
+		.mat-mdc-dialog-actions {
+			min-height: 52px;
+			padding: 8px 16px 12px;
+			gap: 8px;
+
+			button {
+				min-height: var(--control-height-compact);
+			}
+		}
 	}
 
 	// Loading shade
@@ -192,7 +349,7 @@
 			border-bottom: 1px solid var(--border-color);
 			position: sticky;
 			top: 0;
-			background: white;
+			background: var(--surface-default);
 			z-index: 1;
 		}
 
@@ -233,7 +390,9 @@
 			height: 16px;
 			border-radius: 3px;
 			border: 1.5px solid rgba(0, 0, 0, 0.35);
-			transition: background-color 0.1s ease, border-color 0.1s ease;
+			transition:
+				background-color 0.1s ease,
+				border-color 0.1s ease;
 		}
 
 		.mat-pseudo-checkbox-checked,
@@ -258,10 +417,10 @@
 		pointer-events: auto;
 
 		.library-codes-tooltip {
-			background: #fff;
+			background: var(--surface-default);
 			border: 1px solid var(--border-color-strong);
-			border-radius: 4px;
-			box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+			border-radius: var(--radius-small);
+			box-shadow: var(--shadow-overlay);
 			min-width: 120px;
 			max-width: 200px;
 			max-height: 200px;
@@ -273,7 +432,7 @@
 			.tooltip-label {
 				font-size: 11px;
 				font-weight: 500;
-				color: rgba(0, 0, 0, 0.55);
+				color: var(--color-text-muted);
 				text-transform: uppercase;
 				letter-spacing: 0.3px;
 				margin-bottom: 4px;
@@ -292,7 +451,7 @@
 
 				li {
 					font-size: 12px;
-					color: rgba(0, 0, 0, 0.87);
+					color: var(--color-text-primary);
 					padding: 2px 0;
 					word-break: break-all;
 
@@ -322,5 +481,4 @@
 			font-size: 11px;
 		}
 	}
-
 }

@@ -4,14 +4,6 @@
 		display: flex;
 		gap: 8px;
 		align-items: flex-start;
-
-		// Consistent compact font size for all form fields in the row
-		// matInput reads --mat-form-field-container-text-size
-		// mat-select reads --mat-select-trigger-text-size
-		::ng-deep .mat-mdc-form-field {
-			--mat-form-field-container-text-size: 11px;
-			--mat-select-trigger-text-size: 11px;
-		}
 	}
 
 	.search-field {
@@ -30,7 +22,6 @@
 			color: rgba(0, 0, 0, 0.4);
 		}
 	}
-
 }
 
 // View preset dropdown (in search row)
@@ -56,15 +47,7 @@
 
 	.export-button {
 		flex-shrink: 0;
-		--mdc-icon-button-state-layer-size: 28px;
-		--mdc-icon-button-icon-size: 16px;
-
-		mat-icon {
-			font-size: 16px;
-			width: 16px;
-			height: 16px;
-			color: rgba(0, 0, 0, 0.4);
-		}
+		color: var(--color-text-muted);
 
 		.button-spinner {
 			width: 14px;
@@ -150,7 +133,7 @@
 			font-size: 11px;
 			font-weight: 400;
 			font-style: italic;
-			color: rgba(0, 0, 0, 0.5);
+			color: var(--color-text-muted);
 			line-height: 1.2;
 			white-space: nowrap;
 			overflow: hidden;
@@ -266,15 +249,13 @@
 
 	.schedule-button {
 		flex-shrink: 0;
-		--mdc-icon-button-state-layer-size: 32px;
-		--mdc-icon-button-icon-size: 18px;
 		transition: color 0.15s ease;
 
 		&.no-schedule {
 			opacity: 0.5;
 			cursor: default;
 		}
-		
+
 		&.active {
 			color: var(--color-success, #4caf50);
 		}
@@ -286,29 +267,15 @@
 		&:hover:not(:disabled) {
 			color: var(--slsp-purple);
 		}
-
-		mat-icon {
-			font-size: 18px;
-			width: 18px;
-			height: 18px;
-		}
 	}
 
 	.unlink-button {
 		flex-shrink: 0;
-		--mdc-icon-button-state-layer-size: 32px;
-		--mdc-icon-button-icon-size: 18px;
-		color: rgba(0, 0, 0, 0.3);
+		color: var(--color-text-disabled);
 		transition: color 0.15s ease;
 
 		&:hover:not(:disabled) {
 			color: var(--color-warn);
-		}
-
-		mat-icon {
-			font-size: 18px;
-			width: 18px;
-			height: 18px;
 		}
 
 		.button-spinner {
@@ -334,29 +301,5 @@
 		--mdc-switch-selected-focus-handle-color: #fff;
 		--mdc-switch-selected-pressed-track-color: var(--color-staff-dark);
 		--mdc-switch-selected-pressed-handle-color: #fff;
-	}
-}
-
-// State messages (loading, error, empty)
-.state-message {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	padding: 32px 16px;
-	gap: 12px;
-	color: rgba(0, 0, 0, 0.6);
-
-	mat-icon {
-		font-size: 48px;
-		width: 48px;
-		height: 48px;
-		color: rgba(0, 0, 0, 0.3);
-	}
-
-	&.error {
-		mat-icon {
-			color: var(--color-warn);
-		}
 	}
 }

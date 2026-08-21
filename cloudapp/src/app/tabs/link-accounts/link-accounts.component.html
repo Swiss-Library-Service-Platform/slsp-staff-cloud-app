@@ -136,7 +136,11 @@
 
 				@if (showScheduling) {
 					<div class="scheduling-fields">
-						<mat-form-field appearance="outline" class="date-field">
+						<mat-form-field
+							appearance="outline"
+							floatLabel="always"
+							class="date-field ui-control-field ui-date-field"
+						>
 							<mat-label>{{ 'link.startDate' | translate }}</mat-label>
 							<input
 								matInput
@@ -152,7 +156,11 @@
 							<mat-datepicker #createStart></mat-datepicker>
 						</mat-form-field>
 
-						<mat-form-field appearance="outline" class="date-field">
+						<mat-form-field
+							appearance="outline"
+							floatLabel="always"
+							class="date-field ui-control-field ui-date-field"
+						>
 							<mat-label>{{ 'link.endDate' | translate }}</mat-label>
 							<input
 								matInput
@@ -195,7 +203,10 @@
 
 		<!-- Search & Filter Bar (sticky) -->
 		<div class="search-filter-bar">
-			<mat-form-field appearance="outline" class="search-field">
+			<mat-form-field
+				appearance="outline"
+				class="search-field ui-control-field"
+			>
 				<mat-icon matPrefix>search</mat-icon>
 				<input
 					matInput
@@ -217,7 +228,7 @@
 				[value]="vm.filterType"
 				(change)="onFilterChange($event)"
 				aria-label="Filter by user type"
-				class="filter-chips"
+				class="filter-chips ui-filter-chips"
 			>
 				<mat-chip-option value="all">{{
 					'link.filterAll' | translate

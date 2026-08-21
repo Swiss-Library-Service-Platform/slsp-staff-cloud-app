@@ -12,14 +12,28 @@
 	</div>
 
 	<div class="date-fields">
-		<mat-form-field appearance="outline" class="date-field">
+		<mat-form-field
+			appearance="outline"
+			floatLabel="always"
+			class="date-field ui-control-field ui-date-field"
+		>
 			<mat-label>{{ 'link.startDate' | translate }}</mat-label>
-			<input matInput [matDatepicker]="startPicker" [formControl]="startDateControl" (focus)="startPicker.open()" readonly />
-			<mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+			<input
+				matInput
+				[matDatepicker]="startPicker"
+				[formControl]="startDateControl"
+				(focus)="startPicker.open()"
+				readonly
+			/>
+			<mat-datepicker-toggle
+				matIconSuffix
+				[for]="startPicker"
+			></mat-datepicker-toggle>
 			@if (startDateControl.value) {
 				<button
 					mat-icon-button
 					matIconSuffix
+					class="ui-icon-button--compact"
 					(click)="clearStartDate()"
 					[attr.aria-label]="'link.clearDate' | translate"
 				>
@@ -29,14 +43,28 @@
 			<mat-datepicker #startPicker></mat-datepicker>
 		</mat-form-field>
 
-		<mat-form-field appearance="outline" class="date-field">
+		<mat-form-field
+			appearance="outline"
+			floatLabel="always"
+			class="date-field ui-control-field ui-date-field"
+		>
 			<mat-label>{{ 'link.endDate' | translate }}</mat-label>
-			<input matInput [matDatepicker]="endPicker" [formControl]="endDateControl" (focus)="endPicker.open()" readonly />
-			<mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+			<input
+				matInput
+				[matDatepicker]="endPicker"
+				[formControl]="endDateControl"
+				(focus)="endPicker.open()"
+				readonly
+			/>
+			<mat-datepicker-toggle
+				matIconSuffix
+				[for]="endPicker"
+			></mat-datepicker-toggle>
 			@if (endDateControl.value) {
 				<button
 					mat-icon-button
 					matIconSuffix
+					class="ui-icon-button--compact"
 					(click)="clearEndDate()"
 					[attr.aria-label]="'link.clearDate' | translate"
 				>
