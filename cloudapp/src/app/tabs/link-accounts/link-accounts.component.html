@@ -40,9 +40,6 @@
 						class="selection-box staff"
 						[class.filled]="vm.selection.staff || vm.atamMode"
 						[class.atam-entry]="vm.atamMode"
-						[class.atam-available]="
-							vm.atamEnabled && !vm.selection.staff && !vm.atamMode
-						"
 					>
 						@if (vm.atamMode) {
 							<app-atam-badge [matchUserTypeWidth]="true" />
@@ -84,18 +81,6 @@
 								<span class="placeholder">{{
 									'link.selectStaffShort' | translate
 								}}</span>
-								@if (vm.atamEnabled) {
-									<button
-										type="button"
-										class="atam-entry-action"
-										(click)="activateAtamEntry()"
-										[matTooltip]="'link.enterAtamAccount' | translate"
-										[attr.aria-label]="'link.enterAtamAccount' | translate"
-									>
-										<mat-icon>edit</mat-icon>
-										<span>{{ 'atam.label' | translate }}</span>
-									</button>
-								}
 							}
 						}
 					</div>
@@ -110,6 +95,16 @@
 					}
 				</div>
 			</div>
+
+			@if (vm.atamEnabled && (!vm.selection.staff || vm.atamMode)) {
+				<mat-checkbox
+					class="atam-mode-checkbox"
+					[checked]="vm.atamMode"
+					(change)="onAtamModeChange($event.checked)"
+				>
+					{{ 'link.useAtamAccount' | translate }}
+				</mat-checkbox>
+			}
 
 			<!-- Scheduling (optional) -->
 			<div class="scheduling-section">

@@ -164,6 +164,14 @@ export class LinkAccountsComponent implements OnInit {
 		setTimeout(() => this.atamEmailInput?.nativeElement.focus());
 	}
 
+	public onAtamModeChange(checked: boolean): void {
+		if (checked) {
+			this.activateAtamEntry();
+		} else {
+			this.clearAtamEntry();
+		}
+	}
+
 	public clearAtamEntry(): void {
 		this.atamEmailControl.reset();
 		this.atamEmailControl.markAsUntouched();

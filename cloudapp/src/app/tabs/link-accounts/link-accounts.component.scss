@@ -32,7 +32,7 @@
 		min-height: 40px;
 		display: flex;
 		align-items: center;
-		justify-content: flex-start;
+		justify-content: center;
 		padding: 6px 10px;
 		border-radius: 6px;
 		border: 1px dashed var(--border-color-strong);
@@ -45,43 +45,13 @@
 			padding: 4px 0;
 		}
 
-		&.atam-available {
-			justify-content: space-between;
-			gap: 8px;
-		}
-
 		&.atam-entry {
+			justify-content: flex-start;
 			gap: 8px;
 
 			&:focus-within {
 				border-color: var(--slsp-purple);
 				box-shadow: inset 0 0 0 1px var(--slsp-purple);
-			}
-		}
-
-		.atam-entry-action {
-			flex-shrink: 0;
-			display: inline-flex;
-			align-items: center;
-			gap: 3px;
-			padding: 3px 2px;
-			border: 0;
-			background: transparent;
-			color: rgba(0, 0, 0, 0.45);
-			font: inherit;
-			font-size: 11px;
-			font-weight: 400;
-			cursor: pointer;
-			white-space: nowrap;
-
-			&:hover {
-				color: rgba(0, 0, 0, 0.7);
-			}
-
-			mat-icon {
-				width: 15px;
-				height: 15px;
-				font-size: 15px;
 			}
 		}
 
@@ -165,21 +135,46 @@
 		font-size: 11px;
 	}
 
+	.atam-mode-checkbox {
+		display: flex;
+		align-items: center;
+		width: fit-content;
+		min-height: 32px;
+		margin-top: 4px;
+		--mdc-checkbox-state-layer-size: 32px;
+		--mdc-checkbox-selected-icon-color: var(--slsp-purple);
+		--mdc-checkbox-selected-hover-icon-color: var(--slsp-purple);
+		--mdc-checkbox-selected-focus-icon-color: var(--slsp-purple);
+		--mdc-checkbox-selected-pressed-icon-color: var(--slsp-purple);
+		--mdc-checkbox-unselected-icon-color: var(--color-text-muted);
+		--mat-checkbox-label-text-size: 12px;
+		--mat-checkbox-label-text-weight: 400;
+		--mat-checkbox-label-text-color: var(--color-text-muted);
+	}
+
+	.atam-mode-checkbox + .scheduling-section {
+		margin-top: 0;
+	}
+
 	.scheduling-section {
-		margin-top: 6px;
+		margin-top: 4px;
 
 		.scheduling-header {
 			display: flex;
 			align-items: center;
 			gap: 4px;
+			min-height: 32px;
 			cursor: pointer;
 			user-select: none;
-			padding: 4px 0;
+			padding: 0;
 
 			.scheduling-toggle {
 				font-size: 18px;
-				width: 18px;
+				width: 32px;
 				height: 18px;
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
 				color: rgba(0, 0, 0, 0.4);
 				transition: transform 0.15s ease;
 

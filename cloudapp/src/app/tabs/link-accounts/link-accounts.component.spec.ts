@@ -88,6 +88,20 @@ describe('LinkAccountsComponent ATAM state', () => {
 		expect(component.atamEmailControl.value).toBe('');
 	});
 
+	it('toggles ATAM entry from the checkbox and clears its state when unchecked', () => {
+		component.onAtamModeChange(true);
+		component.atamEmailControl.setValue('temporary.person@example.ch');
+		component.atamEmailControl.markAsTouched();
+
+		expect(component.atamMode$.value).toBeTrue();
+
+		component.onAtamModeChange(false);
+
+		expect(component.atamMode$.value).toBeFalse();
+		expect(component.atamEmailControl.value).toBe('');
+		expect(component.atamEmailControl.touched).toBeFalse();
+	});
+
 	it('shows invalid state only after a non-empty invalid email is touched', () => {
 		component.activateAtamEntry();
 		component.atamEmailControl.setValue('not-an-email');
