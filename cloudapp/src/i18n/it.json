@@ -20,6 +20,10 @@
 		"comingSoon": "Prossimamente",
 		"cacheNote": "Le modifiche potrebbero richiedere alcuni minuti per diventare effettive."
 	},
+	"atam": {
+		"label": "ATAM",
+		"tooltip": "Account gestito da ATAM. Il collegamento viene mantenuto mentre l'account Alma è temporaneamente assente."
+	},
 	"error": {
 		"restApiError": "Errore API REST: {{0}}"
 	},
@@ -44,6 +48,9 @@
 		"success": "Account collegati con successo",
 		"selectStaffShort": "Personale...",
 		"selectEduIdShort": "edu-ID...",
+		"enterAtamAccount": "Inserisci account ATAM",
+		"atamEmailPlaceholder": "Indirizzo e-mail del personale",
+		"clearAtamEmail": "Cancella account ATAM",
 		"linkedToStaff": "Collegato al personale",
 		"linkedToEduId": "Collegato a edu-ID",
 		"incompatible": "Non può essere collegato all'account personale selezionato.",
@@ -59,6 +66,8 @@
 		"STAFF_USER_NOT_STAFF": "L'utente \"{{almaPrimaryId}}\" non è un membro del personale.",
 		"STAFF_USER_WRONG_GROUP": "L'utente \"{{almaPrimaryId}}\" non è nel gruppo utenti del personale richiesto.",
 		"STAFF_USER_INVALID_ID": "L'utente \"{{almaPrimaryId}}\" ha un formato ID primario non supportato per il collegamento. Previsto: e-mail (es. john.doe@inst.ch) o non-personale (NP_*).",
+		"ATAM_NOT_ENABLED_FOR_IZ": "La creazione di collegamenti ATAM non è abilitata per questa istituzione.",
+		"ATAM_PRIMARY_ID_INVALID": "L'ID del personale ATAM deve essere un indirizzo e-mail valido.",
 		"PERSONAL_ACCOUNT_DUPLICATE": "Questo account personale del personale è già collegato a un altro account edu-ID.",
 		"EDUID_ALREADY_LINKED_PERSONAL": "Questo edu-ID è già collegato a un altro account personale.",
 		"ALMA_USER_NOT_FOUND": "L'utente \"{{userId}}\" non è stato trovato in Alma.",
@@ -90,6 +99,7 @@
 	},
 	"validation": {
 		"invalidStaffId": "Questo formato di ID account non è supportato per il collegamento. Previsto: e-mail (es. john.doe@inst.ch) o non-personale (NP_*).",
+		"invalidAtamEmail": "Inserisci un indirizzo e-mail valido per il personale.",
 		"invalidEduId": "Questo formato edu-ID non è valido. Previsto: cifre@eduid.ch."
 	},
 	"listUsers": {

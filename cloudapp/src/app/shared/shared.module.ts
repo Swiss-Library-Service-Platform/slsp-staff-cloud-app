@@ -6,6 +6,7 @@ import { MaterialModule } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateModule } from '@ngx-translate/core';
 
 import { ConfirmDialogComponent } from './components/confirm-dialog/confirm-dialog.component';
+import { AtamBadgeComponent } from './components/atam-badge/atam-badge.component';
 import { EditScheduleDialogComponent } from './components/edit-schedule-dialog/edit-schedule-dialog.component';
 import { LibraryCodesTooltipComponent } from './components/library-codes-tooltip/library-codes-tooltip.component';
 import { LinkStatusTooltipComponent } from './components/link-status-tooltip/link-status-tooltip.component';
@@ -14,6 +15,7 @@ import { UserTypeChipComponent } from './components/user-type-chip/user-type-chi
 
 @NgModule({
 	declarations: [
+		AtamBadgeComponent,
 		ConfirmDialogComponent,
 		EditScheduleDialogComponent,
 		LibraryCodesTooltipComponent,
@@ -21,8 +23,15 @@ import { UserTypeChipComponent } from './components/user-type-chip/user-type-chi
 		SandboxBannerComponent,
 		UserTypeChipComponent,
 	],
-	imports: [CommonModule, MaterialModule, OverlayModule, ReactiveFormsModule, TranslateModule],
+	imports: [
+		CommonModule,
+		MaterialModule,
+		OverlayModule,
+		ReactiveFormsModule,
+		TranslateModule,
+	],
 	exports: [
+		AtamBadgeComponent,
 		ConfirmDialogComponent,
 		EditScheduleDialogComponent,
 		LibraryCodesTooltipComponent,

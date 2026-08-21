@@ -20,6 +20,10 @@
 		"comingSoon": "Bientôt disponible",
 		"cacheNote": "Les modifications peuvent prendre quelques minutes avant d'être effectives."
 	},
+	"atam": {
+		"label": "ATAM",
+		"tooltip": "Compte géré par ATAM. Son lien est conservé lorsque le compte Alma est temporairement absent."
+	},
 	"error": {
 		"restApiError": "Erreur API REST : {{0}}"
 	},
@@ -44,6 +48,9 @@
 		"success": "Comptes liés avec succès",
 		"selectStaffShort": "Personnel...",
 		"selectEduIdShort": "edu-ID...",
+		"enterAtamAccount": "Saisir un compte ATAM",
+		"atamEmailPlaceholder": "Adresse e-mail du personnel",
+		"clearAtamEmail": "Effacer le compte ATAM",
 		"linkedToStaff": "Lié au personnel",
 		"linkedToEduId": "Lié à edu-ID",
 		"incompatible": "Ne peut pas être lié au compte personnel sélectionné.",
@@ -59,6 +66,8 @@
 		"STAFF_USER_NOT_STAFF": "L'utilisateur \"{{almaPrimaryId}}\" n'est pas un membre du personnel.",
 		"STAFF_USER_WRONG_GROUP": "L'utilisateur \"{{almaPrimaryId}}\" n'est pas dans le groupe d'utilisateurs du personnel requis.",
 		"STAFF_USER_INVALID_ID": "L'utilisateur \"{{almaPrimaryId}}\" a un format d'identifiant principal non pris en charge. Attendu : e-mail (ex. john.doe@inst.ch) ou non-personnel (NP_*).",
+		"ATAM_NOT_ENABLED_FOR_IZ": "La création de liens ATAM n'est pas activée pour cette institution.",
+		"ATAM_PRIMARY_ID_INVALID": "L'identifiant du personnel ATAM doit être une adresse e-mail valide.",
 		"PERSONAL_ACCOUNT_DUPLICATE": "Ce compte personnel du personnel est déjà lié à un autre compte edu-ID.",
 		"EDUID_ALREADY_LINKED_PERSONAL": "Cet edu-ID est déjà lié à un autre compte personnel.",
 		"ALMA_USER_NOT_FOUND": "L'utilisateur \"{{userId}}\" n'a pas été trouvé dans Alma.",
@@ -90,6 +99,7 @@
 	},
 	"validation": {
 		"invalidStaffId": "Ce format d'identifiant de compte n'est pas pris en charge pour la liaison. Attendu : e-mail (ex. john.doe@inst.ch) ou non-personal (NP_*).",
+		"invalidAtamEmail": "Saisissez une adresse e-mail valide pour le personnel.",
 		"invalidEduId": "Ce format edu-ID n'est pas valide. Attendu : chiffres@eduid.ch."
 	},
 	"listUsers": {

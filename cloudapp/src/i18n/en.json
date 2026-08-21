@@ -20,6 +20,10 @@
 		"comingSoon": "Coming soon",
 		"cacheNote": "Changes may take a few minutes to take effect."
 	},
+	"atam": {
+		"label": "ATAM",
+		"tooltip": "ATAM-managed account. Its link is retained while the Alma account is temporarily absent."
+	},
 	"error": {
 		"restApiError": "REST API error: {{0}}"
 	},
@@ -44,6 +48,9 @@
 		"success": "Accounts linked successfully",
 		"selectStaffShort": "Select staff...",
 		"selectEduIdShort": "Select edu-ID...",
+		"enterAtamAccount": "Enter ATAM account",
+		"atamEmailPlaceholder": "Staff email address",
+		"clearAtamEmail": "Clear ATAM account",
 		"linkedToStaff": "Linked to Staff",
 		"linkedToEduId": "Linked to edu-ID",
 		"incompatible": "Cannot link to selected personal account.",
@@ -59,6 +66,8 @@
 		"STAFF_USER_NOT_STAFF": "User \"{{almaPrimaryId}}\" is not a staff user.",
 		"STAFF_USER_WRONG_GROUP": "User \"{{almaPrimaryId}}\" is not in the required staff user group.",
 		"STAFF_USER_INVALID_ID": "User \"{{almaPrimaryId}}\" has an unsupported primary ID format for linking. Expected: email (e.g. john.doe@inst.ch) or non-personal (NP_*).",
+		"ATAM_NOT_ENABLED_FOR_IZ": "ATAM link creation is not enabled for this institution.",
+		"ATAM_PRIMARY_ID_INVALID": "The ATAM staff ID must be a valid email address.",
 		"PERSONAL_ACCOUNT_DUPLICATE": "This personal staff account is already linked to another edu-ID account.",
 		"EDUID_ALREADY_LINKED_PERSONAL": "This edu-ID is already linked to another personal account.",
 		"ALMA_USER_NOT_FOUND": "User \"{{userId}}\" was not found in Alma.",
@@ -90,6 +99,7 @@
 	},
 	"validation": {
 		"invalidStaffId": "This staff account ID format is not supported for linking. Expected: email (e.g. john.doe@inst.ch) or non-personal (NP_*).",
+		"invalidAtamEmail": "Enter a valid staff email address.",
 		"invalidEduId": "This edu-ID format is not valid. Expected: digits@eduid.ch."
 	},
 	"listUsers": {

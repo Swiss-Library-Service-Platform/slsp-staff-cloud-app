@@ -14,6 +14,7 @@ import { BackendHttpService } from './backend-http.service';
 export interface CreateLinkRequest {
 	almaPrimaryId: string;
 	eduIdPersonalId: string;
+	atam: boolean;
 	startDate?: string | null;
 	endDate?: string | null;
 }
@@ -35,6 +36,7 @@ export interface LinkResponse {
 	almaPrimaryId: string;
 	slspUniqueId: string;
 	eduIdPersonalId: string;
+	isAtam: boolean;
 	isEnabled: boolean;
 	startDate: string | null;
 	endDate: string | null;
@@ -95,6 +97,7 @@ export interface LinksListResponse {
 export interface LinkStatus {
 	linkId: number;
 	linkedTo: string;
+	isAtam: boolean;
 	givenName?: string;
 	surname?: string;
 	isEnabled: boolean;
@@ -147,9 +150,11 @@ export class LinkService {
 	 * Fetch all staff users grouped with their edu-ID links, with optional filters.
 	 * Returns groups along with total and filtered aggregate counts.
 	 */
-	public getLinks(params: LinksFilterParams = {}): Observable<LinksListResponse> {
+	public getLinks(
+		params: LinksFilterParams = {},
+	): Observable<LinksListResponse> {
 		return this.backend.get<LinksListResponse>(
-			`/api/cloudapp/links${this.buildFilterQuery(params)}`
+			`/api/cloudapp/links${this.buildFilterQuery(params)}`,
 		);
 	}
 
@@ -174,18 +179,21 @@ export class LinkService {
 	 *
 	 * @param staffPrimaryId - Alma staff user primary ID
 	 * @param eduIdPersonalId - edu-ID personal identifier (e.g., 123456@eduid.ch)
+	 * @param atam - Whether this is a persistent ATAM-managed staff account
 	 * @param startDate - Optional start date (ISO format YYYY-MM-DD)
 	 * @param endDate - Optional end date (ISO format YYYY-MM-DD)
 	 */
 	public createLink(
 		staffPrimaryId: string,
 		eduIdPersonalId: string,
+		atam: boolean,
 		startDate?: string | null,
-		endDate?: string | null
+		endDate?: string | null,
 	): Observable<CreateLinkResult> {
 		const request: CreateLinkRequest = {
 			almaPrimaryId: staffPrimaryId,
 			eduIdPersonalId,
+			atam,
 			...(startDate !== undefined && { startDate }),
 			...(endDate !== undefined && { endDate }),
 		};
@@ -195,17 +203,17 @@ export class LinkService {
 				(link): CreateLinkResult => ({
 					status: 'success',
 					link,
-				})
+				}),
 			),
 			catchError(
 				(error: HttpErrorResponse): Observable<CreateLinkResult> =>
-					of({ status: 'error' as const, error: parseBackendError(error) })
+					of({ status: 'error' as const, error: parseBackendError(error) }),
 			),
 			tap((result) => {
 				if (result.status === 'success') {
 					this.linksChanged$.next();
 				}
-			})
+			}),
 		);
 	}
 
@@ -217,7 +225,7 @@ export class LinkService {
 	 */
 	public updateLink(
 		linkId: number,
-		request: UpdateLinkRequest
+		request: UpdateLinkRequest,
 	): Observable<ToggleLinkResult> {
 		return this.backend
 			.patch<LinkResponse>(`/api/cloudapp/links/${linkId}`, request)
@@ -226,20 +234,20 @@ export class LinkService {
 					(link): ToggleLinkResult => ({
 						status: 'success',
 						link,
-					})
+					}),
 				),
 				catchError(
 					(error: HttpErrorResponse): Observable<ToggleLinkResult> =>
 						of({
 							status: 'error' as const,
 							error: parseBackendError(error),
-						})
+						}),
 				),
 				tap((result) => {
 					if (result.status === 'success') {
 						this.linksChanged$.next();
 					}
-				})
+				}),
 			);
 	}
 
@@ -249,7 +257,7 @@ export class LinkService {
 	 */
 	public toggleLink(
 		linkId: number,
-		isEnabled: boolean
+		isEnabled: boolean,
 	): Observable<ToggleLinkResult> {
 		return this.updateLink(linkId, { isEnabled });
 	}
@@ -260,34 +268,8 @@ export class LinkService {
 	 */
 	public exportLinks(params: LinksFilterParams = {}): Observable<Blob> {
 		return this.backend.getBlob(
-			`/api/cloudapp/links/export${this.buildFilterQuery(params)}`
+			`/api/cloudapp/links/export${this.buildFilterQuery(params)}`,
 		);
-	}
-
-	/**
-	 * Build query string from filter params.
-	 * Shared between getLinks() and exportLinks() to ensure consistent filtering.
-	 */
-	private buildFilterQuery(params: LinksFilterParams): string {
-		const urlParams = new URLSearchParams();
-
-		if (params.search) urlParams.set('search', params.search);
-
-		if (params.libraryCodes?.length) {
-			params.libraryCodes.forEach((code) => urlParams.append('libraryCode', code));
-		}
-
-		if (params.enabled && params.enabled !== 'all')
-			urlParams.set('enabled', params.enabled);
-		if (params.schedule && params.schedule !== 'all')
-			urlParams.set('schedule', params.schedule);
-		if (params.linked && params.linked !== 'all')
-			urlParams.set('linked', params.linked);
-		if (params.validity && params.validity !== 'all')
-			urlParams.set('validity', params.validity);
-
-		const query = urlParams.toString();
-		return query ? '?' + query : '';
 	}
 
 	/**
@@ -301,20 +283,49 @@ export class LinkService {
 			map(
 				(): DeleteLinkResult => ({
 					status: 'success',
-				})
+				}),
 			),
 			catchError(
 				(error: HttpErrorResponse): Observable<DeleteLinkResult> =>
 					of({
 						status: 'error' as const,
 						error: parseBackendError(error),
-					})
+					}),
 			),
 			tap((result) => {
 				if (result.status === 'success') {
 					this.linksChanged$.next();
 				}
-			})
+			}),
 		);
+	}
+
+	/**
+	 * Build query string from filter params.
+	 * Shared between getLinks() and exportLinks() to ensure consistent filtering.
+	 */
+	private buildFilterQuery(params: LinksFilterParams): string {
+		const urlParams = new URLSearchParams();
+
+		if (params.search) urlParams.set('search', params.search);
+
+		if (params.libraryCodes?.length) {
+			params.libraryCodes.forEach((code) =>
+				urlParams.append('libraryCode', code),
+			);
+		}
+
+		if (params.enabled && params.enabled !== 'all')
+			urlParams.set('enabled', params.enabled);
+		if (params.schedule && params.schedule !== 'all')
+			urlParams.set('schedule', params.schedule);
+		if (params.linked && params.linked !== 'all')
+			urlParams.set('linked', params.linked);
+		if (params.validity && params.validity !== 'all')
+			urlParams.set('validity', params.validity);
+
+		const query = urlParams.toString();
+
+		return query ? '?' + query : '';
 	}
 }

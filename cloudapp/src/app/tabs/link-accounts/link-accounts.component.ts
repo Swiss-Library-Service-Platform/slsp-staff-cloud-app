@@ -1,6 +1,13 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+	Component,
+	DestroyRef,
+	ElementRef,
+	inject,
+	OnInit,
+	ViewChild,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { FormControl } from '@angular/forms';
+import { AbstractControl, FormControl, ValidationErrors } from '@angular/forms';
 import { MatChipListboxChange } from '@angular/material/chips';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
 import { TranslateService } from '@ngx-translate/core';
@@ -20,12 +27,19 @@ import {
 	finalize,
 	map,
 	shareReplay,
+	startWith,
 	switchMap,
 	take,
 	tap,
 } from 'rxjs/operators';
 
-import { LinkSelection, LinkUser, LinkDetail, UserType } from '../../models/user.model';
+import {
+	LinkSelection,
+	LinkUser,
+	LinkDetail,
+	UserType,
+} from '../../models/user.model';
+import { AuthService } from '../../services/auth.service';
 import { LinkService, LinkStatus } from '../../services/link.service';
 import { NavigationService } from '../../services/navigation.service';
 import {
@@ -47,7 +61,19 @@ interface LinkAccountsViewModel {
 	error: string | null;
 	filterType: FilterType;
 	selection: LinkSelection;
+	atamEnabled: boolean;
+	atamMode: boolean;
 	canLink: boolean;
+}
+
+function atamEmailValidator(
+	control: AbstractControl<string>,
+): ValidationErrors | null {
+	const value = control.value.trim();
+
+	return !value || isPersonalStaffAccount(value)
+		? null
+		: { invalidAtamEmail: true };
 }
 
 @Component({
@@ -56,8 +82,15 @@ interface LinkAccountsViewModel {
 	styleUrls: ['./link-accounts.component.scss'],
 })
 export class LinkAccountsComponent implements OnInit {
+	@ViewChild('atamEmailInput')
+	private atamEmailInput?: ElementRef<HTMLInputElement>;
+
 	// Form controls
 	public searchControl = new FormControl('');
+	public atamEmailControl = new FormControl('', {
+		nonNullable: true,
+		validators: [atamEmailValidator],
+	});
 	public startDateControl = new FormControl<Date | null>(null);
 	public endDateControl = new FormControl<Date | null>(null);
 	public showScheduling = false;
@@ -68,6 +101,7 @@ export class LinkAccountsComponent implements OnInit {
 		staff: null,
 		eduid: null,
 	});
+	public atamMode$ = new BehaviorSubject<boolean>(false);
 
 	// Single view model observable for template
 	public vm$!: Observable<LinkAccountsViewModel>;
@@ -80,6 +114,7 @@ export class LinkAccountsComponent implements OnInit {
 
 	// Private members
 	private alertService = inject(AlertService);
+	private authService = inject(AuthService);
 	private destroyRef = inject(DestroyRef);
 	private linkService = inject(LinkService);
 	private navigationService = inject(NavigationService);
@@ -88,6 +123,24 @@ export class LinkAccountsComponent implements OnInit {
 
 	private searchTerm$ = new BehaviorSubject<string>('');
 	private retry$ = new Subject<void>();
+
+	public get isAtamEmailInvalid(): boolean {
+		return (
+			this.atamEmailControl.touched &&
+			!!this.atamEmailControl.value.trim() &&
+			this.atamEmailControl.invalid
+		);
+	}
+
+	public get isAtamEmailIncompatible(): boolean {
+		return (
+			this.atamEmailControl.touched &&
+			this.atamEmailControl.valid &&
+			!!this.atamEmailControl.value.trim() &&
+			!!this.selection$.value.eduid &&
+			!this.isAtamEmailCompatibleWith(this.selection$.value.eduid)
+		);
+	}
 
 	public get isDateRangeValid(): boolean {
 		const start = this.startDateControl.value;
@@ -106,10 +159,25 @@ export class LinkAccountsComponent implements OnInit {
 		this.setupSearchSync();
 	}
 
+	public activateAtamEntry(): void {
+		this.atamMode$.next(true);
+		setTimeout(() => this.atamEmailInput?.nativeElement.focus());
+	}
+
+	public clearAtamEntry(): void {
+		this.atamEmailControl.reset();
+		this.atamEmailControl.markAsUntouched();
+		this.atamMode$.next(false);
+	}
+
 	/**
 	 * Select a user - replaces same type, keeps other
 	 */
 	public selectUser(user: LinkUser): void {
+		if (user.userType === 'staff' && this.atamMode$.value) {
+			this.clearAtamEntry();
+		}
+
 		const current = this.selection$.value;
 
 		if (user.userType === 'staff') {
@@ -171,8 +239,19 @@ export class LinkAccountsComponent implements OnInit {
 	 */
 	public onLinkAccounts(): void {
 		const selection = this.selection$.value;
+		const isAtam = this.atamMode$.value;
+		const staffPrimaryId = isAtam
+			? this.atamEmailControl.value.trim()
+			: selection.staff?.primaryId;
 
-		if (!selection.staff || !selection.eduid || !this.isDateRangeValid) {
+		if (
+			!staffPrimaryId ||
+			!selection.eduid ||
+			!this.isDateRangeValid ||
+			(isAtam &&
+				(this.atamEmailControl.invalid ||
+					!this.isAtamEmailCompatibleWith(selection.eduid)))
+		) {
 			return;
 		}
 
@@ -187,10 +266,11 @@ export class LinkAccountsComponent implements OnInit {
 
 		this.linkService
 			.createLink(
-				selection.staff.primaryId,
+				staffPrimaryId,
 				selection.eduid.primaryId,
+				isAtam,
 				startDate,
-				endDate
+				endDate,
 			)
 			.pipe(finalize(() => (this.isLinking = false)))
 			.subscribe((result) => {
@@ -198,15 +278,12 @@ export class LinkAccountsComponent implements OnInit {
 					this.alertService.success(
 						this.translateService.instant('link.success') +
 							'. ' +
-							this.translateService.instant('general.cacheNote')
+							this.translateService.instant('general.cacheNote'),
 					);
 					this.clearAllSelections();
 				} else {
 					this.alertService.error(
-						translateBackendError(
-							this.translateService,
-							result.error
-						)
+						translateBackendError(this.translateService, result.error),
 					);
 				}
 			});
@@ -257,8 +334,21 @@ export class LinkAccountsComponent implements OnInit {
 		}
 
 		// Personal staff with existing links can't be selected (max 1 link globally)
-		if (user.userType === 'staff' && this.isPersonalAccount(user.primaryId) && (user.linkCount ?? 0) > 0) {
+		if (
+			user.userType === 'staff' &&
+			this.isPersonalAccount(user.primaryId) &&
+			(user.linkCount ?? 0) > 0
+		) {
 			return false;
+		}
+
+		if (
+			this.atamMode$.value &&
+			user.userType === 'eduid' &&
+			this.atamEmailControl.valid &&
+			this.atamEmailControl.value.trim()
+		) {
+			return this.isAtamEmailCompatibleWith(user);
 		}
 
 		const sel = this.selectionSnapshot;
@@ -266,7 +356,9 @@ export class LinkAccountsComponent implements OnInit {
 		// When edu-ID selected, check staff compatibility
 		if (sel.eduid && !sel.staff && user.userType === 'staff') {
 			if (this.isPersonalAccount(user.primaryId)) {
-				return sel.eduid.emails?.includes(user.primaryId.toLowerCase()) ?? false;
+				return (
+					sel.eduid.emails?.includes(user.primaryId.toLowerCase()) ?? false
+				);
 			}
 
 			return true; // institutional always OK
@@ -275,7 +367,9 @@ export class LinkAccountsComponent implements OnInit {
 		// When staff selected, check edu-ID compatibility
 		if (sel.staff && !sel.eduid && user.userType === 'eduid') {
 			if (this.isPersonalAccount(sel.staff.primaryId)) {
-				return user.emails?.includes(sel.staff.primaryId.toLowerCase()) ?? false;
+				return (
+					user.emails?.includes(sel.staff.primaryId.toLowerCase()) ?? false
+				);
 			}
 
 			return true; // institutional staff → all edu-ID OK
@@ -292,7 +386,11 @@ export class LinkAccountsComponent implements OnInit {
 			return false;
 		}
 
-		if (user.userType === 'staff' && this.isPersonalAccount(user.primaryId) && (user.linkCount ?? 0) > 0) {
+		if (
+			user.userType === 'staff' &&
+			this.isPersonalAccount(user.primaryId) &&
+			(user.linkCount ?? 0) > 0
+		) {
 			return false;
 		}
 
@@ -304,6 +402,7 @@ export class LinkAccountsComponent implements OnInit {
 	 */
 	private clearAllSelections(): void {
 		this.selection$.next({ staff: null, eduid: null });
+		this.clearAtamEntry();
 		this.startDateControl.reset();
 		this.endDateControl.reset();
 		this.showScheduling = false;
@@ -327,7 +426,7 @@ export class LinkAccountsComponent implements OnInit {
 		// 1. Search term trigger - immediate initial value, then debounced for typing
 		const searchTerm$ = concat(
 			this.searchTerm$.pipe(take(1)),
-			this.searchTerm$.pipe(debounceTime(300))
+			this.searchTerm$.pipe(debounceTime(300)),
 		).pipe(distinctUntilChanged());
 		// 2. Entity reload trigger - always fires, bypasses distinctUntilChanged
 		//    Clears both input (UX) and searchTerm$ (state) before emitting
@@ -336,20 +435,20 @@ export class LinkAccountsComponent implements OnInit {
 				this.searchControl.setValue('', { emitEvent: false });
 				this.searchTerm$.next('');
 			}),
-			map(() => '')
+			map(() => ''),
 		);
 		// 3. Retry trigger - use current search term
 		const retry$ = this.retry$.pipe(map(() => this.searchTerm$.value));
 		// 4. Links changed trigger - re-fetch statuses when links mutated on other tabs
 		const linksRefresh$ = this.linkService.linksChanged$.pipe(
-			map(() => this.searchTerm$.value)
+			map(() => this.searchTerm$.value),
 		);
 		// 5. Combine all fetch triggers
 		const fetchTrigger$ = merge(
 			searchTerm$,
 			entityReload$,
 			retry$,
-			linksRefresh$
+			linksRefresh$,
 		).pipe(debounceTime(50));
 		// 5. Fetch state stream - emits loading THEN result via concat()
 		const fetchState$ = fetchTrigger$.pipe(
@@ -376,13 +475,13 @@ export class LinkAccountsComponent implements OnInit {
 
 							return this.linkService.getLinkStatuses(ids).pipe(
 								map((resp) =>
-									this.enrichUsersWithLinkStatus(users, resp.statuses)
+									this.enrichUsersWithLinkStatus(users, resp.statuses),
 								),
 								catchError((err) => {
 									console.warn('Failed to fetch link statuses:', err);
 
 									return of(users);
-								})
+								}),
 							);
 						}),
 						map((users) => ({
@@ -395,12 +494,12 @@ export class LinkAccountsComponent implements OnInit {
 								users: [] as LinkUser[],
 								loading: false,
 								error: err.message || 'Failed to load users',
-							})
-						)
-					)
+							}),
+						),
+					),
 				);
 			}),
-			shareReplay(1) // NO refCount - keeps subscription alive
+			shareReplay(1), // NO refCount - keeps subscription alive
 		);
 
 		// 6. Combine into single view model
@@ -408,13 +507,18 @@ export class LinkAccountsComponent implements OnInit {
 			fetchState$,
 			this.filterType$,
 			this.selection$,
+			this.authService.isAtamEnabled(),
+			this.atamMode$,
+			this.atamEmailControl.valueChanges.pipe(
+				startWith(this.atamEmailControl.value),
+			),
 		]).pipe(
-			map(([fetchState, filterType, selection]) => {
+			map(([fetchState, filterType, selection, atamEnabled, atamMode]) => {
 				const filtered =
 					filterType === 'all'
 						? fetchState.users
 						: fetchState.users.filter(
-								(u: LinkUser) => u.userType === filterType
+								(u: LinkUser) => u.userType === filterType,
 							);
 
 				return {
@@ -423,7 +527,15 @@ export class LinkAccountsComponent implements OnInit {
 					error: fetchState.error,
 					filterType,
 					selection,
-					canLink: selection.staff !== null && selection.eduid !== null,
+					atamEnabled,
+					atamMode,
+					canLink:
+						selection.eduid !== null &&
+						(selection.staff !== null ||
+							(atamMode &&
+								!!this.atamEmailControl.value.trim() &&
+								this.atamEmailControl.valid &&
+								this.isAtamEmailCompatibleWith(selection.eduid))),
 				};
 			}),
 			distinctUntilChanged(
@@ -432,8 +544,11 @@ export class LinkAccountsComponent implements OnInit {
 					a.error === b.error &&
 					a.users === b.users &&
 					a.filterType === b.filterType &&
-					a.selection === b.selection
-			)
+					a.selection === b.selection &&
+					a.atamEnabled === b.atamEnabled &&
+					a.atamMode === b.atamMode &&
+					a.canLink === b.canLink,
+			),
 		);
 	}
 
@@ -460,12 +575,20 @@ export class LinkAccountsComponent implements OnInit {
 		return isPersonalStaffAccount(primaryId);
 	}
 
+	private isAtamEmailCompatibleWith(eduid: LinkUser): boolean {
+		return (
+			eduid.emails?.includes(
+				this.atamEmailControl.value.trim().toLowerCase(),
+			) ?? false
+		);
+	}
+
 	/**
 	 * Enrich users with link status information.
 	 */
 	private enrichUsersWithLinkStatus(
 		users: LinkUser[],
-		statuses: Record<string, LinkStatus[]>
+		statuses: Record<string, LinkStatus[]>,
 	): LinkUser[] {
 		return users.map((user) => {
 			const links = statuses[user.primaryId] ?? [];
@@ -479,6 +602,7 @@ export class LinkAccountsComponent implements OnInit {
 				linkDetails: links.map(
 					(l): LinkDetail => ({
 						linkedTo: l.linkedTo,
+						isAtam: l.isAtam,
 						displayName:
 							l.givenName || l.surname
 								? `${l.givenName ?? ''} ${l.surname ?? ''}`.trim()
@@ -487,7 +611,7 @@ export class LinkAccountsComponent implements OnInit {
 						isActive: l.isActive,
 						startDate: l.startDate,
 						endDate: l.endDate,
-					})
+					}),
 				),
 			};
 		});

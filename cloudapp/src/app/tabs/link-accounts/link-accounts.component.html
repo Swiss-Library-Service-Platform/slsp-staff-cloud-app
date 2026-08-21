@@ -5,17 +5,14 @@
 		<div class="link-selection-panel">
 			<div class="selection-row">
 				<!-- edu-ID slot -->
-				<div
-					class="selection-box eduid"
-					[class.filled]="vm.selection.eduid"
-				>
+				<div class="selection-box eduid" [class.filled]="vm.selection.eduid">
 					@if (vm.selection.eduid; as user) {
-						<app-user-type-chip
-							[userType]="'eduid'"
-						></app-user-type-chip>
+						<app-user-type-chip [userType]="'eduid'"></app-user-type-chip>
 						<div class="selection-info">
 							<span class="selection-name">{{ user.fullName }}</span>
-							<span class="selection-id" [title]="user.primaryId">{{ user.primaryId }}</span>
+							<span class="selection-id" [title]="user.primaryId">{{
+								user.primaryId
+							}}</span>
 						</div>
 						<button
 							mat-icon-button
@@ -38,30 +35,78 @@
 				</div>
 
 				<!-- Staff slot -->
-				<div
-					class="selection-box staff"
-					[class.filled]="vm.selection.staff"
-				>
-					@if (vm.selection.staff; as user) {
-						<app-user-type-chip
-							[userType]="'staff'"
-						></app-user-type-chip>
-						<div class="selection-info">
-							<span class="selection-name">{{ user.fullName }}</span>
-							<span class="selection-id" [title]="user.primaryId">{{ user.primaryId }}</span>
-						</div>
-						<button
-							mat-icon-button
-							class="remove-btn"
-							(click)="clearSelection('staff')"
-							aria-label="Remove"
-						>
-							<mat-icon>close</mat-icon>
-						</button>
-					} @else {
-						<span class="placeholder">{{
-							'link.selectStaffShort' | translate
-						}}</span>
+				<div class="staff-selection-wrapper">
+					<div
+						class="selection-box staff"
+						[class.filled]="vm.selection.staff || vm.atamMode"
+						[class.atam-entry]="vm.atamMode"
+						[class.atam-available]="
+							vm.atamEnabled && !vm.selection.staff && !vm.atamMode
+						"
+					>
+						@if (vm.atamMode) {
+							<app-atam-badge [matchUserTypeWidth]="true" />
+							<input
+								#atamEmailInput
+								class="atam-email-input"
+								type="email"
+								[formControl]="atamEmailControl"
+								[placeholder]="'link.atamEmailPlaceholder' | translate"
+								[attr.aria-label]="'link.atamEmailPlaceholder' | translate"
+								(blur)="atamEmailControl.markAsTouched()"
+							/>
+							<button
+								mat-icon-button
+								class="remove-btn"
+								(click)="clearAtamEntry()"
+								[attr.aria-label]="'link.clearAtamEmail' | translate"
+							>
+								<mat-icon>close</mat-icon>
+							</button>
+						} @else {
+							@if (vm.selection.staff; as user) {
+								<app-user-type-chip [userType]="'staff'"></app-user-type-chip>
+								<div class="selection-info">
+									<span class="selection-name">{{ user.fullName }}</span>
+									<span class="selection-id" [title]="user.primaryId">{{
+										user.primaryId
+									}}</span>
+								</div>
+								<button
+									mat-icon-button
+									class="remove-btn"
+									(click)="clearSelection('staff')"
+									aria-label="Remove"
+								>
+									<mat-icon>close</mat-icon>
+								</button>
+							} @else {
+								<span class="placeholder">{{
+									'link.selectStaffShort' | translate
+								}}</span>
+								@if (vm.atamEnabled) {
+									<button
+										type="button"
+										class="atam-entry-action"
+										(click)="activateAtamEntry()"
+										[matTooltip]="'link.enterAtamAccount' | translate"
+										[attr.aria-label]="'link.enterAtamAccount' | translate"
+									>
+										<mat-icon>edit</mat-icon>
+										<span>{{ 'atam.label' | translate }}</span>
+									</button>
+								}
+							}
+						}
+					</div>
+					@if (isAtamEmailInvalid) {
+						<mat-error class="atam-email-error">
+							{{ 'validation.invalidAtamEmail' | translate }}
+						</mat-error>
+					} @else if (isAtamEmailIncompatible) {
+						<mat-error class="atam-email-error">
+							{{ 'link.incompatible' | translate }}
+						</mat-error>
 					}
 				</div>
 			</div>
@@ -69,17 +114,21 @@
 			<!-- Scheduling (optional) -->
 			<div class="scheduling-section">
 				<div
-				class="scheduling-header"
-				tabindex="0"
-				role="button"
-				(click)="showScheduling = !showScheduling"
-				(keydown.enter)="showScheduling = !showScheduling"
-				(keydown.space)="showScheduling = !showScheduling; $event.preventDefault()"
-			>
+					class="scheduling-header"
+					tabindex="0"
+					role="button"
+					(click)="showScheduling = !showScheduling"
+					(keydown.enter)="showScheduling = !showScheduling"
+					(keydown.space)="
+						showScheduling = !showScheduling; $event.preventDefault()
+					"
+				>
 					<mat-icon class="scheduling-toggle" [class.open]="showScheduling">
 						expand_more
 					</mat-icon>
-					<span class="scheduling-label">{{ 'link.schedulingOptional' | translate }}</span>
+					<span class="scheduling-label">{{
+						'link.schedulingOptional' | translate
+					}}</span>
 					@if (startDateControl.value || endDateControl.value) {
 						<mat-icon class="scheduling-active-dot">circle</mat-icon>
 					}
@@ -89,21 +138,41 @@
 					<div class="scheduling-fields">
 						<mat-form-field appearance="outline" class="date-field">
 							<mat-label>{{ 'link.startDate' | translate }}</mat-label>
-							<input matInput [matDatepicker]="createStart" [formControl]="startDateControl" (focus)="createStart.open()" readonly />
-							<mat-datepicker-toggle matIconSuffix [for]="createStart"></mat-datepicker-toggle>
+							<input
+								matInput
+								[matDatepicker]="createStart"
+								[formControl]="startDateControl"
+								(focus)="createStart.open()"
+								readonly
+							/>
+							<mat-datepicker-toggle
+								matIconSuffix
+								[for]="createStart"
+							></mat-datepicker-toggle>
 							<mat-datepicker #createStart></mat-datepicker>
 						</mat-form-field>
 
 						<mat-form-field appearance="outline" class="date-field">
 							<mat-label>{{ 'link.endDate' | translate }}</mat-label>
-							<input matInput [matDatepicker]="createEnd" [formControl]="endDateControl" (focus)="createEnd.open()" readonly />
-							<mat-datepicker-toggle matIconSuffix [for]="createEnd"></mat-datepicker-toggle>
+							<input
+								matInput
+								[matDatepicker]="createEnd"
+								[formControl]="endDateControl"
+								(focus)="createEnd.open()"
+								readonly
+							/>
+							<mat-datepicker-toggle
+								matIconSuffix
+								[for]="createEnd"
+							></mat-datepicker-toggle>
 							<mat-datepicker #createEnd></mat-datepicker>
 						</mat-form-field>
 					</div>
 
 					@if (!isDateRangeValid) {
-						<mat-error class="date-range-error">{{ 'errors.INVALID_DATE_RANGE' | translate }}</mat-error>
+						<mat-error class="date-range-error">{{
+							'errors.INVALID_DATE_RANGE' | translate
+						}}</mat-error>
 					}
 				}
 			</div>
@@ -189,13 +258,15 @@
 						[class.linked]="!canSelectUser(user)"
 						[class.user-type-staff]="user.userType === 'staff'"
 						[class.user-type-eduid]="user.userType === 'eduid'"
-						[matTooltip]="isInvalidAccount(user)
-							? (user.userType === 'staff'
-								? ('validation.invalidStaffId' | translate)
-								: ('validation.invalidEduId' | translate))
-							: isIncompatible(user)
-								? ('link.incompatible' | translate)
-								: ''"
+						[matTooltip]="
+							isInvalidAccount(user)
+								? user.userType === 'staff'
+									? ('validation.invalidStaffId' | translate)
+									: ('validation.invalidEduId' | translate)
+								: isIncompatible(user)
+									? ('link.incompatible' | translate)
+									: ''
+						"
 						class="user-list-item"
 					>
 						<div class="user-list-item-content">
@@ -204,18 +275,25 @@
 							></app-user-type-chip>
 							<div class="user-info">
 								<span class="name">{{ user.fullName }}</span>
-								<span class="id" [title]="user.primaryId">{{ user.primaryId }}</span>
+								<span class="id" [title]="user.primaryId">{{
+									user.primaryId
+								}}</span>
 							</div>
-							<mat-icon
-								*ngIf="isInvalidAccount(user)"
-								class="invalid-icon"
-							>error_outline</mat-icon>
+							<mat-icon *ngIf="isInvalidAccount(user)" class="invalid-icon"
+								>error_outline</mat-icon
+							>
 							@if (user.isLinked) {
 								<app-link-status-tooltip [user]="user">
 									<span
 										class="link-status-badge"
 										[class.inactive]="!user.hasActiveLink"
 										(click)="onViewLinks(user, $event)"
+										(keydown.enter)="onViewLinks(user, $event)"
+										(keydown.space)="
+											onViewLinks(user, $event); $event.preventDefault()
+										"
+										role="button"
+										tabindex="0"
 									>
 										<mat-icon>join_inner</mat-icon>
 										<span class="link-count">{{ user.linkCount }}</span>

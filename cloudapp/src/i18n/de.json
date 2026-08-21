@@ -20,6 +20,10 @@
 		"comingSoon": "Demnächst verfügbar",
 		"cacheNote": "Änderungen können einige Minuten dauern, bis sie wirksam werden."
 	},
+	"atam": {
+		"label": "ATAM",
+		"tooltip": "ATAM-verwaltetes Konto. Die Verknüpfung bleibt erhalten, während das Alma-Konto vorübergehend fehlt."
+	},
 	"error": {
 		"restApiError": "Fehler bei der REST-API: {{0}}"
 	},
@@ -44,6 +48,9 @@
 		"success": "Konten erfolgreich verknüpft",
 		"selectStaffShort": "Mitarbeiter...",
 		"selectEduIdShort": "edu-ID...",
+		"enterAtamAccount": "ATAM-Konto eingeben",
+		"atamEmailPlaceholder": "E-Mail-Adresse des Mitarbeiters",
+		"clearAtamEmail": "ATAM-Konto löschen",
 		"linkedToStaff": "Verknüpft mit Mitarbeiter",
 		"linkedToEduId": "Verknüpft mit edu-ID",
 		"incompatible": "Kann nicht mit dem ausgewählten persönlichen Konto verknüpft werden.",
@@ -59,6 +66,8 @@
 		"STAFF_USER_NOT_STAFF": "Benutzer \"{{almaPrimaryId}}\" ist kein Mitarbeiter.",
 		"STAFF_USER_WRONG_GROUP": "Benutzer \"{{almaPrimaryId}}\" ist nicht in der erforderlichen Mitarbeiter-Benutzergruppe.",
 		"STAFF_USER_INVALID_ID": "Benutzer \"{{almaPrimaryId}}\" hat ein nicht unterstütztes Primär-ID-Format für die Verknüpfung. Erwartet: E-Mail (z.B. john.doe@inst.ch) oder nicht-persönlich (NP_*).",
+		"ATAM_NOT_ENABLED_FOR_IZ": "Die Erstellung von ATAM-Verknüpfungen ist für diese Institution nicht aktiviert.",
+		"ATAM_PRIMARY_ID_INVALID": "Die ATAM-Mitarbeiter-ID muss eine gültige E-Mail-Adresse sein.",
 		"PERSONAL_ACCOUNT_DUPLICATE": "Dieses persönliche Mitarbeiterkonto ist bereits mit einem anderen edu-ID-Konto verknüpft.",
 		"EDUID_ALREADY_LINKED_PERSONAL": "Diese edu-ID ist bereits mit einem anderen persönlichen Konto verknüpft.",
 		"ALMA_USER_NOT_FOUND": "Benutzer \"{{userId}}\" wurde in Alma nicht gefunden.",
@@ -90,6 +99,7 @@
 	},
 	"validation": {
 		"invalidStaffId": "Dieses Konto-ID-Format wird für Verknüpfungen nicht unterstützt. Erwartet: E-Mail (z.B. john.doe@inst.ch) oder non-personal (NP_*).",
+		"invalidAtamEmail": "Geben Sie eine gültige Mitarbeiter-E-Mail-Adresse ein.",
 		"invalidEduId": "Dieses edu-ID-Format ist ungültig. Erwartet: Ziffern@eduid.ch."
 	},
 	"listUsers": {

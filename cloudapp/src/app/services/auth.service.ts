@@ -1,13 +1,14 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, shareReplay } from 'rxjs/operators';
 
 import { BackendHttpService } from './backend-http.service';
 
 export interface AuthInfo {
 	userName: string;
 	izCode: string;
+	atamEnabled: boolean;
 }
 
 export type AuthResult =
@@ -20,6 +21,7 @@ export type AuthResult =
 })
 export class AuthService {
 	private backend = inject(BackendHttpService);
+	private authResult$: Observable<AuthResult> | null = null;
 
 	/**
 	 * Check if the current user is authorized to use the app.
@@ -31,27 +33,43 @@ export class AuthService {
 	 * - { status: 'error', message } - Network/server error
 	 */
 	public checkAuth(): Observable<AuthResult> {
-		return this.backend.get<AuthInfo>('/api/cloudapp/auth/me').pipe(
+		if (!this.authResult$) {
+			this.authResult$ = this.backend
+				.get<AuthInfo>('/api/cloudapp/auth/me')
+				.pipe(
+					map(
+						(info): AuthResult => ({
+							status: 'authorized',
+							info,
+						}),
+					),
+					catchError((error: HttpErrorResponse): Observable<AuthResult> => {
+						if (error.status === 401) {
+							return of({ status: 'unauthorized', reason: 'invalid_token' });
+						}
+
+						if (error.status === 403) {
+							return of({ status: 'unauthorized', reason: 'forbidden' });
+						}
+
+						return of({
+							status: 'error',
+							message: error.message || 'Unknown error',
+						});
+					}),
+					shareReplay({ bufferSize: 1, refCount: false }),
+				);
+		}
+
+		return this.authResult$;
+	}
+
+	/** Whether the authenticated user's institution supports ATAM links. */
+	public isAtamEnabled(): Observable<boolean> {
+		return this.checkAuth().pipe(
 			map(
-				(info): AuthResult => ({
-					status: 'authorized',
-					info,
-				})
+				(result) => result.status === 'authorized' && result.info.atamEnabled,
 			),
-			catchError((error: HttpErrorResponse): Observable<AuthResult> => {
-				if (error.status === 401) {
-					return of({ status: 'unauthorized', reason: 'invalid_token' });
-				}
-
-				if (error.status === 403) {
-					return of({ status: 'unauthorized', reason: 'forbidden' });
-				}
-
-				return of({
-					status: 'error',
-					message: error.message || 'Unknown error',
-				});
-			})
 		);
 	}
 }

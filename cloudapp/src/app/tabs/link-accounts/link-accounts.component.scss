@@ -23,12 +23,16 @@
 		}
 	}
 
+	.staff-selection-wrapper {
+		min-width: 0;
+	}
+
 	.selection-box {
 		min-width: 0;
 		min-height: 40px;
 		display: flex;
 		align-items: center;
-		justify-content: center;
+		justify-content: flex-start;
 		padding: 6px 10px;
 		border-radius: 6px;
 		border: 1px dashed var(--border-color-strong);
@@ -39,6 +43,61 @@
 			font-size: 12px;
 			font-style: italic;
 			padding: 4px 0;
+		}
+
+		&.atam-available {
+			justify-content: space-between;
+			gap: 8px;
+		}
+
+		&.atam-entry {
+			gap: 8px;
+
+			&:focus-within {
+				border-color: var(--slsp-purple);
+				box-shadow: inset 0 0 0 1px var(--slsp-purple);
+			}
+		}
+
+		.atam-entry-action {
+			flex-shrink: 0;
+			display: inline-flex;
+			align-items: center;
+			gap: 3px;
+			padding: 3px 2px;
+			border: 0;
+			background: transparent;
+			color: rgba(0, 0, 0, 0.45);
+			font: inherit;
+			font-size: 11px;
+			font-weight: 400;
+			cursor: pointer;
+			white-space: nowrap;
+
+			&:hover {
+				color: rgba(0, 0, 0, 0.7);
+			}
+
+			mat-icon {
+				width: 15px;
+				height: 15px;
+				font-size: 15px;
+			}
+		}
+
+		.atam-email-input {
+			flex: 1;
+			min-width: 0;
+			padding: 4px 0;
+			border: 0;
+			outline: 0;
+			background: transparent;
+			color: var(--color-font-primary);
+			font-size: 13px;
+
+			&::placeholder {
+				color: rgba(0, 0, 0, 0.35);
+			}
 		}
 
 		&.filled {
@@ -98,6 +157,12 @@
 				height: 18px;
 			}
 		}
+	}
+
+	.atam-email-error {
+		display: block;
+		padding: 3px 10px 0;
+		font-size: 11px;
 	}
 
 	.scheduling-section {
@@ -231,7 +296,7 @@
 
 		&.selected {
 			.selected-icon {
-					color: var(--color-success);
+				color: var(--color-success);
 			}
 		}
 
@@ -338,4 +403,3 @@
 		}
 	}
 }
-

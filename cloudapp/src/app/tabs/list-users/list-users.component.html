@@ -205,9 +205,12 @@
 								[userType]="'staff'"
 							></app-user-type-chip>
 							<div class="staff-info">
-								<span class="staff-id">{{
-									group.almaPrimaryId
-								}}</span>
+								<div class="staff-id-line">
+									<span class="staff-id">{{
+										group.almaPrimaryId
+									}}</span>
+									<app-atam-badge *ngIf="group.isAtam" />
+								</div>
 								<span
 									*ngIf="group.givenName || group.surname"
 									class="staff-name"

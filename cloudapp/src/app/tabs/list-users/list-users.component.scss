@@ -129,7 +129,15 @@
 		flex-direction: column;
 		min-width: 0;
 
+		.staff-id-line {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			min-width: 0;
+		}
+
 		.staff-id {
+			min-width: 0;
 			font-size: 13px;
 			font-weight: 500;
 			line-height: 1.3;

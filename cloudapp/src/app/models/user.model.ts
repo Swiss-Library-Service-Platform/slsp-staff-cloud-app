@@ -2,6 +2,7 @@ export type UserType = 'staff' | 'eduid';
 
 export interface LinkDetail {
 	linkedTo: string;
+	isAtam: boolean;
 	displayName?: string;
 	isEnabled: boolean;
 	isActive: boolean;
@@ -21,6 +22,7 @@ export interface LinkUser {
 	hasActiveLink?: boolean;
 	linkDetails?: LinkDetail[];
 	emails?: string[];
+	isAtam?: boolean;
 }
 
 export interface LinkSelection {
@@ -44,6 +46,7 @@ export interface StaffUserGroup {
 	almaPrimaryId: string;
 	givenName: string;
 	surname: string;
+	isAtam: boolean;
 	libraryCodes: string[];
 	eduIdLinks: EduIdLink[];
 }
