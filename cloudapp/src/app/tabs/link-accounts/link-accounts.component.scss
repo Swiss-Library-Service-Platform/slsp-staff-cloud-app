@@ -135,6 +135,18 @@
 		font-size: 11px;
 	}
 
+	.atam-incompatible-error {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		padding: 3px 10px 0;
+		font-size: 11px;
+
+		button {
+			flex-shrink: 0;
+		}
+	}
+
 	.atam-mode-option {
 		display: flex;
 		align-items: center;

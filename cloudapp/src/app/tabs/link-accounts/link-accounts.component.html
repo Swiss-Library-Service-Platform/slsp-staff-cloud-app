@@ -89,9 +89,20 @@
 							{{ 'validation.invalidAtamEmail' | translate }}
 						</mat-error>
 					} @else if (isAtamEmailIncompatible) {
-						<mat-error class="atam-email-error">
-							{{ 'link.incompatible' | translate }}
-						</mat-error>
+						<div class="atam-incompatible-error">
+							<mat-error>{{ 'link.incompatible' | translate }}</mat-error>
+							<button
+								mat-icon-button
+								type="button"
+								class="atam-help ui-icon-button--compact"
+								[attr.aria-label]="'link.incompatibleHelpLabel' | translate"
+								[matTooltip]="'link.incompatibleHelp' | translate"
+								#incompatibleHelp="matTooltip"
+								(click)="incompatibleHelp.show()"
+							>
+								<mat-icon>info_outline</mat-icon>
+							</button>
+						</div>
 					}
 				</div>
 			</div>
