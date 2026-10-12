@@ -49,6 +49,8 @@
 		"selectStaffShort": "Personale...",
 		"selectEduIdShort": "edu-ID...",
 		"useAtamAccount": "Utilizzare un account ATAM",
+		"atamHelpLabel": "Aiuto sul collegamento ATAM",
+		"atamHelp": "Per gli account gestiti da ATAM: il collegamento viene mantenuto anche se l’account del personale viene temporaneamente eliminato da Alma. L’account non deve necessariamente esistere al momento della creazione del collegamento.",
 		"atamEmailPlaceholder": "ID primario ATAM (e-mail)",
 		"clearAtamEmail": "Cancella account ATAM",
 		"linkedToStaff": "Collegato al personale",

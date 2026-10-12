@@ -1,7 +1,12 @@
-import { DestroyRef } from '@angular/core';
-import { TestBed } from '@angular/core/testing';
+import { CommonModule } from '@angular/common';
+import { DestroyRef, NO_ERRORS_SCHEMA } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { fakeAsync, tick, TestBed } from '@angular/core/testing';
 import { AlertService } from '@exlibris/exl-cloudapp-angular-lib';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { EMPTY, of, Subject } from 'rxjs';
 
 import { LinkUser } from '../../models/user.model';
@@ -50,6 +55,16 @@ describe('LinkAccountsComponent ATAM state', () => {
 		userService.searchUsers.and.returnValue(of([]));
 
 		TestBed.configureTestingModule({
+			declarations: [LinkAccountsComponent],
+			imports: [
+				CommonModule,
+				ReactiveFormsModule,
+				MatCheckboxModule,
+				MatTooltipModule,
+				NoopAnimationsModule,
+				TranslateModule.forRoot(),
+			],
+			schemas: [NO_ERRORS_SCHEMA],
 			providers: [
 				{ provide: AlertService, useValue: { success: jasmine.createSpy() } },
 				{ provide: AuthService, useValue: authService },
@@ -62,10 +77,6 @@ describe('LinkAccountsComponent ATAM state', () => {
 					provide: NavigationService,
 					useValue: { goToListUsers: (): void => undefined },
 				},
-				{
-					provide: TranslateService,
-					useValue: { instant: (key: string): string => key },
-				},
 				{ provide: UserService, useValue: userService },
 			],
 		});
@@ -74,6 +85,106 @@ describe('LinkAccountsComponent ATAM state', () => {
 			() => new LinkAccountsComponent(),
 		);
 	});
+
+	const staff: LinkUser = {
+		primaryId: 'temporary.person@example.ch',
+		fullName: 'Test Person',
+		userType: 'staff',
+	};
+
+	it('submits the selected personal account in ATAM mode instead of a stale manual email', () => {
+		component.selection$.next({ staff, eduid: eduId });
+		component.atamEmailControl.setValue('stale@example.ch');
+		component.onAtamModeChange(true);
+
+		expect(component.selection$.value.staff).toBe(staff);
+		component.onLinkAccounts();
+
+		expect(linkService.createLink).toHaveBeenCalledOnceWith(
+			'temporary.person@example.ch',
+			'123456789@eduid.ch',
+			true,
+			null,
+			null,
+		);
+	});
+
+	it('keeps the selected personal account when ATAM is unchecked and submits normally', () => {
+		component.selection$.next({ staff, eduid: eduId });
+		component.onAtamModeChange(true);
+		component.onAtamModeChange(false);
+		expect(component.selection$.value.staff).toBe(staff);
+		component.onLinkAccounts();
+		expect(linkService.createLink).toHaveBeenCalledOnceWith(
+			'temporary.person@example.ch',
+			'123456789@eduid.ch',
+			false,
+			null,
+			null,
+		);
+	});
+
+	it('rejects a selected ATAM account whose email does not match the edu-ID', () => {
+		component.selection$.next({
+			staff: { ...staff, primaryId: 'different@example.ch' },
+			eduid: eduId,
+		});
+		component.onAtamModeChange(true);
+		component.onLinkAccounts();
+		expect(linkService.createLink).not.toHaveBeenCalled();
+	});
+
+	it('returns to empty manual ATAM entry when the selected staff account is cleared', () => {
+		component.selection$.next({ staff, eduid: eduId });
+		component.onAtamModeChange(true);
+		component.clearSelection('staff');
+		component.onLinkAccounts();
+		expect(component.atamMode$.value).toBeTrue();
+		expect(component.atamEmailControl.value).toBe('');
+		expect(linkService.createLink).not.toHaveBeenCalled();
+	});
+
+	it('offers ATAM for a selected personal account and keeps its card when checked', fakeAsync(() => {
+		const fixture = TestBed.createComponent(LinkAccountsComponent);
+
+		fixture.componentInstance.selection$.next({ staff, eduid: eduId });
+		fixture.detectChanges();
+		tick(400);
+		fixture.detectChanges();
+
+		const checkbox: HTMLInputElement | null =
+			fixture.nativeElement.querySelector('.atam-mode-checkbox input');
+
+		expect(checkbox).not.toBeNull();
+		checkbox?.click();
+		tick();
+		fixture.detectChanges();
+		expect(fixture.componentInstance.atamMode$.value).toBeTrue();
+		expect(
+			fixture.nativeElement.querySelector('.selection-box.staff .selection-id')
+				?.textContent,
+		).toContain('temporary.person@example.ch');
+		expect(
+			fixture.nativeElement.querySelector('input[type="email"]'),
+		).toBeNull();
+		fixture.destroy();
+	}));
+
+	it('does not offer ATAM for a selected institutional account', fakeAsync(() => {
+		const fixture = TestBed.createComponent(LinkAccountsComponent);
+
+		fixture.componentInstance.selection$.next({
+			staff: { ...staff, primaryId: 'NP_DESK' },
+			eduid: eduId,
+		});
+		fixture.detectChanges();
+		tick(400);
+		fixture.detectChanges();
+		expect(
+			fixture.nativeElement.querySelector('.atam-mode-checkbox'),
+		).toBeNull();
+		fixture.destroy();
+	}));
 
 	it('uses a live valid email and clears it with the ATAM mode', () => {
 		component.activateAtamEntry();

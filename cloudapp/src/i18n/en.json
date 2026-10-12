@@ -49,6 +49,8 @@
 		"selectStaffShort": "Select staff...",
 		"selectEduIdShort": "Select edu-ID...",
 		"useAtamAccount": "Use ATAM account",
+		"atamHelpLabel": "Help with ATAM linking",
+		"atamHelp": "For ATAM-managed accounts: the link is retained even if the staff account is temporarily deleted from Alma. The account does not need to exist yet when creating the link.",
 		"atamEmailPlaceholder": "ATAM primary ID (email)",
 		"clearAtamEmail": "Clear ATAM account",
 		"linkedToStaff": "Linked to Staff",

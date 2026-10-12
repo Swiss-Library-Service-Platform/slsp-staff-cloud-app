@@ -49,6 +49,8 @@
 		"selectStaffShort": "Mitarbeiter...",
 		"selectEduIdShort": "edu-ID...",
 		"useAtamAccount": "ATAM-Konto verwenden",
+		"atamHelpLabel": "Hilfe zur ATAM-Verknüpfung",
+		"atamHelp": "Für ATAM-verwaltete Konten: Die Verknüpfung bleibt auch erhalten, wenn das Staff-Konto vorübergehend aus Alma gelöscht wird. Das Konto muss beim Verknüpfen noch nicht existieren.",
 		"atamEmailPlaceholder": "ATAM-Primär-ID (E-Mail)",
 		"clearAtamEmail": "ATAM-Konto löschen",
 		"linkedToStaff": "Verknüpft mit Mitarbeiter",

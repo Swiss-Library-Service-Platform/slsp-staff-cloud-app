@@ -39,10 +39,10 @@
 					<div
 						class="selection-box staff"
 						[class.filled]="vm.selection.staff || vm.atamMode"
-						[class.atam-entry]="vm.atamMode"
+						[class.atam-entry]="vm.atamMode && !vm.selection.staff"
 					>
-						@if (vm.atamMode) {
-							<app-atam-badge [matchUserTypeWidth]="true" />
+						@if (vm.atamMode && !vm.selection.staff) {
+							<app-user-type-chip [userType]="'staff'"></app-user-type-chip>
 							<input
 								#atamEmailInput
 								class="atam-email-input"
@@ -96,14 +96,30 @@
 				</div>
 			</div>
 
-			@if (vm.atamEnabled && (!vm.selection.staff || vm.atamMode)) {
-				<mat-checkbox
-					class="atam-mode-checkbox"
-					[checked]="vm.atamMode"
-					(change)="onAtamModeChange($event.checked)"
-				>
-					{{ 'link.useAtamAccount' | translate }}
-				</mat-checkbox>
+			@if (
+				vm.atamEnabled &&
+				(!vm.selection.staff || isPersonalAccount(vm.selection.staff.primaryId))
+			) {
+				<div class="atam-mode-option">
+					<mat-checkbox
+						class="atam-mode-checkbox"
+						[checked]="vm.atamMode"
+						(change)="onAtamModeChange($event.checked)"
+					>
+						{{ 'link.useAtamAccount' | translate }}
+					</mat-checkbox>
+					<button
+						mat-icon-button
+						type="button"
+						class="atam-help ui-icon-button--compact"
+						[attr.aria-label]="'link.atamHelpLabel' | translate"
+						[matTooltip]="'link.atamHelp' | translate"
+						#atamHelp="matTooltip"
+						(click)="atamHelp.show()"
+					>
+						<mat-icon>info_outline</mat-icon>
+					</button>
+				</div>
 			}
 
 			<!-- Scheduling (optional) -->

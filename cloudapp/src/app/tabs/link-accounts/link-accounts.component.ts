@@ -160,8 +160,20 @@ export class LinkAccountsComponent implements OnInit {
 	}
 
 	public activateAtamEntry(): void {
+		const staff = this.selection$.value.staff;
+
+		if (staff && !this.isPersonalAccount(staff.primaryId)) {
+			return;
+		}
+
+		if (staff) {
+			this.atamEmailControl.reset();
+		}
 		this.atamMode$.next(true);
-		setTimeout(() => this.atamEmailInput?.nativeElement.focus());
+
+		if (!staff) {
+			setTimeout(() => this.atamEmailInput?.nativeElement.focus());
+		}
 	}
 
 	public onAtamModeChange(checked: boolean): void {
@@ -248,16 +260,16 @@ export class LinkAccountsComponent implements OnInit {
 	public onLinkAccounts(): void {
 		const selection = this.selection$.value;
 		const isAtam = this.atamMode$.value;
-		const staffPrimaryId = isAtam
-			? this.atamEmailControl.value.trim()
-			: selection.staff?.primaryId;
+		const staffPrimaryId =
+			selection.staff?.primaryId ??
+			(isAtam ? this.atamEmailControl.value.trim() : undefined);
 
 		if (
 			!staffPrimaryId ||
 			!selection.eduid ||
 			!this.isDateRangeValid ||
 			(isAtam &&
-				(this.atamEmailControl.invalid ||
+				(!this.isPersonalAccount(staffPrimaryId) ||
 					!this.isAtamEmailCompatibleWith(selection.eduid)))
 		) {
 			return;
@@ -352,6 +364,7 @@ export class LinkAccountsComponent implements OnInit {
 
 		if (
 			this.atamMode$.value &&
+			!this.selection$.value.staff &&
 			user.userType === 'eduid' &&
 			this.atamEmailControl.valid &&
 			this.atamEmailControl.value.trim()
@@ -403,6 +416,13 @@ export class LinkAccountsComponent implements OnInit {
 		}
 
 		return !this.canSelectUser(user);
+	}
+
+	/**
+	 * Check if a primary ID is a personal staff account (email format).
+	 */
+	public isPersonalAccount(primaryId: string): boolean {
+		return isPersonalStaffAccount(primaryId);
 	}
 
 	/**
@@ -539,11 +559,12 @@ export class LinkAccountsComponent implements OnInit {
 					atamMode,
 					canLink:
 						selection.eduid !== null &&
-						(selection.staff !== null ||
-							(atamMode &&
-								!!this.atamEmailControl.value.trim() &&
-								this.atamEmailControl.valid &&
-								this.isAtamEmailCompatibleWith(selection.eduid))),
+						(atamMode
+							? this.isPersonalAccount(
+									selection.staff?.primaryId ??
+										this.atamEmailControl.value.trim(),
+								) && this.isAtamEmailCompatibleWith(selection.eduid)
+							: selection.staff !== null),
 				};
 			}),
 			distinctUntilChanged(
@@ -576,17 +597,13 @@ export class LinkAccountsComponent implements OnInit {
 			});
 	}
 
-	/**
-	 * Check if a primary ID is a personal staff account (email format).
-	 */
-	private isPersonalAccount(primaryId: string): boolean {
-		return isPersonalStaffAccount(primaryId);
-	}
-
 	private isAtamEmailCompatibleWith(eduid: LinkUser): boolean {
 		return (
 			eduid.emails?.includes(
-				this.atamEmailControl.value.trim().toLowerCase(),
+				(
+					this.selection$.value.staff?.primaryId ??
+					this.atamEmailControl.value.trim()
+				).toLowerCase(),
 			) ?? false
 		);
 	}

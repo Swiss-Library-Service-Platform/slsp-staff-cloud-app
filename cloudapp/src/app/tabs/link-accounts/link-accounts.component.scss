@@ -135,12 +135,21 @@
 		font-size: 11px;
 	}
 
+	.atam-mode-option {
+		display: flex;
+		align-items: center;
+		margin-top: 4px;
+	}
+
+	.atam-help {
+		color: var(--color-text-muted);
+	}
+
 	.atam-mode-checkbox {
 		display: flex;
 		align-items: center;
 		width: fit-content;
 		min-height: 32px;
-		margin-top: 4px;
 		--mdc-checkbox-state-layer-size: 32px;
 		--mdc-checkbox-selected-icon-color: var(--slsp-purple);
 		--mdc-checkbox-selected-hover-icon-color: var(--slsp-purple);
@@ -152,7 +161,7 @@
 		--mat-checkbox-label-text-color: var(--color-text-muted);
 	}
 
-	.atam-mode-checkbox + .scheduling-section {
+	.atam-mode-option + .scheduling-section {
 		margin-top: 0;
 	}
 

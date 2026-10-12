@@ -49,6 +49,8 @@
 		"selectStaffShort": "Personnel...",
 		"selectEduIdShort": "edu-ID...",
 		"useAtamAccount": "Utiliser un compte ATAM",
+		"atamHelpLabel": "Aide sur la liaison ATAM",
+		"atamHelp": "Pour les comptes gérés par ATAM : la liaison est conservée même si le compte du personnel est temporairement supprimé d’Alma. Le compte ne doit pas nécessairement exister au moment de créer la liaison.",
 		"atamEmailPlaceholder": "Identifiant principal ATAM (e-mail)",
 		"clearAtamEmail": "Effacer le compte ATAM",
 		"linkedToStaff": "Lié au personnel",
