@@ -68,6 +68,7 @@
     "typescript": "5.5.4"
   },
   "overrides": {
-    "tar": "7.5.22"
+    "tar": "7.5.22",
+    "piscina": "4.9.4"
   }
 }
